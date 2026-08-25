@@ -1,696 +1,648 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Toan Nguyen Hai — Academic Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #0f1117;
-      --bg-card: #161b27;
-      --bg-card-hover: #1c2333;
-      --accent: #4f9cf9;
-      --accent2: #a78bfa;
-      --accent3: #34d399;
-      --text: #e2e8f0;
-      --text-muted: #8892a4;
-      --border: #1e2d45;
-      --tag-bg: #1a2744;
-      --tag-text: #7cb4f8;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    /* ════════════════════════════
-       FLOATING LEFT SIDEBAR NAV
-    ════════════════════════════ */
-    .side-nav {
-      position: fixed;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 200;
-      display: flex;
-      align-items: center;
-    }
-
-    /* The tab that's always visible */
-    .side-nav-tab {
-      width: 18px;
-      height: 72px;
-      background: var(--accent);
-      border-radius: 0 8px 8px 0;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: width .25s ease, background .2s;
-      box-shadow: 2px 0 12px rgba(79,156,249,0.25);
-    }
-    .side-nav-tab svg {
-      opacity: 0.9;
-      transition: transform .3s ease;
-    }
-
-    /* The expandable panel */
-    .side-nav-panel {
-      width: 0;
-      overflow: hidden;
-      transition: width .3s cubic-bezier(.4,0,.2,1);
-      background: rgba(22, 27, 39, 0.97);
-      border-radius: 0 12px 12px 0;
-      border: 1px solid var(--border);
-      border-left: none;
-      backdrop-filter: blur(12px);
-      box-shadow: 4px 0 24px rgba(0,0,0,0.4);
-    }
-
-    .side-nav:hover .side-nav-panel {
-      width: 180px;
-    }
-    .side-nav:hover .side-nav-tab {
-      background: #3a82e8;
-      border-radius: 0 0 0 0;
-    }
-    .side-nav:hover .side-nav-tab svg {
-      transform: rotate(180deg);
-    }
-
-    .side-nav-links {
-      padding: 1rem 0;
-      white-space: nowrap;
-    }
-    .side-nav-links a {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      padding: 0.55rem 1.2rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.82rem;
-      font-weight: 500;
-      transition: color .15s, background .15s;
-      border-left: 2px solid transparent;
-    }
-    .side-nav-links a:hover {
-      color: var(--accent);
-      background: rgba(79,156,249,0.07);
-      border-left-color: var(--accent);
-    }
-    .side-nav-links a .nav-icon {
-      font-size: 0.95rem;
-      width: 18px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .side-nav-links .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 0.4rem 1.2rem;
-    }
-
-    /* ════════════════════════════
-       TOP NAV
-    ════════════════════════════ */
-    nav {
-      position: fixed; top: 0; width: 100%; z-index: 100;
-      background: rgba(15, 17, 23, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-    }
-    nav .inner {
-      max-width: 860px; margin: 0 auto;
-      display: flex; justify-content: space-between; align-items: center;
-      height: 56px;
-    }
-    nav .logo { font-weight: 700; font-size: 1rem; color: var(--accent); letter-spacing: 0.02em; }
-    nav ul { list-style: none; display: flex; gap: 1.6rem; }
-    nav a { text-decoration: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 500; transition: color .2s; }
-    nav a:hover { color: var(--accent); }
-
-    /* ════════════════════════════
-       LAYOUT
-    ════════════════════════════ */
-    main { max-width: 860px; margin: 0 auto; padding: 100px 2rem 60px; }
-    section { margin-bottom: 72px; }
-
-    /* ════════════════════════════
-       HERO + AVATAR
-    ════════════════════════════ */
-    .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 40px 0 20px;
-      gap: 0;
-    }
-
-    /* Avatar wrapper */
-    .avatar-wrapper {
-      position: relative;
-      width: 110px;
-      height: 110px;
-      margin-bottom: 1.4rem;
-      cursor: pointer;
-    }
-    .avatar-wrapper img,
-    .avatar-wrapper .avatar-placeholder {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      object-fit: cover;
-      display: block;
-      border: 3px solid var(--accent);
-      box-shadow: 0 0 0 4px rgba(79,156,249,0.15), 0 8px 32px rgba(0,0,0,0.4);
-    }
-    .avatar-wrapper .avatar-placeholder {
-      background: linear-gradient(135deg, #1a2744, #0d1a35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: -1px;
-      font-family: 'Inter', sans-serif;
-    }
-
-    /* Upload overlay */
-    .avatar-overlay {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: rgba(10, 14, 22, 0.72);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      opacity: 0;
-      transition: opacity .2s;
-    }
-    .avatar-wrapper:hover .avatar-overlay { opacity: 1; }
-    .avatar-overlay span {
-      font-size: 0.65rem;
-      color: #fff;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-    .avatar-overlay svg { color: #fff; }
-
-    #avatar-input { display: none; }
-
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3rem); font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text; margin-bottom: 0.4rem;
-    }
-    .hero .tagline {
-      color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.6rem;
-      letter-spacing: 0.05em; text-transform: uppercase; font-weight: 400;
-    }
-    .hero .links {
-      display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem;
-    }
-    .hero .links a {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: var(--tag-bg); color: var(--tag-text);
-      text-decoration: none; padding: 0.4rem 1rem;
-      border-radius: 999px; font-size: 0.82rem; font-weight: 500;
-      border: 1px solid var(--border); transition: all .2s;
-    }
-    .hero .links a:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-    /* ════════════════════════════
-       SECTION HEADINGS
-    ════════════════════════════ */
-    h2 {
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 1.4rem;
-      display: flex; align-items: center; gap: 0.75rem;
-    }
-    h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-    /* ════════════════════════════
-       CARDS
-    ════════════════════════════ */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.4rem 1.6rem;
-      margin-bottom: 1rem; transition: background .2s, border-color .2s;
-    }
-    .card:hover { background: var(--bg-card-hover); border-color: #2a3f60; }
-    .card-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.25rem;
-    }
-    .card-header .title { font-weight: 600; font-size: 0.97rem; color: var(--text); }
-    .card-header .date { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; }
-    .card .role { font-size: 0.83rem; color: var(--accent2); font-style: italic; margin-bottom: 0.5rem; }
-    .card .location { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem; }
-    .card p { font-size: 0.88rem; color: var(--text-muted); margin-top: 0.3rem; }
-    .card .meta { font-size: 0.8rem; color: var(--accent3); margin-top: 0.3rem; font-family: 'JetBrains Mono', monospace; }
-
-    /* ════════════════════════════
-       PUBLICATIONS
-    ════════════════════════════ */
-    .pub {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.2rem 1.6rem;
-      margin-bottom: 0.85rem; transition: background .2s, border-color .2s;
-      display: flex; gap: 1rem; align-items: flex-start;
-    }
-    .pub:hover { background: var(--bg-card-hover); border-color: #2a3f60; }
-    .pub-year {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem; color: var(--accent); font-weight: 600;
-      min-width: 36px; padding-top: 2px;
-    }
-    .pub-body .pub-title { font-size: 0.92rem; font-weight: 600; color: var(--text); margin-bottom: 0.2rem; }
-    .pub-body .pub-authors { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.25rem; }
-    .pub-body .pub-venue { font-size: 0.8rem; color: var(--accent2); }
-    .pub-body .pub-badge {
-      display: inline-block; margin-top: 0.35rem;
-      background: #1e3a1e; color: var(--accent3);
-      font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.6rem;
-      border-radius: 999px; border: 1px solid #2a5a2a;
-    }
-
-    /* ════════════════════════════
-       TAGS
-    ════════════════════════════ */
-    .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
-    .tag {
-      background: var(--tag-bg); color: var(--tag-text);
-      font-size: 0.75rem; padding: 0.2rem 0.65rem;
-      border-radius: 999px; border: 1px solid var(--border); font-weight: 500;
-    }
-
-    /* ════════════════════════════
-       AWARDS
-    ════════════════════════════ */
-    .award-item { display: flex; align-items: flex-start; gap: 0.7rem; margin-bottom: 0.6rem; }
-    .award-dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--accent); flex-shrink: 0; margin-top: 7px;
-    }
-    .award-item p { font-size: 0.88rem; color: var(--text-muted); }
-    .award-item strong { color: var(--text); }
-
-    /* ════════════════════════════
-       REFERENCES
-    ════════════════════════════ */
-    .ref-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;
-    }
-    .ref-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.1rem 1.3rem; transition: all .2s;
-    }
-    .ref-card:hover { background: var(--bg-card-hover); border-color: #2a3f60; }
-    .ref-card .ref-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem; }
-    .ref-card .ref-role { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; line-height: 1.4; }
-    .ref-card a { font-size: 0.78rem; color: var(--tag-text); text-decoration: none; }
-    .ref-card a:hover { text-decoration: underline; }
-
-    /* ════════════════════════════
-       LANGUAGES
-    ════════════════════════════ */
-    .lang-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.25rem; }
-    .lang-item { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
-    .lang-name { font-size: 0.85rem; font-weight: 600; }
-    .lang-level { font-size: 0.75rem; color: var(--text-muted); }
-
-    /* ════════════════════════════
-       FOOTER
-    ════════════════════════════ */
-    footer {
-      text-align: center; padding: 2rem;
-      font-size: 0.78rem; color: var(--text-muted);
-      border-top: 1px solid var(--border);
-    }
-
-    /* ════════════════════════════
-       RESPONSIVE
-    ════════════════════════════ */
-    @media (max-width: 600px) {
-      nav ul { display: none; }
-      .card-header { flex-direction: column; }
-      .pub { flex-direction: column; gap: 0.5rem; }
-      .side-nav { display: none; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="description"
+        content="Academic portfolio of Toan Nguyen Hai — transformers, vision-language reasoning and biomedical applications at VNU-UET.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>Toan Nguyen Hai — Academic Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="index-style.css">
+    <script>
+        (function () {
+            var saved = localStorage.getItem("theme");
+            var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+            document.documentElement.setAttribute("data-theme", theme);
+        })();
+    </script>
 </head>
+
 <body>
+    <main class="page-shell">
 
-<!-- ════════════════════════════
-     FLOATING LEFT SIDEBAR NAV
-════════════════════════════ -->
-<div class="side-nav" role="navigation" aria-label="Quick navigation">
-  <div class="side-nav-tab" aria-hidden="true">
-    <!-- chevron right icon -->
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="9 18 15 12 9 6"/>
-    </svg>
-  </div>
-  <div class="side-nav-panel">
-    <div class="side-nav-links">
-      <a href="#about">
-        <span class="nav-icon">👤</span> About
-      </a>
-      <a href="#education">
-        <span class="nav-icon">🎓</span> Education
-      </a>
-      <a href="#experience">
-        <span class="nav-icon">💼</span> Experience
-      </a>
-      <a href="#publications">
-        <span class="nav-icon">📄</span> Publications
-      </a>
-      <a href="#awards">
-        <span class="nav-icon">🏆</span> Awards
-      </a>
-      <a href="#languages">
-        <span class="nav-icon">🌐</span> Languages
-      </a>
-      <a href="#references">
-        <span class="nav-icon">👥</span> References
-      </a>
-    </div>
-  </div>
-</div>
+        <!-- ─── HERO ─── -->
+        <section class="hero">
+            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light/dark theme">
+                <span class="theme-toggle-icon theme-toggle-icon--sun">☀️</span>
+                <span class="theme-toggle-icon theme-toggle-icon--moon">🌙</span>
+            </button>
+            <h1>Toan Nguyen Hai</h1>
+            <p>Transformers Application · Vision-Language Reasoning · Biomedical Applications</p>
+            <p class="hero-author">Lecturer &amp; Researcher, VNU University of Engineering and Technology</p>
+            <div class="hero-contact">
+                <div class="hero-contact-row">
+                    <a class="hero-contact-link" href="mailto:nguyenhaitoan@vnu.edu.vn">📧 nguyenhaitoan@vnu.edu.vn</a>
+                    <span class="hero-contact-sep">·</span>
+                    <a class="hero-contact-link" href="https://github.com/Toan-Nguyen26" target="_blank"
+                        rel="noopener">💻 GitHub</a>
+                </div>
+                <div class="hero-contact-row">
+                    <a class="hero-contact-link" href="https://scholar.google.com/citations?user=Xa3LmNUAAAAJ&hl=en"
+                        target="_blank" rel="noopener">🎓 Google Scholar</a>
+                    <span class="hero-contact-sep">·</span>
+                    <a class="hero-contact-link" href="https://digitalbiologylab.github.io/" target="_blank"
+                        rel="noopener">🔬 Digital Biology Lab</a>
+                </div>
+            </div>
+            <div class="hero-actions">
+                <a class="purpose-card" href="#research">
+                    <span class="purpose-icon">🔍</span>
+                    <span class="purpose-label">Research</span>
+                </a>
+                <a class="purpose-card" href="#publications">
+                    <span class="purpose-icon">📄</span>
+                    <span class="purpose-label">Publications</span>
+                </a>
+                <a class="purpose-card" href="#experience">
+                    <span class="purpose-icon">💼</span>
+                    <span class="purpose-label">Experience</span>
+                </a>
+                <a class="purpose-card" href="#slides">
+                    <span class="purpose-icon">🖥️</span>
+                    <span class="purpose-label">Slides</span>
+                </a>
+            </div>
+        </section>
 
-<!-- ════════════════════════════
-     TOP NAV
-════════════════════════════ -->
-<nav>
-  <div class="inner">
-    <span class="logo">Toan Nguyen Hai</span>
-    <ul>
-      <li><a href="#about">About</a></li>
-      <li><a href="#education">Education</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#publications">Publications</a></li>
-      <li><a href="#awards">Awards</a></li>
-      <li><a href="#references">References</a></li>
-    </ul>
-  </div>
-</nav>
+        <!-- ─── STATS ─── -->
+        <section class="stats-row" aria-label="Quick statistics">
+            <div class="stat-item">
+                <span class="stat-number">5</span>
+                <span class="stat-label">Papers</span>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat-item">
+                <span class="stat-number">2</span>
+                <span class="stat-label">Ongoing</span>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat-item">
+                <span class="stat-number">5</span>
+                <span class="stat-label">Positions</span>
+            </div>
+        </section>
 
-<main>
+        <!-- ═══════════════════════════════════════════ -->
+        <!--  EDUCATION                                   -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="education" class="section--study">
+            <h2 class="section-title">🎓 Education</h2>
 
-  <!-- ════════════════════════════
-       HERO + AVATAR
-  ════════════════════════════ -->
-  <section class="hero" id="about">
+            <div class="course-grid">
 
-    <!-- Avatar — loads avatar.jpg from the same folder -->
-    <div class="avatar-wrapper" onclick="document.getElementById('avatar-input').click()" title="Click to preview a different photo">
-      <img src="avatar.jpg" alt="Toan Nguyen Hai" id="avatar-display"
-           onerror="this.style.display='none'; document.getElementById('avatar-fallback').style.display='flex';" />
-      <div class="avatar-placeholder" id="avatar-fallback" style="display:none;">TNH</div>
-      <div class="avatar-overlay">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <span>Change photo</span>
-      </div>
-    </div>
-    <input type="file" id="avatar-input" accept="image/*" />
+                <!-- MSc — VNU-UET -->
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">📜</span>
+                        <span class="course-badge course-badge--gm">MSc</span>
+                    </div>
+                    <h3 class="course-card-title">VNU University of Engineering and Technology</h3>
+                    <p class="course-card-venue">MSc in Computer Science</p>
+                    <p class="course-card-note"><strong>CGPA 3.59 / 4.00</strong> · Thesis 9.4 / 10 (Best Thesis Award)
+                    </p>
+                    <ul class="course-card-topics">
+                        <li>Computer Science</li>
+                        <li>Best Thesis Award</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Hanoi, Vietnam</span>
+                        <span class="course-lecture-count">03/2024 – 12/2025</span>
+                    </div>
+                </article>
 
-    <h1>Toan Nguyen Hai</h1>
-    <p class="tagline">AI for Medical Imaging &nbsp;·&nbsp; Predictive World Models &nbsp;·&nbsp; Biomedical Applications</p>
-    <div class="links">
-      <a href="mailto:nguyenhaitoan@vnu.edu.vn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
-        nguyenhaitoan@vnu.edu.vn
-      </a>
-      <a href="https://github.com/toannguyen" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
-        GitHub
-      </a>
-      <a href="https://digitalbiologylab.org" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        Digital Biology Lab
-      </a>
-    </div>
-  </section>
+                <!-- BSc — UNL -->
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">🎓</span>
+                        <span class="course-badge course-badge--gm">BSc</span>
+                    </div>
+                    <h3 class="course-card-title">University of Nebraska–Lincoln</h3>
+                    <p class="course-card-venue">B.Sc in Computer Science</p>
+                    <p class="course-card-note"><strong>CGPA 3.73 / 4.00</strong></p>
+                    <ul class="course-card-topics">
+                        <li>Computer Science</li>
+                        <li>Dean's List ×4</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Lincoln, Nebraska, USA</span>
+                        <span class="course-lecture-count">09/2019 – 05/2023</span>
+                    </div>
+                </article>
 
-  <!-- ════════════════════════════
-       EDUCATION
-  ════════════════════════════ -->
-  <section id="education">
-    <h2>Education</h2>
+            </div>
+        </section>
 
-    <div class="card">
-      <div class="card-header">
-        <span class="title">Vietnam National University, University of Engineering and Technology</span>
-        <span class="date">03/2024 – 12/2025</span>
-      </div>
-      <div class="role">MSc in Computer Science</div>
-      <div class="location">Hanoi, Vietnam</div>
-      <p class="meta">CGPA: 3.59 / 4.00 &nbsp;·&nbsp; Thesis: 9.4 / 10</p>
-    </div>
+        <!-- ═══════════════════════════════════════════ -->
+        <!--  TECHNICAL SKILLS                            -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="skills" class="section--teach">
+            <h2 class="section-title">🛠️ Technical Skills</h2>
 
-    <div class="card">
-      <div class="card-header">
-        <span class="title">University of Nebraska-Lincoln</span>
-        <span class="date">09/2019 – 05/2023</span>
-      </div>
-      <div class="role">B.Sc in Computer Science</div>
-      <div class="location">Lincoln, Nebraska, USA</div>
-      <p class="meta">CGPA: 3.73 / 4.00</p>
-    </div>
-  </section>
+            <div class="course-grid">
 
-  <!-- ════════════════════════════
-       WORK EXPERIENCE
-  ════════════════════════════ -->
-  <section id="experience">
-    <h2>Work Experience</h2>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">⌨️</span>
+                    </div>
+                    <h3 class="course-card-title">Programming</h3>
+                    <ul class="course-card-topics">
+                        <li>Python</li>
+                        <li>C++</li>
+                        <li>C#</li>
+                        <li>SQL</li>
+                        <li>LaTeX</li>
+                    </ul>
+                </article>
 
-    <div class="card">
-      <div class="card-header">
-        <span class="title">Interdisciplinary Research Group on Biomedicine and Health, IS-VNU</span>
-        <span class="date">08/2025 – Present</span>
-      </div>
-      <div class="role">Associate Researcher</div>
-      <div class="location">Hanoi, Vietnam</div>
-      <p>Participated in interdisciplinary projects involving biomedical data science, explainable AI in medical applications and medical imaging.</p>
-      <div class="tags">
-        <span class="tag">Explainable AI</span>
-        <span class="tag">Medical Imaging</span>
-        <span class="tag">Biomedical Data Science</span>
-      </div>
-    </div>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">📊</span>
+                    </div>
+                    <h3 class="course-card-title">Machine Learning</h3>
+                    <ul class="course-card-topics">
+                        <li>PyTorch</li>
+                        <li>Hugging Face Transformers</li>
+                        <li>scikit-learn</li>
+                        <li>NumPy</li>
+                    </ul>
+                </article>
 
-    <div class="card">
-      <div class="card-header">
-        <span class="title">Digital Biology Lab</span>
-        <span class="date">06/2024 – Present</span>
-      </div>
-      <div class="role">Associate Researcher</div>
-      <div class="location">Amsterdam, Netherlands</div>
-      <p>Developed AI models for post-translational modifications, particularly phosphorylation site prediction, with focus on integrating bioinformatics pipelines into broader biomedical AI applications.</p>
-      <div class="tags">
-        <span class="tag">Bioinformatics</span>
-        <span class="tag">Deep Learning</span>
-        <span class="tag">Phosphorylation Prediction</span>
-      </div>
-    </div>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">🧠</span>
+                    </div>
+                    <h3 class="course-card-title">LLM &amp; Multimodal</h3>
+                    <ul class="course-card-topics">
+                        <li>Retrieval-augmented generation</li>
+                        <li>Multimodal LLMs</li>
+                        <li>Visual instruction tuning</li>
+                        <li>Interleaved vision-language reasoning</li>
+                    </ul>
+                </article>
 
-    <div class="card">
-      <div class="card-header">
-        <span class="title">VNU-UET</span>
-        <span class="date">06/2024 – Present</span>
-      </div>
-      <div class="role">Lecturer and Researcher</div>
-      <div class="location">Hanoi, Vietnam</div>
-      <p><strong>Courses:</strong> Introduction to Programming, Relational Database and SQL, Applications of Artificial Intelligence, Programming Methodology, Machine Learning.</p>
-      <p style="margin-top:0.4rem"><strong>Research focus:</strong> Artificial Intelligence, Natural Language Processing, Machine Learning, and Medical Image Segmentation.</p>
-      <div class="tags">
-        <span class="tag">AI</span><span class="tag">NLP</span>
-        <span class="tag">Machine Learning</span><span class="tag">Medical Imaging</span>
-      </div>
-    </div>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">🧰</span>
+                    </div>
+                    <h3 class="course-card-title">Tools &amp; Data</h3>
+                    <ul class="course-card-topics">
+                        <li>Git</li>
+                        <li>Linux / HPC clusters</li>
+                        <li>Unity (C#)</li>
+                    </ul>
+                </article>
 
-    <div class="card">
-      <div class="card-header">
-        <span class="title">Tinhvan Software</span>
-        <span class="date">09/2023 – 05/2024</span>
-      </div>
-      <div class="role">AI Software Engineer</div>
-      <div class="location">Hanoi, Vietnam</div>
-      <p>Researched and improved Retrieval-Augmented Generation (RAG) systems for clients.</p>
-      <div class="tags">
-        <span class="tag">RAG</span><span class="tag">LLMs</span><span class="tag">NLP</span>
-      </div>
-    </div>
+            </div>
+        </section>
 
-    <div class="card">
-      <div class="card-header">
-        <span class="title">Nelnet</span>
-        <span class="date">09/2022 – 03/2023</span>
-      </div>
-      <div class="role">Associate Software Engineer</div>
-      <div class="location">Lincoln, Nebraska, USA</div>
-      <p>Improved UI/UX design and centralized data pipelines for Clarity webpages, enhancing accessibility for healthcare-related call-center operations.</p>
-      <div class="tags">
-        <span class="tag">UI/UX</span><span class="tag">Data Pipelines</span><span class="tag">Healthcare</span>
-      </div>
-    </div>
-  </section>
+        <!-- ═══════════════════════════════════════════ -->
+        <!--  ONGOING RESEARCH                            -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="research" class="section--research">
+            <h2 class="section-title">🔍 Ongoing Research</h2>
 
-  <!-- ════════════════════════════
-       PUBLICATIONS
-  ════════════════════════════ -->
-  <section id="publications">
-    <h2>Publications</h2>
+            <div class="course-grid">
 
-    <div class="pub">
-      <span class="pub-year">2025</span>
-      <div class="pub-body">
-        <div class="pub-title">LatentFM: A Latent Flow Matching Approach for Generative Medical Image Segmentation</div>
-        <div class="pub-authors">Trinh Ngoc Huynh, Nguyen Kim Hoang Anh, <strong>Nguyen Hai Toan</strong>, Tran Quoc Long</div>
-        <div class="pub-venue">FJCAI 2026 <span class="pub-badge">🏆 Best Paper Award</span></div>
-      </div>
-    </div>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Pathology-Routed LoRA Experts for Interpretable Chest X-ray Report
+                            Generation</h3>
+                        <span class="course-badge course-badge--gm">Active</span>
+                    </div>
+                    <p class="course-card-venue">Nguyen Quoc Khanh · Nguyen Viet Ha · Chu Dinh Toi</p>
+                    <ul class="course-card-topics">
+                        <li>LoRA</li>
+                        <li>Report generation</li>
+                        <li>Interpretability</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Under peer-review</span>
+                        <span class="course-lecture-count">02/2026 – Present</span>
+                    </div>
+                </article>
 
-    <div class="pub">
-      <span class="pub-year">2025</span>
-      <div class="pub-body">
-        <div class="pub-title">Diffusion Model in Latent Space for Medical Image Segmentation Task</div>
-        <div class="pub-authors">Trinh Ngoc Huynh, <strong>Nguyen Hai Toan</strong>, Luong Son Ba, Tran Quoc Long</div>
-        <div class="pub-venue">FJCAI 2026</div>
-      </div>
-    </div>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Calibrated Uncertainty for Brain Tumour Segmentation under Missing
+                            MRI Modalities</h3>
+                        <span class="course-badge course-badge--gm">Active</span>
+                    </div>
+                    <p class="course-card-venue">Ha Nguyen Viet · Toi Chu Dinh</p>
+                    <ul class="course-card-topics">
+                        <li>Segmentation</li>
+                        <li>Uncertainty</li>
+                        <li>Multi-modal MRI</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Supervised research</span>
+                        <span class="course-lecture-count">05/2026 – Present</span>
+                    </div>
+                </article>
 
-    <div class="pub">
-      <span class="pub-year">2025</span>
-      <div class="pub-body">
-        <div class="pub-title">A Vietnamese Dataset for Text Segmentation and Multiple Choices Reading Comprehension</div>
-        <div class="pub-authors"><strong>Toan Nguyen Hai</strong>, Truong Quan Xuan, Duc Do Minh, Ha Nguyen Viet</div>
-        <div class="pub-venue">BDSIC 2025</div>
-      </div>
-    </div>
+            </div>
+        </section>
 
-    <div class="pub">
-      <span class="pub-year">2024</span>
-      <div class="pub-body">
-        <div class="pub-title">Enhancing Retrieval Augmented Generation with Hierarchical Text Segmentation Chunking</div>
-        <div class="pub-authors"><strong>Nguyen Hai Toan</strong>, Nguyen Tien Dat, Nguyen Viet Ha</div>
-        <div class="pub-venue">SOICT 2024 · Communications in Computer and Information Science, vol 2352. Springer, Singapore.</div>
-      </div>
-    </div>
-  </section>
+        <!-- ═══════════════════════════════════════════ -->
+        <!--  PUBLICATIONS                                -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="publications" class="section--study">
+            <h2 class="section-title">📄 Publications</h2>
 
-  <!-- ════════════════════════════
-       AWARDS
-  ════════════════════════════ -->
-  <section id="awards">
-    <h2>Awards &amp; Honors</h2>
-    <div class="card">
-      <div class="award-item">
-        <div class="award-dot"></div>
-        <p><strong>UNL Global Laureate Scholarship</strong> (2019 – 2023) — $15,000 / year</p>
-      </div>
-      <div class="award-item">
-        <div class="award-dot"></div>
-        <p><strong>UNL Dean's List</strong> — Fall 2019, Spring 2020, Fall 2022, Spring 2023</p>
-      </div>
-    </div>
-  </section>
+            <div class="course-grid">
 
-  <!-- ════════════════════════════
-       LANGUAGES
-  ════════════════════════════ -->
-  <section id="languages">
-    <h2>Languages</h2>
-    <div class="card">
-      <div class="lang-row">
-        <div class="lang-item">
-          <span class="lang-name">🇻🇳 Vietnamese</span>
-          <span class="lang-level">Native</span>
-        </div>
-        <div class="lang-item">
-          <span class="lang-name">🇬🇧 English</span>
-          <span class="lang-level">Fluent</span>
-        </div>
-      </div>
-    </div>
-  </section>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">MULAN: Benchmarking and Evaluating Multilingual Knowledge
+                            Unlearning</h3>
+                        <span class="course-badge course-badge--planned">Under review</span>
+                    </div>
+                    <p class="course-card-venue">2026 · TMLR Journal</p>
+                    <p class="course-card-desc">Duc Do Minh, <strong>Toan Nguyen Hai</strong>, et al.</p>
+                    <ul class="course-card-topics">
+                        <li>Machine unlearning</li>
+                        <li>Multilingual LLMs</li>
+                        <li>Benchmark</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Under peer-review</span>
+                        <a class="course-link course-link--disabled" href="#" aria-disabled="true">
+                            Preprint <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
 
-  <!-- ════════════════════════════
-       REFERENCES
-  ════════════════════════════ -->
-  <section id="references">
-    <h2>References</h2>
-    <div class="ref-grid">
-      <div class="ref-card">
-        <div class="ref-name">Assoc. Prof. Ha Nguyen Viet</div>
-        <div class="ref-role">Professor, Institute of Artificial Intelligence<br>VNU University of Engineering and Technology</div>
-        <a href="mailto:hanv@vnu.edu.vn">hanv@vnu.edu.vn</a>
-      </div>
-      <div class="ref-card">
-        <div class="ref-name">Assoc. Prof. Toi Chu Dinh</div>
-        <div class="ref-role">Head, Interdisciplinary Research Group on Biomedicine &amp; Health<br>Dean of Faculty of Applied Sciences, VNU International School</div>
-        <a href="mailto:toicd@vnuis.edu.vn">toicd@vnuis.edu.vn</a>
-      </div>
-      <div class="ref-card">
-        <div class="ref-name">Dr. Thang Pham Viet</div>
-        <div class="ref-role">Bioinformatics Researcher &amp; Computer Scientist<br>ONGO Proteomics Laboratory</div>
-        <a href="mailto:t.pham@amsterdamumc.nl">t.pham@amsterdamumc.nl</a>
-      </div>
-      <div class="ref-card">
-        <div class="ref-name">Prof. Trinh Chu Duc</div>
-        <div class="ref-role">Principal<br>VNU University of Engineering and Technology</div>
-        <a href="mailto:trinhcd@vnu.edu.vn">trinhcd@vnu.edu.vn</a>
-      </div>
-    </div>
-  </section>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">LatentFM: A Latent Flow Matching Approach for Generative Medical
+                            Image Segmentation</h3>
+                        <span class="course-badge course-badge--gm">🏆 Best Paper</span>
+                    </div>
+                    <p class="course-card-venue">2025 · FJCAI 2026</p>
+                    <p class="course-card-desc">Trinh Ngoc Huynh, Nguyen Kim Hoang Anh, <strong>Nguyen Hai Toan</strong>,
+                        Tran Quoc Long</p>
+                    <ul class="course-card-topics">
+                        <li>Flow matching</li>
+                        <li>Medical segmentation</li>
+                        <li>Generative models</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">FJCAI 2026</span>
+                        <a class="course-link" href="https://arxiv.org/abs/2512.04821" target="_blank" rel="noopener">
+                            Preprint <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
 
-</main>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Diffusion Model in Latent Space for Medical Image Segmentation
+                            Task</h3>
+                        <span class="course-badge course-badge--gm">Published</span>
+                    </div>
+                    <p class="course-card-venue">2025 · FJCAI 2026</p>
+                    <p class="course-card-desc">Trinh Ngoc Huynh, <strong>Nguyen Hai Toan</strong>, Luong Son Ba, Tran
+                        Quoc Long</p>
+                    <ul class="course-card-topics">
+                        <li>Diffusion models</li>
+                        <li>Latent space</li>
+                        <li>Medical imaging</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">FJCAI 2026</span>
+                        <a class="course-link" href="https://arxiv.org/abs/2512.01292" target="_blank" rel="noopener">
+                            Preprint <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
 
-<footer>
-  <p>© 2026 Toan Nguyen Hai &nbsp;·&nbsp; Built with GitHub Pages</p>
-</footer>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">A Vietnamese Dataset for Text Segmentation and Multiple Choices
+                            Reading Comprehension</h3>
+                        <span class="course-badge course-badge--gm">Published</span>
+                    </div>
+                    <p class="course-card-venue">2025 · BDSIC 2025</p>
+                    <p class="course-card-desc"><strong>Toan Nguyen Hai</strong>, Truong Quan Xuan, Duc Do Minh, Ha
+                        Nguyen Viet</p>
+                    <ul class="course-card-topics">
+                        <li>Vietnamese NLP</li>
+                        <li>Text segmentation</li>
+                        <li>Reading comprehension</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">BDSIC 2025</span>
+                        <a class="course-link" href="https://arxiv.org/abs/2506.15978" target="_blank" rel="noopener">
+                            Preprint <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
 
-<!-- Avatar upload script -->
-<script>
-  document.getElementById('avatar-input').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      const wrapper = document.querySelector('.avatar-wrapper');
-      // Replace placeholder with real image
-      let img = wrapper.querySelector('img');
-      if (!img) {
-        img = document.createElement('img');
-        img.alt = 'Toan Nguyen Hai';
-        const placeholder = wrapper.querySelector('.avatar-placeholder');
-        if (placeholder) wrapper.replaceChild(img, placeholder);
-        else wrapper.insertBefore(img, wrapper.firstChild);
-      }
-      img.src = evt.target.result;
-      img.id = 'avatar-display';
-    };
-    reader.readAsDataURL(file);
-  });
-</script>
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Enhancing Retrieval Augmented Generation with Hierarchical Text
+                            Segmentation Chunking</h3>
+                        <span class="course-badge course-badge--gm">Published</span>
+                    </div>
+                    <p class="course-card-venue">2024 · SOICT 2024</p>
+                    <p class="course-card-desc"><strong>Nguyen Hai Toan</strong>, Nguyen Tien Dat, Nguyen Viet Ha</p>
+                    <ul class="course-card-topics">
+                        <li>RAG</li>
+                        <li>Chunking</li>
+                        <li>Springer CCIS</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">SOICT 2024</span>
+                        <a class="course-link" href="https://doi.org/10.48550/arXiv.2507.09935" target="_blank"
+                            rel="noopener">
+                            Preprint <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
 
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!--  WORK EXPERIENCE                             -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="experience" class="section--teach">
+            <h2 class="section-title">💼 Work Experience</h2>
+
+            <div class="course-grid">
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Interdisciplinary Research Group on Biomedicine and Health,
+                            IS-VNU</h3>
+                        <span class="course-badge course-badge--gm">Present</span>
+                    </div>
+                    <p class="course-card-venue">Associate Researcher</p>
+                    <p class="course-card-desc">Interdisciplinary projects in biomedical data science, explainable AI,
+                        and medical imaging.</p>
+                    <ul class="course-card-topics">
+                        <li>Explainable AI</li>
+                        <li>Medical Imaging</li>
+                        <li>Biomedical Data Science</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Hanoi, Vietnam</span>
+                        <span class="course-lecture-count">08/2025 – Present</span>
+                    </div>
+                </article>
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Digital Biology Lab</h3>
+                        <span class="course-badge course-badge--gm">Present</span>
+                    </div>
+                    <p class="course-card-venue">Associate Researcher</p>
+                    <p class="course-card-desc">AI models for post-translational modifications and phosphorylation site
+                        prediction; integrated bioinformatics pipelines into broader biomedical AI workflows.</p>
+                    <ul class="course-card-topics">
+                        <li>Bioinformatics</li>
+                        <li>Deep Learning</li>
+                        <li>Phosphorylation Prediction</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Remote · Amsterdam, NL</span>
+                        <span class="course-lecture-count">06/2024 – Present</span>
+                    </div>
+                </article>
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">VNU-UET</h3>
+                        <span class="course-badge course-badge--gm">Present</span>
+                    </div>
+                    <p class="course-card-venue">Lecturer and Researcher</p>
+                    <p class="course-card-desc"><strong>Courses taught:</strong> Introduction to Programming,
+                        Applications of AI, Programming Methodology, Machine Learning.</p>
+                    <ul class="course-card-topics">
+                        <li>Machine Learning</li>
+                        <li>Transformers</li>
+                        <li>Medical Image Segmentation</li>
+                        <li>Vision-Language Models</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Hanoi, Vietnam</span>
+                        <span class="course-lecture-count">06/2024 – Present</span>
+                    </div>
+                </article>
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Tinhvan Software</h3>
+                        <span class="course-badge course-badge--past">Past</span>
+                    </div>
+                    <p class="course-card-venue">AI Software Engineer</p>
+                    <p class="course-card-desc">Researched and improved Retrieval-Augmented Generation (RAG) systems for
+                        enterprise clients.</p>
+                    <ul class="course-card-topics">
+                        <li>RAG</li>
+                        <li>LLMs</li>
+                        <li>NLP</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Hanoi, Vietnam</span>
+                        <span class="course-lecture-count">09/2023 – 05/2024</span>
+                    </div>
+                </article>
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Nelnet</h3>
+                        <span class="course-badge course-badge--past">Past</span>
+                    </div>
+                    <p class="course-card-venue">Associate Software Engineer</p>
+                    <p class="course-card-desc">Improved UI/UX and centralized data pipelines for healthcare-related
+                        call-centre operations.</p>
+                    <ul class="course-card-topics">
+                        <li>UI/UX</li>
+                        <li>Data Pipelines</li>
+                        <li>Healthcare</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Lincoln, Nebraska, USA</span>
+                        <span class="course-lecture-count">09/2022 – 03/2023</span>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!--  SLIDES                                      -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="slides" class="section--teach">
+            <h2 class="section-title">🖥️ Slides</h2>
+
+            <div class="course-grid">
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">📊</span>
+                        <span class="course-badge course-badge--gm">Available</span>
+                    </div>
+                    <h3 class="course-card-title">Introduction &amp; Research</h3>
+                    <p class="course-card-desc">Self-introduction, my four research lines, and notes on the F3DB
+                        Physical AI project at VinUniversity.</p>
+                    <ul class="course-card-topics">
+                        <li>About me</li>
+                        <li>Research</li>
+                        <li>Project</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">1 slide deck</span>
+                        <a class="course-link" href="slides/introduction.html">
+                            Open <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">🧠</span>
+                        <span class="course-badge course-badge--planned">Planned</span>
+                    </div>
+                    <h3 class="course-card-title">More decks</h3>
+                    <p class="course-card-desc">Teaching and seminar slides coming here.</p>
+                    <ul class="course-card-topics">
+                        <li>Coming soon</li>
+                    </ul>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Coming soon</span>
+                        <a class="course-link course-link--disabled" href="#" aria-disabled="true">
+                            Open <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!--  AWARDS & LANGUAGES                          -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="awards" class="section--research">
+            <h2 class="section-title">🏆 Awards &amp; Languages</h2>
+
+            <div class="course-grid">
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">🏆</span>
+                        <span class="course-badge course-badge--gm">Honors</span>
+                    </div>
+                    <h3 class="course-card-title">Awards &amp; Honors</h3>
+                    <p class="course-card-note"><strong>UNL Global Laureate Scholarship</strong> (2019 – 2023) —
+                        $15,000 / year</p>
+                    <p class="course-card-note"><strong>UNL Dean's List</strong> — Fall 2019, Spring 2020, Fall 2022,
+                        Spring 2023</p>
+                    <ul class="course-card-topics">
+                        <li>Best Thesis Award — VNU-UET</li>
+                        <li>Best Paper Award — FJCAI 2026</li>
+                    </ul>
+                </article>
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-icon" aria-hidden="true">🌐</span>
+                        <span class="course-badge course-badge--gm">Fluent</span>
+                    </div>
+                    <h3 class="course-card-title">Languages</h3>
+                    <p class="course-card-note"><strong>🇻🇳 Vietnamese</strong> — Native</p>
+                    <p class="course-card-note"><strong>🇬🇧 English</strong> — Fluent</p>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!--  REFERENCES                                  -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="references" class="section--study">
+            <h2 class="section-title">👥 References</h2>
+
+            <div class="course-grid">
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Assoc. Prof. Ha Nguyen Viet</h3>
+                    </div>
+                    <p class="course-card-venue">Institute of Artificial Intelligence, VNU-UET</p>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Reference</span>
+                        <a class="course-link" href="mailto:hanv@vnu.edu.vn">
+                            Email <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Assoc. Prof. Toi Chu Dinh</h3>
+                    </div>
+                    <p class="course-card-venue">Head, Interdisciplinary Research Group on Biomedicine and Health · Dean,
+                        Faculty of Applied Sciences, VNU International School</p>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Reference</span>
+                        <a class="course-link" href="mailto:toicd@vnuis.edu.vn">
+                            Email <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Dr. Thang Pham Viet</h3>
+                    </div>
+                    <p class="course-card-venue">Bioinformatics Researcher, ONGO Proteomics Laboratory, Amsterdam UMC
+                    </p>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Reference</span>
+                        <a class="course-link" href="mailto:t.pham@amsterdamumc.nl">
+                            Email <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="course-card">
+                    <div class="course-card-header">
+                        <h3 class="course-card-title">Prof. Trinh Chu Duc</h3>
+                    </div>
+                    <p class="course-card-venue">Rector, VNU University of Engineering and Technology</p>
+                    <div class="course-card-footer">
+                        <span class="course-lecture-count">Reference</span>
+                        <a class="course-link" href="mailto:trinhcd@vnu.edu.vn">
+                            Email <span aria-hidden="true">►</span>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ─── FOOTER ─── -->
+        <footer class="footer">
+            <p class="footer-author">
+                Built by <strong>Toan Nguyen Hai</strong> · Hosted on
+                <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>
+            </p>
+        </footer>
+    </main>
+
+    <script>
+        (function () {
+            var toggle = document.getElementById("theme-toggle");
+            toggle.addEventListener("click", function () {
+                var current = document.documentElement.getAttribute("data-theme");
+                var next = current === "dark" ? "light" : "dark";
+                document.documentElement.setAttribute("data-theme", next);
+                localStorage.setItem("theme", next);
+            });
+        })();
+    </script>
 </body>
+
 </html>

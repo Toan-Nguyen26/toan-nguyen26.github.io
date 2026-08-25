@@ -1,0 +1,215 @@
+/* ─── Palette (matches the portfolio site) ─── */
+:root {
+	--sl-purple: #6a3ba8;
+	--sl-teal: #0089a3;
+	--sl-orange: #c85a12;
+	--sl-ink: #22202a;
+	--sl-muted: #6b6675;
+	--sl-line: rgba(19, 15, 26, 0.12);
+	--sl-wash: #f6f4fa;
+}
+
+.reveal .controls .controls-arrow { color: var(--sl-purple); }
+.reveal .progress span { background: var(--sl-purple); }
+.reveal a { color: var(--sl-purple); }
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 { text-transform: none; letter-spacing: -0.01em; }
+
+.reveal h2 { color: var(--sl-ink); font-size: 1.45em; margin-bottom: 0.15em; }
+/* phụ đề dưới tiêu đề slide: nhỏ, nhẹ, không cạnh tranh với h2 */
+.reveal h3 {
+	color: var(--sl-muted);
+	font-size: 0.5em;
+	font-weight: 500;
+	line-height: 1.4;
+	letter-spacing: 0;
+	margin: 0 0 0.55em;
+}
+
+.reveal .accent-purple { color: var(--sl-purple); }
+.reveal .accent-teal { color: var(--sl-teal); }
+.reveal .accent-orange { color: var(--sl-orange); }
+
+/* ─── Title slide ─── */
+.reveal .slides section.title-slide { text-align: center; }
+.reveal .title-slide h1 { font-size: 2.1em; margin-bottom: 0.1em; }
+.reveal .title-slide .title-sub { color: var(--sl-muted); font-size: 0.8em; margin: 0.1em 0 0.6em; }
+.reveal .title-host {
+	display: inline-block;
+	padding: 0.5em 1.1em;
+	border-radius: 12px;
+	background: var(--sl-wash);
+	border-left: 5px solid var(--sl-purple);
+	font-size: 0.62em;
+	text-align: left;
+}
+.reveal .title-contact { font-size: 0.5em; color: var(--sl-muted); margin-top: 1em; }
+.reveal .title-contact a { text-decoration: none; }
+
+/* ─── Section divider ─── */
+.reveal .slides section.divider-slide { text-align: center; }
+.reveal .divider-kicker {
+	font-size: 0.55em;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: var(--sl-muted);
+	margin: 0;
+}
+.reveal .divider-slide h2 { font-size: 2em; margin: 0.15em 0 0.4em; }
+
+/* ─── Generic layout helpers ─── */
+.reveal .cols { display: flex; gap: 28px; align-items: flex-start; }
+.reveal .cols > * { flex: 1; min-width: 0; }
+.reveal .cols--tight { gap: 18px; }
+
+.reveal .card-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 14px;
+	font-size: 0.62em;
+}
+.reveal .card-grid--3 { grid-template-columns: repeat(3, 1fr); }
+
+.reveal .card {
+	background: #fff;
+	border: 1px solid var(--sl-line);
+	border-left: 5px solid var(--card-c, var(--sl-purple));
+	border-radius: 12px;
+	padding: 12px 16px;
+	box-shadow: 0 4px 14px rgba(19, 15, 26, 0.06);
+}
+.reveal .card h4 { margin: 0 0 4px; font-size: 1.05em; color: var(--card-c, var(--sl-purple)); }
+.reveal .card p { margin: 0; color: #555; font-size: 0.92em; line-height: 1.45; }
+.reveal .card .card-meta { color: var(--sl-muted); font-size: 0.82em; margin-top: 6px; }
+
+.reveal .c-purple { --card-c: var(--sl-purple); }
+.reveal .c-teal { --card-c: var(--sl-teal); }
+.reveal .c-orange { --card-c: var(--sl-orange); }
+
+/* ─── Timeline (education / work) ─── */
+.reveal .timeline { list-style: none; margin: 0; padding: 0; font-size: 0.52em; }
+.reveal .timeline li {
+	position: relative;
+	padding: 0 0 11px 26px;
+	border-left: 2px solid var(--sl-line);
+	margin: 0;
+}
+.reveal .timeline li:last-child { border-left-color: transparent; padding-bottom: 0; }
+.reveal .timeline li::before {
+	content: "";
+	position: absolute;
+	left: -8px;
+	top: 4px;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: var(--dot, var(--sl-purple));
+}
+.reveal .timeline .tl-when { color: var(--sl-muted); font-size: 0.85em; }
+.reveal .timeline .tl-what { font-weight: 700; color: var(--sl-ink); }
+.reveal .timeline .tl-where { color: var(--dot, var(--sl-purple)); font-weight: 600; }
+.reveal .timeline .tl-note { color: #555; }
+
+/* ─── Pills ─── */
+.reveal .pills { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 10px 0 0; list-style: none; font-size: 0.5em; }
+.reveal .pills li {
+	padding: 4px 12px;
+	border-radius: 999px;
+	background: var(--sl-wash);
+	color: #444;
+	font-weight: 600;
+}
+
+/* ─── Image slots ─── */
+.reveal .img-slot { margin: 0; text-align: center; }
+.reveal .img-slot img {
+	max-height: 320px;
+	width: auto;
+	max-width: 100%;
+	border-radius: 10px;
+	border: 1px solid var(--sl-line);
+	box-shadow: 0 8px 24px rgba(19, 15, 26, 0.1);
+	background: #fff;
+}
+.reveal .img-slot figcaption { font-size: 0.42em; color: var(--sl-muted); margin-top: 8px; }
+.reveal .img-slot.is-empty img { display: none; }
+.reveal .img-slot.is-empty::before {
+	content: "🖼  thêm ảnh  " attr(data-src);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 320px;
+	border: 3px dashed var(--sl-line);
+	border-radius: 12px;
+	background: var(--sl-wash);
+	color: var(--sl-muted);
+	font-size: 0.44em;
+	font-family: "Courier New", Courier, monospace;
+}
+.reveal .img-slot--tall img { max-height: 390px; }
+.reveal .img-slot--tall.is-empty::before { min-height: 390px; }
+.reveal .img-slot--half img { max-height: 200px; }
+.reveal .img-slot--half.is-empty::before { min-height: 200px; }
+
+/* ─── Portrait on the About slide ─── */
+.reveal .portrait {
+	width: 260px;
+	height: 260px;
+	object-fit: cover;
+	border-radius: 20px;
+	border: 1px solid var(--sl-line);
+	box-shadow: 0 10px 28px rgba(19, 15, 26, 0.14);
+}
+
+/* ─── Callouts ─── */
+.reveal .callout {
+	border-left: 5px solid var(--call-c, var(--sl-teal));
+	background: var(--call-bg, #e8f6f8);
+	border-radius: 10px;
+	padding: 10px 16px;
+	font-size: 0.55em;
+	margin-top: 10px;
+}
+.reveal .callout p { margin: 0; }
+.reveal .callout--wip { --call-c: var(--sl-orange); --call-bg: #fdf1e7; }
+.reveal .callout--draft { --call-c: #999; --call-bg: #f2f2f2; }
+
+.reveal .todo-tag {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 999px;
+	background: #ffe9c7;
+	color: #9a5b00;
+	font-size: 0.8em;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+}
+
+/* ─── Publication list ─── */
+.reveal .pub-list { list-style: none; margin: 0; padding: 0; font-size: 0.52em; }
+.reveal .pub-list li {
+	display: flex;
+	gap: 14px;
+	padding: 9px 0;
+	border-bottom: 1px solid var(--sl-line);
+}
+.reveal .pub-list li:last-child { border-bottom: none; }
+.reveal .pub-year {
+	flex: 0 0 66px;
+	font-weight: 800;
+	color: var(--sl-purple);
+}
+.reveal .pub-title { font-weight: 700; color: var(--sl-ink); display: block; line-height: 1.35; }
+.reveal .pub-meta { color: var(--sl-muted); font-size: 0.9em; }
+.reveal .pub-badge {
+	background: #fff3cd;
+	color: #9a5b00;
+	border-radius: 999px;
+	padding: 1px 8px;
+	font-size: 0.85em;
+	font-weight: 700;
+	white-space: nowrap;
+}
