@@ -149,8 +149,8 @@
 	font-size: 0.44em;
 	font-family: "Courier New", Courier, monospace;
 }
-.reveal .img-slot--tall img { max-height: 390px; }
-.reveal .img-slot--tall.is-empty::before { min-height: 390px; }
+.reveal .img-slot--tall img { max-height: 350px; }
+.reveal .img-slot--tall.is-empty::before { min-height: 350px; }
 .reveal .img-slot--half img { max-height: 200px; }
 .reveal .img-slot--half.is-empty::before { min-height: 200px; }
 
