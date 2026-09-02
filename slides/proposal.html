@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <title>Đề xuất hướng nghiên cứu — Bộ dữ liệu tổn thương đại tràng</title>
+    <link rel="stylesheet" href="revealjs/dist/reset.css" />
+    <link rel="stylesheet" href="revealjs/dist/reveal.css" />
+    <link rel="stylesheet" href="revealjs/dist/theme/white.css" />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <link rel="stylesheet" href="slide-style.css" />
+    <link rel="stylesheet" href="intro-style.css" />
+
+    <style>
+        /* Bổ sung cho bài này — bảng dữ liệu và sơ đồ SVG */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.5em;
+            margin-top: 10px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 9px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, .1);
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--sl-muted, #667);
+            font-size: .92em;
+            letter-spacing: .02em;
+            text-transform: uppercase;
+        }
+
+        .data-table td.no {
+            color: #c0392b;
+            font-weight: 700;
+        }
+
+        .data-table td.partial {
+            color: var(--sl-orange, #d98324);
+            font-weight: 600;
+        }
+
+        .data-table tr.highlight td {
+            background: rgba(217, 131, 36, .08);
+        }
+
+        .svg-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 14px 0 6px;
+        }
+
+        .svg-wrap svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .mini-note {
+            font-size: 0.42em;
+            color: var(--sl-muted, #778);
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        .stat-row {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            margin: 18px 0 6px;
+        }
+
+        .stat {
+            flex: 1;
+            text-align: center;
+            padding: 14px 10px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, .035);
+        }
+
+        .stat .num {
+            display: block;
+            font-size: 1.5em;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .stat .lbl {
+            display: block;
+            font-size: 0.42em;
+            color: var(--sl-muted, #778);
+            margin-top: 6px;
+        }
+
+        .big-claim {
+            font-size: 0.86em;
+            line-height: 1.45;
+            font-weight: 600;
+            text-align: center;
+            max-width: 90%;
+            margin: 30px auto 22px;
+        }
+
+        .big-claim em {
+            font-style: normal;
+            color: var(--sl-orange, #d98324);
+        }
+
+        /* Ô nhấn cho câu chốt ở slide câu hỏi */
+        .ask-box {
+            margin-top: 20px;
+            padding: 18px 22px;
+            border-radius: 12px;
+            border-left: 5px solid var(--sl-orange, #d98324);
+            background: rgba(217, 131, 36, .09);
+            font-size: 0.55em;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  TRANG BÌA                                   -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section class="title-slide">
+                <h1>Đề xuất hướng nghiên cứu</h1>
+                <p class="title-sub">Bộ dữ liệu tổn thương đại tràng có ground truth 3D<br>
+                    cho in sinh học tại chỗ</p>
+                <p class="title-host">
+                    <strong>Nguyễn Hải Toàn</strong><br>
+                    <span class="text-light">Kính gửi: TS. Mai Thanh Thái &amp; PGS.TS. Hoàng Văn Xiêm</span>
+                </p>
+                <p class="title-contact">
+                    <a href="mailto:nguyenhaitoan@vnu.edu.vn">nguyenhaitoan@vnu.edu.vn</a>
+                </p>
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  PHẦN 1 · TUẦN VỪA RỒI                       -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 1</p>
+                    <h2>Tuần vừa rồi</h2>
+                </section>
+
+                <section>
+                    <h2>Những việc em đã làm</h2>
+                    <div style="font-size: 0.55em;">
+                        <ul>
+                            <li><strong>Đọc kỹ tài liệu nền của đề tài.</strong> Bài review của nhóm
+                                <em>(Advanced Science, 2026)</em> và bài F3DB <em>(Advanced Science, 2023)</em> —
+                                để hiểu bốn giai đoạn theo đường tiếp cận, sáu trụ cột công nghệ, và vì sao
+                                robot mềm đánh đổi độ chính xác lấy độ an toàn.</li>
+
+                            <li><strong>Đọc phần trình bày của anh Mạnh và anh Bảo.</strong>
+                                Hướng SLAM đơn camera với biểu diễn 3D Gaussian Splatting kèm mô hình ánh sáng vật lý;
+                                và khảo sát tài liệu về nội soi mềm, cảm biến, tối ưu hoá cấu trúc.</li>
+
+                            <li><strong>Rà soát toàn bộ dữ liệu công khai hiện có.</strong>
+                                C3VD, C3VDv2, C3VD-DEFCOL, EndoMapper, Kvasir-SEG, CVC-ClinicDB —
+                                đối chiếu quy mô, loại ground truth, và nội dung bệnh lý.</li>
+
+                            <li><strong>Xác định một hướng có thể bắt đầu ngay.</strong>
+                                Không phụ thuộc vào tiến độ chế tạo thiết bị, và không trùng với phần việc
+                                của Mạnh hay Bảo.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- <section>
+                    <h2>Một vài điểm có thể hỗ trợ nhóm</h2>
+
+                    <div class="card-grid" style="font-size: 0.46em; margin-top: 10px;">
+                        <div class="card c-purple">
+                            <h4>Gửi anh Mạnh</h4>
+                            <p><strong>C3VDv2 có sẵn diffuse map</strong> làm ground truth — chính là albedo mà
+                                nhánh PBR đang xuất ra nhưng hiện chưa có gì để đối chiếu.</p>
+                            <p><strong>C3VD-DEFCOL</strong> là benchmark biến dạng có ground truth theo milimét,
+                                nhưng nhóm tác giả mới chỉ chạy COLMAP. <em>Chưa có phương pháp Gaussian Splatting
+                                    SLAM nào được chạy trên đó.</em></p>
+                        </div>
+
+                        <div class="card c-teal">
+                            <h4>Gửi anh Bảo</h4>
+                            <p>Vật liệu mềm đổi hướng bằng cách bơm/hút chất lỏng chính là
+                                <strong>Self-Sensing Hydraulic Muscle</strong> của thầy Thái
+                                <em>(Adv. Intelligent Systems, 2026)</em> — cơ cấu chấp hành đồng thời là cảm biến.</p>
+                            <p>Phần khảo sát có thể sắp lại theo <strong>ba giới hạn của F3DB</strong>:
+                                góc uốn, chưa tích hợp cảm biến, điều khiển vòng hở.</p>
+                        </div>
+
+                        <div class="card c-orange">
+                            <h4>Phần em có thể nhận</h4>
+                            <p>Nếu cần, em có thể tham gia phần <strong>mô hình sinh</strong> — đây là hướng
+                                em đã công bố (diffusion trong không gian tiềm ẩn, flow matching).</p>
+                        </div>
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.52em;">Đây là phần <strong>hỗ trợ</strong>. Hướng nghiên cứu chính
+                            em xin trình bày ở phần sau.</p>
+                    </div>
+                </section> -->
+
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  PHẦN 2 · ĐỀ XUẤT                            -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 2</p>
+                    <h2>Đề xuất</h2>
+                    <p class="text-light" style="font-size: 0.6em;">Bộ dữ liệu tổn thương đại tràng
+                        có ground truth 3D</p>
+                </section>
+
+                <!-- 2.1 — Luận điểm -->
+                <section>
+                    <h2>Luận điểm</h2>
+
+                    <p class="big-claim">
+                        Không thể in vào một tổn thương mà hệ thống <em>không nhìn thấy được</em>.
+                        Hiện chưa có bộ dữ liệu nào dạy máy nhìn thấy nó trong không gian 3D.
+                    </p>
+
+                    <div style="font-size: 0.5em; max-width: 88%; margin: 0 auto;">
+                        <p>Quy trình lâm sàng của F3DB là: phát hiện khối u &rarr; cắt bỏ bằng ESD &rarr;
+                            để lại hố tổn thương &rarr; in sinh học vào hố đó.</p>
+                        <p>Bước <strong>đo hình học của hố</strong> là đầu vào bắt buộc của bộ điều khiển in.
+                            Hiện tại quỹ đạo in vẫn đang được <strong>định trước bằng tay</strong>,
+                            chưa sinh ra từ hình học quan sát được — và cũng chưa có dữ liệu nào
+                            để phát triển bước này.</p>
+                    </div>
+                </section>
+
+                <!-- 2.2 — Bảng dữ liệu -->
+                <section>
+                    <h2>Toàn bộ dữ liệu hiện có đều là đại tràng khỏe mạnh</h2>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Bộ dữ liệu</th>
+                                <th>Quy mô</th>
+                                <th>Ground truth 3D</th>
+                                <th>Bệnh lý / tổn thương</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>C3VD</strong></td>
+                                <td>22 video + 4 screening · 10.015 frames</td>
+                                <td>depth, normal, pose, mesh, coverage</td>
+                                <td class="no">Không có</td>
+                            </tr>
+                            <tr>
+                                <td><strong>C3VDv2</strong></td>
+                                <td>192 video · 169.371 frames · 60 phantom</td>
+                                <td>đầy đủ + <strong>diffuse map</strong></td>
+                                <td class="no">Không có</td>
+                            </tr>
+                            <tr>
+                                <td><strong>C3VD-DEFCOL</strong></td>
+                                <td>110 video tổng hợp · 9.240 frames</td>
+                                <td>đầy đủ, có biến dạng theo thời gian</td>
+                                <td class="no">Không có</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kvasir-SEG · CVC-ClinicDB</strong></td>
+                                <td>ảnh nội soi thật, có nhãn chuyên gia</td>
+                                <td class="partial">chỉ mask 2D — không depth, không mesh, không pose</td>
+                                <td class="partial">chỉ có polyp</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td><strong>Cần cho in sinh học</strong></td>
+                                <td>—</td>
+                                <td>đầy đủ</td>
+                                <td><strong>hố sau cắt, loét, thủng, khối u</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout">
+                        <p style="font-size: 0.5em;">C3VDv2 đã cố tình mô phỏng <strong>phân, dịch nhầy, máu,
+                                bụi bám ống kính, chuyển động nhanh</strong> — nhưng chưa từng mô phỏng
+                            một tổn thương nào của niêm mạc. Họ mô phỏng môi trường bẩn, nhưng không mô phỏng bệnh.</p>
+                    </div>
+                </section>
+
+                <!-- 2.3 — Ba loại mục tiêu -->
+                <section>
+                    <h2>Ba loại mục tiêu — cần phân biệt rõ</h2>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.44em; margin-top: 12px;">
+                        <div class="card c-muted" style="opacity: .85;">
+                            <h4>1 · Polyp, khối u</h4>
+                            <p><strong>Nhô ra ngoài.</strong> Mục tiêu là <em>cắt bỏ</em>.</p>
+                            <p><strong>Dữ liệu:</strong> có nhiều (Kvasir-SEG, CVC-ClinicDB), nhưng chỉ 2D.</p>
+                            <p><strong>Lĩnh vực:</strong> rất đông người làm, đã nghiên cứu hơn 10 năm.</p>
+                        </div>
+
+                        <div class="card c-teal">
+                            <h4>2 · Tổn thương có sẵn</h4>
+                            <p><strong>Lõm vào trong.</strong> Loét (Crohn, viêm loét đại tràng), thủng, rò,
+                                trợt niêm mạc. Mục tiêu là <em>vá lại</em>.</p>
+                            <p><strong>Dữ liệu 3D:</strong> gần như không có.</p>
+                        </div>
+
+                        <div class="card c-orange">
+                            <h4>3 · Hố sau cắt ESD</h4>
+                            <p><strong>Lõm vào trong.</strong> Do chính robot tạo ra, rồi chính robot lấp lại.</p>
+                            <p><strong>Dữ liệu 3D:</strong> hoàn toàn không có.</p>
+                            <p>Đúng thứ F3DB được thiết kế để in lên — <em>"ESD and in situ 3D bioprinting"</em>.</p>
+                        </div>
+                    </div>
+
+                    <!-- <div class="callout">
+                        <p style="font-size: 0.5em;">Loại 2 và 3 là <strong>mục tiêu in</strong>.
+                            Loại 1 là mục tiêu <strong>phát hiện</strong>.
+                            Hai loại đầu tiên không có dữ liệu; loại cuối thì có rất nhiều.</p>
+                    </div> -->
+                </section>
+
+                <!-- 2.4 — Pipeline -->
+                <section>
+                    <h2>Cách thực hiện — hai giai đoạn</h2>
+
+                    <div class="svg-wrap">
+                        <svg viewBox="0 0 1000 250" width="1000" role="img"
+                            aria-label="Sơ đồ pipeline hai giai đoạn">
+                            <defs>
+                                <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3.2"
+                                    orient="auto">
+                                    <path d="M0,0 L7,3.2 L0,6.4 z" fill="#8a8f98" />
+                                </marker>
+                            </defs>
+
+                            <!-- Giai đoạn A -->
+                            <rect x="8" y="16" width="470" height="218" rx="12" fill="#7c5cbf" opacity=".07" />
+                            <text x="24" y="42" font-size="16" font-weight="700" fill="#7c5cbf">
+                                GIAI ĐOẠN A — HÌNH HỌC (chính xác tuyệt đối)</text>
+
+                            <rect x="26" y="60" width="126" height="56" rx="8" fill="#fff" stroke="#7c5cbf"
+                                stroke-width="1.6" />
+                            <text x="89" y="83" font-size="14" text-anchor="middle" fill="#222">Mesh đại tràng</text>
+                            <text x="89" y="101" font-size="12" text-anchor="middle" fill="#777">C3VD / C3VDv2</text>
+
+                            <line x1="156" y1="88" x2="184" y2="88" stroke="#8a8f98" stroke-width="1.6"
+                                marker-end="url(#ar)" />
+
+                            <rect x="188" y="60" width="126" height="56" rx="8" fill="#fff" stroke="#7c5cbf"
+                                stroke-width="1.6" />
+                            <text x="251" y="83" font-size="14" text-anchor="middle" fill="#222">Tạo tổn thương</text>
+                            <text x="251" y="101" font-size="12" text-anchor="middle" fill="#777">biến đổi lưới 3D</text>
+
+                            <line x1="318" y1="88" x2="346" y2="88" stroke="#8a8f98" stroke-width="1.6"
+                                marker-end="url(#ar)" />
+
+                            <rect x="350" y="60" width="112" height="56" rx="8" fill="#fff" stroke="#7c5cbf"
+                                stroke-width="1.6" />
+                            <text x="406" y="83" font-size="14" text-anchor="middle" fill="#222">Render</text>
+                            <text x="406" y="101" font-size="11" text-anchor="middle" fill="#777">camera fisheye</text>
+
+                            <rect x="26" y="136" width="436" height="76" rx="8" fill="#fff" stroke="#cfd3da" />
+                            <text x="244" y="160" font-size="13" text-anchor="middle" font-weight="600" fill="#444">
+                                Ground truth sinh ra tự động</text>
+                            <text x="244" y="182" font-size="12.5" text-anchor="middle" fill="#666">
+                                depth · surface normal · optical flow · occlusion mask</text>
+                            <text x="244" y="200" font-size="12.5" text-anchor="middle" fill="#666">
+                                camera pose · mesh theo từng frame</text>
+
+                            <!-- mũi tên nối -->
+                            <line x1="482" y1="125" x2="518" y2="125" stroke="#8a8f98" stroke-width="2"
+                                marker-end="url(#ar)" />
+
+                            <!-- Giai đoạn B -->
+                            <rect x="522" y="16" width="470" height="218" rx="12" fill="#d98324" opacity=".08" />
+                            <text x="538" y="42" font-size="16" font-weight="700" fill="#c2731d">
+                                GIAI ĐOẠN B — NGOẠI HÌNH (làm ảnh trông thật)</text>
+
+                            <rect x="540" y="60" width="180" height="56" rx="8" fill="#fff" stroke="#d98324"
+                                stroke-width="1.6" />
+                            <text x="630" y="83" font-size="13.5" text-anchor="middle" fill="#222">Mô hình diffusion</text>
+                            <text x="630" y="101" font-size="11.5" text-anchor="middle" fill="#777">LoRA có điều kiện depth</text>
+
+                            <line x1="724" y1="88" x2="752" y2="88" stroke="#8a8f98" stroke-width="1.6"
+                                marker-end="url(#ar)" />
+
+                            <rect x="756" y="60" width="216" height="56" rx="8" fill="#fff" stroke="#d98324"
+                                stroke-width="1.6" />
+                            <text x="864" y="83" font-size="13.5" text-anchor="middle" fill="#222">Ảnh nội soi trông thật</text>
+                            <text x="864" y="101" font-size="11.5" text-anchor="middle" fill="#777">hình học giữ nguyên</text>
+
+                            <rect x="540" y="136" width="432" height="76" rx="8" fill="#fff" stroke="#cfd3da" />
+                            <text x="756" y="160" font-size="13" text-anchor="middle" font-weight="600" fill="#444">
+                                Phân công điều khiển</text>
+                            <text x="756" y="182" font-size="12.5" text-anchor="middle" fill="#666">
+                                <tspan font-weight="600">depth tổng hợp</tspan> điều khiển hình dạng
+                            </text>
+                            <text x="756" y="200" font-size="12.5" text-anchor="middle" fill="#666">
+                                <tspan font-weight="600">một frame thật</tspan> làm neo màu sắc &amp; ánh sáng
+                            </text>
+                        </svg>
+                    </div>
+
+                    <!-- <p class="mini-note">Đi theo đúng công thức đã kiểm chứng của C3VD-DEFCOL [4] —
+                        chỉ thay bước &ldquo;áp dụng biến dạng nhu động&rdquo; bằng &ldquo;tạo tổn thương&rdquo;.
+                        Chi phí huấn luyện nhỏ: LoRA rank 32, backbone đóng băng.</p>
+
+                    <div class="callout" style="margin-top: 10px;">
+                        <p style="font-size: 0.47em;"><strong>Cùng một thao tác trên lưới, chỉ khác dấu:</strong>
+                            polyp = đẩy đỉnh <em>ra ngoài</em> ·
+                            hố = đẩy đỉnh <em>vào trong</em> ·
+                            trợt/xước = rãnh nông ·
+                            loét = vùng lõm rộng, bờ không đều.
+                            Một pipeline sinh ra được cả bốn.</p>
+                    </div> -->
+                </section>
+
+                <!-- 2.5 — Kiểm chứng thực tế -->
+                <section>
+                    <h2>Làm sao biết tổn thương mô phỏng là đúng thực tế</h2>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.44em; margin-top: 12px;">
+                        <div class="card c-purple">
+                            <h4>1 · Chuyên gia lâm sàng thẩm định</h4>
+                            <p>Đề tài đã có <strong>TS. Trần Thị Du Chi</strong> (dịch tễ ung thư đại trực tràng)
+                                và <strong>GS. Huỳnh Đình Chiến</strong> (AI trong giải phẫu bệnh số).</p>
+                            <p>Đề xuất một <strong>reader study nhỏ</strong>: cho bác sĩ xem lẫn lộn ảnh thật
+                                và ảnh sinh, hỏi (i) có phân biệt được không, (ii) tổn thương có hợp lý
+                                về mặt giải phẫu không.</p>
+                        </div>
+
+                        <div class="card c-teal">
+                            <h4>2 · Ảnh thật từ bệnh viện</h4>
+                            <p>Nhiều khả năng chỉ có <strong>ảnh 2D</strong>, không có mô hình 3D.</p>
+                            <p>Nhưng ảnh 2D có chú thích của bác sĩ vẫn đủ để làm <strong>neo ngoại hình</strong>
+                                cho mô hình sinh, và để đánh giá độ giống thật.</p>
+                        </div>
+
+                        <div class="card c-orange">
+                            <h4>3 · Đúc phantom vật lý</h4>
+                            <p>C3VD <strong>công bố file khuôn</strong> của các phantom silicone.</p>
+                            <p>Có thể đúc lại đúng hình học đó, khắc hố thật, quay bằng camera nội soi.
+                                Khi đó dữ liệu số và dữ liệu vật lý <strong>dùng chung một hình học</strong> —
+                                cho phép đo trực tiếp khoảng cách sim-to-real thay vì phỏng đoán.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.6 — Ba câu hỏi kiểm chứng -->
+                <section>
+                    <h2>Kiểm chứng — ba câu hỏi khác nhau</h2>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.44em; margin-top: 14px;">
+                        <div class="card c-purple">
+                            <h4>1 · Dữ liệu có tốt không?</h4>
+                            <p><strong>Ảnh trông có thật không?</strong><br>
+                                So phân bố ảnh mình sinh ra với video nội soi thật — FID, KID, FVD.</p>
+                            <p><strong>Ảnh có làm xê dịch hình học không?</strong><br>
+                                Nếp gấp haustral là gờ <em>hình dạng</em>, nên xuất hiện ở cả hai nơi:
+                                trong depth mình đưa vào, và trong ảnh mô hình vẽ ra.
+                                Lấy đường gờ ở hai bên rồi xem có nằm cùng chỗ không.</p>
+                            <p class="text-light">Không huấn luyện mô hình nào — chỉ so hai tấm ảnh.
+                                C3VD-DEFCOL đạt Dice 0.97 ở phép này.</p>
+                        </div>
+
+                        <div class="card c-teal">
+                            <h4>2 · Có dùng được với dữ liệu thật không?</h4>
+                            <p>Đây là câu khó nhất, vì <strong>không có hố tổn thương thật nào có ground truth 3D</strong>
+                                để đối chiếu.</p>
+                            <p class="text-light">Cách giải quyết ở slide sau.</p>
+                        </div>
+
+                        <div class="card c-orange">
+                            <h4>3 · Có làm lộ điểm yếu của phương pháp hiện có không?</h4>
+                            <p>Giá trị benchmark: đo sai số hình học của các phương pháp tái tạo 3D
+                                trên vùng lõm, thiếu sáng, tự che khuất.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.7 — Polyp là nhóm đối chứng -->
+                <section>
+                    <h2>Polyp là nhóm đối chứng</h2>
+
+                    <div class="svg-wrap">
+                        <svg viewBox="0 0 1000 190" width="1000" role="img"
+                            aria-label="Sơ đồ thí nghiệm đối chứng bằng polyp">
+                            <defs>
+                                <marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+                                    <path d="M0,0 L7,3.2 L0,6.4 z" fill="#8a8f98" />
+                                </marker>
+                            </defs>
+
+                            <rect x="10" y="42" width="176" height="66" rx="9" fill="#fff" stroke="#3d9aa1"
+                                stroke-width="1.8" />
+                            <text x="98" y="70" font-size="14" text-anchor="middle" fill="#222">Sinh polyp tổng hợp</text>
+                            <text x="98" y="90" font-size="12" text-anchor="middle" fill="#777">bằng pipeline của mình</text>
+
+                            <line x1="190" y1="75" x2="222" y2="75" stroke="#8a8f98" stroke-width="1.8"
+                                marker-end="url(#ar2)" />
+
+                            <rect x="226" y="42" width="150" height="66" rx="9" fill="#fff" stroke="#3d9aa1"
+                                stroke-width="1.8" />
+                            <text x="301" y="79" font-size="14" text-anchor="middle" fill="#222">Huấn luyện mô hình</text>
+
+                            <line x1="380" y1="75" x2="412" y2="75" stroke="#8a8f98" stroke-width="1.8"
+                                marker-end="url(#ar2)" />
+
+                            <rect x="416" y="42" width="196" height="66" rx="9" fill="#fff8ec" stroke="#d98324"
+                                stroke-width="2.2" />
+                            <text x="514" y="70" font-size="14" text-anchor="middle" font-weight="700" fill="#222">
+                                Kiểm tra trên polyp THẬT</text>
+                            <text x="514" y="90" font-size="11.5" text-anchor="middle" fill="#777">
+                                Kvasir-SEG · CVC-ClinicDB</text>
+
+                            <line x1="616" y1="75" x2="648" y2="75" stroke="#8a8f98" stroke-width="1.8"
+                                marker-end="url(#ar2)" />
+
+                            <rect x="652" y="42" width="150" height="66" rx="9" fill="#fff" stroke="#8a8f98"
+                                stroke-width="1.6" />
+                            <text x="727" y="70" font-size="13.5" text-anchor="middle" fill="#222">Chuyển giao tốt?</text>
+                            <text x="727" y="90" font-size="11.5" text-anchor="middle" fill="#777">có nhãn để đối chiếu</text>
+
+                            <line x1="806" y1="75" x2="838" y2="75" stroke="#8a8f98" stroke-width="1.8"
+                                marker-end="url(#ar2)" />
+
+                            <rect x="842" y="30" width="150" height="90" rx="9" fill="#f3efff" stroke="#7c5cbf"
+                                stroke-width="2.2" />
+                            <text x="917" y="60" font-size="13.5" text-anchor="middle" font-weight="700" fill="#5b3fa0">
+                                Bằng chứng</text>
+                            <text x="917" y="82" font-size="12" text-anchor="middle" fill="#5b3fa0">
+                                dữ liệu HỐ tổng hợp</text>
+                            <text x="917" y="100" font-size="12" text-anchor="middle" fill="#5b3fa0">
+                                cũng đáng tin</text>
+
+                            <text x="500" y="160" font-size="13" text-anchor="middle" fill="#666" font-style="italic">
+                                Polyp có dữ liệu thật để kiểm chứng — hố thì không. Nên polyp gánh vai trò
+                                chứng minh pipeline sinh ra được thứ hành xử như bệnh lý thật.</text>
+                        </svg>
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.5em;"><strong>Polyp không phải đóng góp chính — polyp là nhóm đối chứng.</strong>
+                            Không có bước này, &ldquo;hãy tin bộ dữ liệu hố của em&rdquo; chỉ là một lời khẳng định,
+                            không phải một kết quả đo được.</p>
+                    </div>
+                </section>
+
+                <!-- 2.8 — Đo bằng milimét -->
+                <!-- <section>
+                    <h2>Đo sai số hình học bằng milimét</h2>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Chỉ số</th>
+                                <th>Đo cái gì</th>
+                                <th>Vì sao cần</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Depth RMSE / AbsRel</strong></td>
+                                <td>sai số độ sâu theo từng điểm ảnh</td>
+                                <td>sai số điển hình của bề mặt</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chamfer distance</strong></td>
+                                <td>khoảng cách trung bình giữa mặt tái tạo và mặt thật</td>
+                                <td>một con số cho toàn bộ bề mặt</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td><strong>Hausdorff distance</strong></td>
+                                <td><strong>khoảng cách tệ nhất</strong>, không phải trung bình</td>
+                                <td><strong>con số quyết định về an toàn</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>ATE</strong></td>
+                                <td>độ trôi của quỹ đạo camera</td>
+                                <td>chất lượng định vị</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout">
+                        <p style="font-size: 0.5em;">Sai số trung bình 1&nbsp;mm nghe có vẻ ổn — nhưng nếu có
+                            một vùng nhỏ lệch 8&nbsp;mm mà mọi chỗ khác hoàn hảo, con số trung bình vẫn là 1&nbsp;mm,
+                            <strong>và đầu in vẫn đâm xuyên thành ruột</strong>.
+                            Với thao tác chạm vào mô người, <strong>sai số tệ nhất mới là con số cần báo cáo</strong>.</p>
+                    </div>
+                </section> -->
+
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  PHẦN 3 · CÂU HỎI                            -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 3</p>
+                    <h2>Câu hỏi</h2>
+                </section>
+
+                <!-- 3.1 — Hướng đi chung -->
+                <section>
+                    <h2>Hướng đi chung</h2>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.46em; margin-top: 16px;">
+                        <div class="card c-purple">
+                            <h4>Bước 1 · Nền tảng hình học</h4>
+                            <p>Dựng pipeline tạo tổn thương trên mesh và render qua camera đã hiệu chuẩn.</p>
+                            <p>Báo cáo <strong>sai số hình học theo milimét</strong> — con số hiện chưa có.</p>
+                        </div>
+
+                        <div class="card c-teal">
+                            <h4>Bước 2 · Ngoại hình</h4>
+                            <p>Mô hình sinh có điều kiện depth để ảnh trông thật.</p>
+                            <p>Kiểm chứng hình học được giữ nguyên.</p>
+                        </div>
+
+                        <div class="card c-orange">
+                            <h4>Bước 3 · Đối chứng &amp; công bố</h4>
+                            <p>Thí nghiệm đối chứng bằng polyp thật, thẩm định lâm sàng, công bố bộ dữ liệu
+                                và benchmark.</p>
+                        </div>
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.5em;"><strong>Sản phẩm hướng tới:</strong>
+                            bộ dữ liệu công bố kèm bài báo mô tả dữ liệu ·
+                            benchmark đo sai số hình học theo milimét ·
+                            đầu vào cho bước sinh quỹ đạo in tự động, hiện vẫn đang định trước bằng tay.</p>
+                    </div>
+                </section>
+
+                <!-- 3.2 — Câu hỏi -->
+                <section>
+                    <h2>Những điều em muốn hỏi thầy</h2>
+
+                    <div style="font-size: 0.55em;">
+                        <ul>
+                            <li><strong>Hướng này có nằm trong phạm vi đề tài không</strong>, hay em đang hiểu sai
+                                phạm vi ạ?</li>
+
+                            <li><strong>Cần chính xác đến mức nào?</strong> Với phương pháp lấp đầy tổn thương
+                                mà nhóm đang có, hình học bề mặt cần biết chính xác tới đâu để in được —
+                                milimét, hay phần mười milimét?
+                                <span class="text-light">Con số này sẽ là mục tiêu của toàn bộ hướng nghiên cứu.</span>
+                            </li>
+
+                            <!-- <li><strong>Vật liệu in có tự dàn theo hố không, hay cần đắp từng lớp?</strong>
+                                <span class="text-light">Hai trường hợp này yêu cầu độ chính xác rất khác nhau —
+                                    và quyết định bài toán khó tới đâu.</span>
+                            </li>
+
+                            <li><strong>Nhóm có kênh liên hệ lâm sàng nào</strong> để thẩm định ảnh tổn thương
+                                không ạ?</li> -->
+                        </ul>
+                    </div>
+
+                    <div class="ask-box">
+                        <strong>Các thầy thấy hướng này có ổn không ạ?</strong><br>
+                        Nếu thầy thấy được, em xin phép xây dựng một <strong>kế hoạch chi tiết đầy đủ</strong>
+                        — phạm vi, mốc thời gian, chỉ số đánh giá — để trình bày ở buổi sau.
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Tài liệu tham khảo</h2>
+                    <div style="font-size: 0.45em; text-align: left;">
+                        <p>[1] D. T. Vu, N. A. Phan, S. T. Ngo, M. T. Phan, T.-A. Truong, C. C. Nguyen, P. T. Phan,
+                            H.-P. Phan, T. N. Do, <strong>M. T. Thai</strong>.
+                            <em>Soft Robotics and Advanced Technologies for Minimally Invasive Bioprinting:
+                                The Future of Internal Organ Repair.</em>
+                            Advanced Science, 13(e23532), 2026. doi:10.1002/advs.202523532</p>
+
+                        <p>[2] <strong>M. T. Thai</strong> và cộng sự.
+                            <em>Advanced Soft Robotic System for In Situ 3D Bioprinting and Endoscopic Surgery.</em>
+                            Advanced Science, 2023. doi:10.1002/advs.202205656</p>
+
+                        <p>[3] T. L. Bobrow, M. Golhar, R. Vijayan, V. S. Akshintala, J. R. Garcia, N. J. Durr.
+                            <em>Colonoscopy 3D Video Dataset with Paired Depth from 2D-3D Registration.</em>
+                            Medical Image Analysis, 2023. arXiv:2206.08903 &middot; durrlab.github.io/C3VD</p>
+
+                        <p>[4] <em>C3VDv2 — Colonoscopy 3D Video Dataset with Enhanced Realism.</em>
+                            Scientific Data, 2026. durrlab.github.io/C3VDv2</p>
+
+                        <p>[5] <em>C3VD-DEFCOL: A Deformable Colonoscopy Dataset with Time-Resolved 3D Ground Truth
+                                and Realistic Appearance.</em> arXiv:2606.07891, 2026</p>
+
+                        <p>[6] <em>Generalizing Monocular Colonoscopy Image Depth Estimation by Uncertainty-based
+                                Global and Local Fusion Network.</em> arXiv:2409.15006, 2024</p>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- ─── KẾT ─── -->
+            <section class="title-slide">
+                <h1>Xin cảm ơn thầy</h1>
+                <p class="title-sub">Nguyễn Hải Toàn</p>
+                <p class="title-contact">
+                    <a href="mailto:nguyenhaitoan@vnu.edu.vn">nguyenhaitoan@vnu.edu.vn</a> ·
+                    <a href="https://toan-nguyen26.github.io">toan-nguyen26.github.io</a>
+                </p>
+            </section>
+
+            <div class="footer">
+                Nguyễn Hải Toàn · Đề xuất hướng nghiên cứu
+            </div>
+        </div>
+    </div>
+
+    <script src="revealjs/dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script>
+        document.querySelectorAll(".img-slot img").forEach(function (img) {
+            var mark = function () { img.closest(".img-slot").classList.add("is-empty"); };
+            if (img.complete && img.naturalWidth === 0) mark();
+            img.addEventListener("error", mark);
+        });
+
+        Reveal.initialize({
+            controlsLayout: "edges",
+            slideNumber: true,
+            hashOneBasedIndex: true,
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+    </script>
+</body>
+
+</html>
