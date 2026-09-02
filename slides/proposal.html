@@ -113,6 +113,140 @@
             color: var(--sl-orange, #d98324);
         }
 
+        /* ── Sơ đồ luồng: ba dải ngang ───────────────────────── */
+        .flow {
+            font-size: 0.33em;
+            line-height: 1.35;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .flow-panel {
+            border-radius: 10px;
+            padding: 9px 12px 11px;
+            margin-bottom: 9px;
+        }
+
+        .flow-panel.neutral {
+            background: rgba(0, 0, 0, .045);
+        }
+
+        .flow-panel.purple {
+            background: rgba(124, 92, 191, .08);
+        }
+
+        .flow-panel.orange {
+            background: rgba(217, 131, 36, .09);
+        }
+
+        .flow-label {
+            font-weight: 700;
+            letter-spacing: .03em;
+            font-size: .82em;
+            margin-bottom: 8px;
+        }
+
+        .flow-panel.neutral .flow-label {
+            color: #6b7078;
+        }
+
+        .flow-panel.purple .flow-label {
+            color: #7c5cbf;
+        }
+
+        .flow-panel.orange .flow-label {
+            color: #c2731d;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: stretch;
+            gap: 6px;
+        }
+
+        .flow-box {
+            flex: 1;
+            background: #fff;
+            border: 1.6px solid #cfd3da;
+            border-radius: 8px;
+            padding: 7px 9px;
+        }
+
+        .flow-box b {
+            display: block;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .flow-box span {
+            display: block;
+            font-size: .84em;
+            color: #7a7f88;
+            margin-top: 1px;
+        }
+
+        .flow-box.p {
+            border-color: #7c5cbf;
+        }
+
+        .flow-box.o {
+            border-color: #d98324;
+        }
+
+        .flow-box.warn {
+            border-color: #c0392b;
+            border-style: dashed;
+        }
+
+        .flow-box.warn b {
+            color: #c0392b;
+        }
+
+        /* phần mới so với C3VD-DEFCOL */
+        .flow-box.new {
+            border-color: #d98324;
+            border-width: 2.4px;
+            background: #fff8ec;
+        }
+
+        .flow-box.new b::after {
+            /* content: " MỚI"; */
+            font-size: .7em;
+            font-weight: 700;
+            color: #fff;
+            background: #d98324;
+            border-radius: 4px;
+            padding: 1px 5px;
+            margin-left: 5px;
+            vertical-align: 2px;
+        }
+
+        .flow-arrow {
+            align-self: center;
+            color: #9aa0a8;
+            font-size: 1.1em;
+            flex: 0 0 auto;
+        }
+
+        .flow-note {
+            background: #fff;
+            border: 1px solid #dfe3e8;
+            border-radius: 8px;
+            padding: 7px 10px;
+            margin-top: 7px;
+            text-align: center;
+            color: #5c626b;
+        }
+
+        .flow-note b {
+            color: #333;
+        }
+
+        .flow-note .hl {
+            color: #c2731d;
+            font-weight: 600;
+        }
+
         /* Ô nhấn cho câu chốt ở slide câu hỏi */
         .ask-box {
             margin-top: 20px;
@@ -336,100 +470,118 @@
                     </div> -->
                 </section>
 
-                <!-- 2.4 — Pipeline -->
+                <!-- 2.4a — C3VD-DEFCOL làm dữ liệu thế nào -->
                 <section>
-                    <h2>Cách thực hiện — hai giai đoạn</h2>
+                    <h2>C3VD-DEFCOL làm dữ liệu thế nào</h2>
 
-                    <div class="svg-wrap">
-                        <svg viewBox="0 0 1000 250" width="1000" role="img"
-                            aria-label="Sơ đồ pipeline hai giai đoạn">
-                            <defs>
-                                <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3.2"
-                                    orient="auto">
-                                    <path d="M0,0 L7,3.2 L0,6.4 z" fill="#8a8f98" />
-                                </marker>
-                            </defs>
+                    <div class="flow">
+                        <div class="flow-panel neutral">
+                            <div class="flow-label">BƯỚC 0 — CHUẨN BỊ MÔ HÌNH · làm một lần, ra trọng số</div>
+                            <div class="flow-row">
+                                <div class="flow-box"><b>EndoMapper</b><span>2.066 clip video bệnh nhân thật</span>
+                                </div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box warn"><b>ColonCrafter</b><span>ước lượng pseudo-depth · vì video
+                                        thật không có depth</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box"><b>LoRA GĐ1 → GĐ2</b><span>học ngoại hình → học nghe lời
+                                        depth</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box"><b>⚙ Trọng số</b><span>chưa sinh ảnh nào</span></div>
+                            </div>
+                        </div>
 
-                            <!-- Giai đoạn A -->
-                            <rect x="8" y="16" width="470" height="218" rx="12" fill="#7c5cbf" opacity=".07" />
-                            <text x="24" y="42" font-size="16" font-weight="700" fill="#7c5cbf">
-                                GIAI ĐOẠN A — HÌNH HỌC (chính xác tuyệt đối)</text>
+                        <div class="flow-panel purple">
+                            <div class="flow-label">BƯỚC 1 — RENDER · nơi ground truth sinh ra</div>
+                            <div class="flow-row">
+                                <div class="flow-box p"><b>Mesh C3VD / C3VDv2</b><span>tỉ lệ vật lý thật</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>Biến dạng nhu động</b><span>sóng co thắt · dịch trục trung
+                                        tâm</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>Render</b><span>camera fisheye đã hiệu chuẩn</span></div>
+                            </div>
+                            <div class="flow-note">
+                                <b>Ground truth</b> — depth · surface normal · optical flow · occlusion
+                                · camera pose · mesh từng frame · fold mask<br>
+                            </div>
+                        </div>
 
-                            <rect x="26" y="60" width="126" height="56" rx="8" fill="#fff" stroke="#7c5cbf"
-                                stroke-width="1.6" />
-                            <text x="89" y="83" font-size="14" text-anchor="middle" fill="#222">Mesh đại tràng</text>
-                            <text x="89" y="101" font-size="12" text-anchor="middle" fill="#777">C3VD / C3VDv2</text>
-
-                            <line x1="156" y1="88" x2="184" y2="88" stroke="#8a8f98" stroke-width="1.6"
-                                marker-end="url(#ar)" />
-
-                            <rect x="188" y="60" width="126" height="56" rx="8" fill="#fff" stroke="#7c5cbf"
-                                stroke-width="1.6" />
-                            <text x="251" y="83" font-size="14" text-anchor="middle" fill="#222">Tạo tổn thương</text>
-                            <text x="251" y="101" font-size="12" text-anchor="middle" fill="#777">biến đổi lưới 3D</text>
-
-                            <line x1="318" y1="88" x2="346" y2="88" stroke="#8a8f98" stroke-width="1.6"
-                                marker-end="url(#ar)" />
-
-                            <rect x="350" y="60" width="112" height="56" rx="8" fill="#fff" stroke="#7c5cbf"
-                                stroke-width="1.6" />
-                            <text x="406" y="83" font-size="14" text-anchor="middle" fill="#222">Render</text>
-                            <text x="406" y="101" font-size="11" text-anchor="middle" fill="#777">camera fisheye</text>
-
-                            <rect x="26" y="136" width="436" height="76" rx="8" fill="#fff" stroke="#cfd3da" />
-                            <text x="244" y="160" font-size="13" text-anchor="middle" font-weight="600" fill="#444">
-                                Ground truth sinh ra tự động</text>
-                            <text x="244" y="182" font-size="12.5" text-anchor="middle" fill="#666">
-                                depth · surface normal · optical flow · occlusion mask</text>
-                            <text x="244" y="200" font-size="12.5" text-anchor="middle" fill="#666">
-                                camera pose · mesh theo từng frame</text>
-
-                            <!-- mũi tên nối -->
-                            <line x1="482" y1="125" x2="518" y2="125" stroke="#8a8f98" stroke-width="2"
-                                marker-end="url(#ar)" />
-
-                            <!-- Giai đoạn B -->
-                            <rect x="522" y="16" width="470" height="218" rx="12" fill="#d98324" opacity=".08" />
-                            <text x="538" y="42" font-size="16" font-weight="700" fill="#c2731d">
-                                GIAI ĐOẠN B — NGOẠI HÌNH (làm ảnh trông thật)</text>
-
-                            <rect x="540" y="60" width="180" height="56" rx="8" fill="#fff" stroke="#d98324"
-                                stroke-width="1.6" />
-                            <text x="630" y="83" font-size="13.5" text-anchor="middle" fill="#222">Mô hình diffusion</text>
-                            <text x="630" y="101" font-size="11.5" text-anchor="middle" fill="#777">LoRA có điều kiện depth</text>
-
-                            <line x1="724" y1="88" x2="752" y2="88" stroke="#8a8f98" stroke-width="1.6"
-                                marker-end="url(#ar)" />
-
-                            <rect x="756" y="60" width="216" height="56" rx="8" fill="#fff" stroke="#d98324"
-                                stroke-width="1.6" />
-                            <text x="864" y="83" font-size="13.5" text-anchor="middle" fill="#222">Ảnh nội soi trông thật</text>
-                            <text x="864" y="101" font-size="11.5" text-anchor="middle" fill="#777">hình học giữ nguyên</text>
-
-                            <rect x="540" y="136" width="432" height="76" rx="8" fill="#fff" stroke="#cfd3da" />
-                            <text x="756" y="160" font-size="13" text-anchor="middle" font-weight="600" fill="#444">
-                                Phân công điều khiển</text>
-                            <text x="756" y="182" font-size="12.5" text-anchor="middle" fill="#666">
-                                <tspan font-weight="600">depth tổng hợp</tspan> điều khiển hình dạng
-                            </text>
-                            <text x="756" y="200" font-size="12.5" text-anchor="middle" fill="#666">
-                                <tspan font-weight="600">một frame thật</tspan> làm neo màu sắc &amp; ánh sáng
-                            </text>
-                        </svg>
+                        <div class="flow-panel orange">
+                            <div class="flow-label">BƯỚC 2 — SINH ẢNH · chỉ tạo điểm ảnh, không tạo ground truth</div>
+                            <div class="flow-row">
+                                <div class="flow-box o"><b>depth</b><span>điều khiển hình dạng</span></div>
+                                <div class="flow-box o"><b>1 frame nội soi thật</b><span>neo màu sắc &amp; ánh
+                                        sáng</span></div>
+                                <div class="flow-box o"><b>prompt</b><span>“real colonoscopy image”</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box o"><b>Video nội soi trông thật</b><span>hình học giữ
+                                        nguyên</span></div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- <p class="mini-note">Đi theo đúng công thức đã kiểm chứng của C3VD-DEFCOL [4] —
-                        chỉ thay bước &ldquo;áp dụng biến dạng nhu động&rdquo; bằng &ldquo;tạo tổn thương&rdquo;.
-                        Chi phí huấn luyện nhỏ: LoRA rank 32, backbone đóng băng.</p>
+                    <p class="mini-note">C3VD là phantom silicone — không có mạch máu dưới niêm mạc, không có tán xạ ánh sáng của mô sống.</p>
+                </section>
 
-                    <div class="callout" style="margin-top: 10px;">
-                        <p style="font-size: 0.47em;"><strong>Cùng một thao tác trên lưới, chỉ khác dấu:</strong>
-                            polyp = đẩy đỉnh <em>ra ngoài</em> ·
-                            hố = đẩy đỉnh <em>vào trong</em> ·
-                            trợt/xước = rãnh nông ·
-                            loét = vùng lõm rộng, bờ không đều.
-                            Một pipeline sinh ra được cả bốn.</p>
-                    </div> -->
+                <!-- 2.4b — Khung của chúng ta -->
+                <section>
+                    <h2>Khung của chúng ta</h2>
+
+                    <div class="flow">
+                        <div class="flow-panel neutral">
+                            <div class="flow-label">BƯỚC 0 — CHUẨN BỊ MÔ HÌNH · làm một lần, ra trọng số</div>
+                            <div class="flow-row">
+                                <div class="flow-box new"><b>C3VD/C3VDv2 + ảnh bệnh lý thật</b></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box new"><b>C3VD/C3VDv2 làm cặp huấn luyện</b><span>RGB thật + depth
+                                        chính xác — không cần ColonCrafter</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box new"><b>LoRA GĐ1 → GĐ2</b><span>học ngoại hình → nghe lời depth
+                                        <em>và mask</em></span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box"><b>⚙ Trọng số</b></div>
+                            </div>
+                        </div>
+
+                        <div class="flow-panel purple">
+                            <div class="flow-label">BƯỚC 1 — RENDER · nơi ground truth sinh ra</div>
+                            <div class="flow-row">
+                                <div class="flow-box p"><b>Mesh C3VD / C3VDv2</b><span>giữ nguyên tỉ lệ milimét
+                                        thật</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box new"><b>Khoét tổn thương</b><span>hố sau ESD · loét · polyp ·
+                                        trợt</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>Render — Blender</b><span>camera fisheye đã hiệu
+                                        chuẩn</span></div>
+                            </div>
+                            <div class="flow-note">
+                                <b>Ground truth</b> — depth · surface normal · optical flow · occlusion
+                                · camera pose · mesh từng frame · <span class="hl">mask tổn thương</span><br>
+                                <em>Mask lấy miễn phí từ Cryptomatte — vì chính mình khoét nên biết đỉnh nào là tổn
+                                    thương.</em>
+                            </div>
+                        </div>
+
+                        <div class="flow-panel orange">
+                            <div class="flow-label">BƯỚC 2 — SINH ẢNH · cái gì điều khiển cái gì</div>
+                            <div class="flow-row">
+                                <div class="flow-box o"><b>depth</b><span>hình dạng — sâu bao nhiêu, ở đâu</span></div>
+                                <div class="flow-box new"><b>mask tổn thương</b><span>vùng nào là vết thương</span>
+                                </div>
+                                <div class="flow-box new"><b>neo bằng ảnh vết thương thật</b><span>màu, fibrin, máu, bờ
+                                        cắt</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box o"><b>Video có tổn thương</b><span>trông thật, hình học giữ
+                                        nguyên</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mini-note">Hình học chính xác tuyệt đối — ngang bằng C3VD-DEFCOL,
+                        hơn C3VD gốc (sai số khớp 0.321 mm). Không có mask thì mô hình vẽ ra
+                        vết lõm hồng nhẵn, không phải vết thương.</p>
                 </section>
 
                 <!-- 2.5 — Kiểm chứng thực tế -->
@@ -441,9 +593,9 @@
                             <h4>1 · Chuyên gia lâm sàng thẩm định</h4>
                             <p>Đề tài đã có <strong>TS. Trần Thị Du Chi</strong> (dịch tễ ung thư đại trực tràng)
                                 và <strong>GS. Huỳnh Đình Chiến</strong> (AI trong giải phẫu bệnh số).</p>
-                            <p>Đề xuất một <strong>reader study nhỏ</strong>: cho bác sĩ xem lẫn lộn ảnh thật
+                            <!-- <p>Đề xuất một <strong>reader study nhỏ</strong>: cho bác sĩ xem lẫn lộn ảnh thật
                                 và ảnh sinh, hỏi (i) có phân biệt được không, (ii) tổn thương có hợp lý
-                                về mặt giải phẫu không.</p>
+                                về mặt giải phẫu không.</p> -->
                         </div>
 
                         <div class="card c-teal">
@@ -470,14 +622,11 @@
                     <div class="card-grid card-grid--3" style="font-size: 0.44em; margin-top: 14px;">
                         <div class="card c-purple">
                             <h4>1 · Dữ liệu có tốt không?</h4>
-                            <p><strong>Ảnh trông có thật không?</strong><br>
-                                So phân bố ảnh mình sinh ra với video nội soi thật — FID, KID, FVD.</p>
                             <p><strong>Ảnh có làm xê dịch hình học không?</strong><br>
-                                Nếp gấp haustral là gờ <em>hình dạng</em>, nên xuất hiện ở cả hai nơi:
-                                trong depth mình đưa vào, và trong ảnh mô hình vẽ ra.
-                                Lấy đường gờ ở hai bên rồi xem có nằm cùng chỗ không.</p>
-                            <p class="text-light">Không huấn luyện mô hình nào — chỉ so hai tấm ảnh.
-                                C3VD-DEFCOL đạt Dice 0.97 ở phép này.</p>
+                                Nếp gấp là gờ <em>hình dạng</em> — có mặt ở cả depth đưa vào lẫn
+                                ảnh vẽ ra. So hai bên, trùng chỗ là hình học còn nguyên.</p>
+                            <p class="text-light">Không train gì — chỉ so hai tấm ảnh.
+                                C3VD-DEFCOL: Dice 0.97.</p>
                         </div>
 
                         <div class="card c-teal">
