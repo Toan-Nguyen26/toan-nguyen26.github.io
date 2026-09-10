@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <title>Hướng tạo bộ dữ liệu tổn thương đại tràng</title>
+    <link rel="stylesheet" href="revealjs/dist/reset.css" />
+    <link rel="stylesheet" href="revealjs/dist/reveal.css" />
+    <link rel="stylesheet" href="revealjs/dist/theme/white.css" />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <link rel="stylesheet" href="slide-style.css" />
+    <link rel="stylesheet" href="intro-style.css" />
+
+    <style>
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.46em;
+            margin-top: 10px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 8px 11px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, .1);
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--sl-muted, #667);
+            font-size: .92em;
+            letter-spacing: .02em;
+            text-transform: uppercase;
+        }
+
+        .data-table td.yes {
+            color: #2e8b57;
+            font-weight: 700;
+        }
+
+        .data-table td.no {
+            color: #c0392b;
+            font-weight: 700;
+        }
+
+        .data-table tr.highlight td {
+            background: rgba(217, 131, 36, .08);
+        }
+
+        .svg-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 12px 0 4px;
+        }
+
+        .svg-wrap svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .mini-note {
+            font-size: 0.4em;
+            color: var(--sl-muted, #778);
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        .big-claim {
+            font-size: 0.8em;
+            line-height: 1.45;
+            font-weight: 600;
+            text-align: center;
+            max-width: 90%;
+            margin: 26px auto 20px;
+        }
+
+        .big-claim em {
+            font-style: normal;
+            color: var(--sl-orange, #d98324);
+        }
+
+        /* thẻ độ khó */
+        .diff {
+            display: inline-block;
+            font-size: .82em;
+            font-weight: 700;
+            border-radius: 5px;
+            padding: 1px 8px;
+            margin-left: 6px;
+            vertical-align: 2px;
+        }
+
+        .diff.easy {
+            background: rgba(46, 139, 87, .14);
+            color: #2e8b57;
+        }
+
+        .diff.med {
+            background: rgba(217, 131, 36, .16);
+            color: #b96d18;
+        }
+
+        .diff.hard {
+            background: rgba(192, 57, 43, .13);
+            color: #c0392b;
+        }
+
+        .ask-box {
+            margin-top: 18px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--sl-orange, #d98324);
+            background: rgba(217, 131, 36, .09);
+            font-size: 0.52em;
+            line-height: 1.5;
+        }
+
+        .two-col {
+            display: flex;
+            gap: 18px;
+            margin-top: 14px;
+            font-size: 0.46em;
+            text-align: left;
+        }
+
+        .two-col > div {
+            flex: 1;
+            background: rgba(0, 0, 0, .035);
+            border-radius: 10px;
+            padding: 12px 15px;
+        }
+
+        .two-col h4 {
+            margin: 0 0 8px;
+            font-size: 1.05em;
+        }
+
+        .two-col ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .two-col li {
+            margin-bottom: 5px;
+        }
+
+        .have {
+            border-left: 4px solid #2e8b57;
+        }
+
+        .havenot {
+            border-left: 4px solid #c0392b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ═══════════ TRANG BÌA ═══════════ -->
+            <section class="title-slide">
+                <h1>Tạo bộ dữ liệu tổn thương</h1>
+                <p class="title-sub">Các hướng tiếp cận · từ hình học đến ảnh thật</p>
+                <p class="title-host">
+                    <strong>Nguyễn Hải Toàn</strong><br>
+                    <span class="text-light">Kính gửi: TS. Mai Thanh Thái &amp; PGS.TS. Hoàng Văn Xiêm</span>
+                </p>
+            </section>
+
+            <!-- ═══════════ PHẦN 1 · TỔNG QUAN ═══════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 1</p>
+                    <h2>Tổng quan bộ dữ liệu</h2>
+                </section>
+
+                <!-- 0.1 — cần có gì -->
+                <section>
+                    <h2>Một bộ dữ liệu nội soi cần có gì</h2>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Thành phần</th>
+                                <th>Là gì</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Depth</strong></td>
+                                <td>khoảng cách từ camera tới bề mặt, từng điểm ảnh</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Surface normal</strong></td>
+                                <td>hướng bề mặt đang quay về phía nào</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Optical flow</strong></td>
+                                <td>chuyển động giữa hai khung hình</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Occlusion mask</strong></td>
+                                <td>chỗ nào bị che khuất</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Camera pose</strong></td>
+                                <td>camera ở đâu, quay hướng nào — 6 bậc tự do</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mesh 3D + coverage map</strong></td>
+                                <td>hình dạng thật, và <strong>đỉnh nào đã được nhìn thấy</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>File hiệu chuẩn camera</strong></td>
+                                <td>tiêu cự, tâm ảnh, và độ méo của ống kính góc rộng</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout">
+                        <p style="font-size: 0.44em;">Đây là chuẩn <strong>C3VD đã đặt ra</strong> —
+                            <strong>10.015 khung hình</strong> ở bản 1, <strong>169.371</strong> ở bản 2.
+                            Bộ của mình phải có đủ chừng này trước đã, rồi mới nói tới chuyện thêm.<br>
+                            <strong>Sáu trong bảy thứ này rơi ra từ mesh.</strong> Máy render bắt buộc phải tính
+                            khoảng cách tới bề mặt rồi mới vẽ được — nên depth, normal, optical flow, occlusion, pose
+                            <em>đã nằm sẵn trong bộ nhớ</em>, chỉ là có xuất ra file hay không.
+                            <strong>Có mesh là có hết.</strong></p>
+                    </div>
+                </section>
+
+                <!-- 0.2 — hai nguồn mesh -->
+                <section>
+                    <h2>Hai nguồn mesh — mỗi bên thiếu đúng thứ bên kia có</h2>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>C3VD / C3VDv2</th>
+                                <th>VR-Caps</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Giải phẫu</strong></td>
+                                <td class="no">✗ silicone nặn bằng phần mềm</td>
+                                <td class="yes">✓ <strong>từ ảnh CT bệnh nhân thật</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ảnh nội soi thật</strong></td>
+                                <td class="yes">✓ <strong>ống Olympus thật quay</strong></td>
+                                <td class="no">✗ chưa ai quay những bệnh nhân đó</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td><strong>Cặp (ảnh thật + depth chính xác)</strong></td>
+                                <td class="yes">✓ <strong>chỉ nơi này có</strong></td>
+                                <td class="no">✗</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Có sẵn bệnh lý 3D</strong></td>
+                                <td class="no">✗ không có gì</td>
+                                <td class="yes">✓ <strong>polyp</strong> <em>(loét chỉ là texture)</em></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hiệu chuẩn camera</strong></td>
+                                <td class="yes">✓ ống soi đại tràng CF-HQ190L</td>
+                                <td>viên nang <em>(Mirocam / Pillcam)</em></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Giấy phép</strong></td>
+                                <td>CC BY-NC-SA — <em>hạn chế nhưng rõ ràng</em></td>
+                                <td class="no">✗ <strong>không có giấy phép nào</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout">
+                        <p style="font-size: 0.44em;"><strong>Chốt: C3VD là mesh nền duy nhất.</strong>
+                            VR-Caps chỉ dùng để <strong>nhìn tham chiếu hình dạng</strong> — polyp trông ra sao,
+                            cao bao nhiêu so với lòng ruột. Tổn thương thì <strong>mình tự nặn</strong>.<br>
+                            <strong>⚠ Giấy phép:</strong> VR-Caps không có file LICENSE, bài báo cũng không nêu điều khoản.
+                            Theo luật mặc định là <strong>giữ toàn bộ quyền</strong> — xem thì được,
+                            <strong>phân phối lại trong bộ dữ liệu thì phải xin phép bằng văn bản</strong>.
+                            Đường lui: ảnh CT gốc trên TCIA là công khai, mình tự dựng lại được.<br>
+                            <strong style="color:#c0392b;">Nói cho đúng:</strong> VR-Caps <em>có</em> đủ depth, normal, pose —
+                            có mesh là có hết. Cái họ không có là <strong>hình khối của tổn thương</strong>.
+                            Đừng nói &ldquo;VR-Caps thiếu depth&rdquo;.</p>
+                    </div>
+                </section>
+
+                <!-- 0.3 — khác gì -->
+                <section>
+                    <h2>Bộ của mình khác gì — hai thứ thêm vào</h2>
+
+                    <div class="svg-wrap">
+                        <svg viewBox="0 0 960 210" width="960" role="img"
+                            aria-label="Chuẩn C3VD cộng hai phần thêm">
+                            <rect x="330" y="30" width="300" height="150" rx="12" fill="#7c5cbf" opacity=".09" />
+                            <rect x="330" y="30" width="300" height="150" rx="12" fill="none" stroke="#7c5cbf"
+                                stroke-width="2" />
+                            <text x="480" y="62" font-size="17" font-weight="700" text-anchor="middle"
+                                fill="#7c5cbf">CHUẨN C3VD</text>
+                            <text x="480" y="92" font-size="13.5" text-anchor="middle" fill="#666">depth · normal · flow</text>
+                            <text x="480" y="114" font-size="13.5" text-anchor="middle" fill="#666">occlusion · pose · mesh</text>
+                            <text x="480" y="136" font-size="13.5" text-anchor="middle" fill="#666">coverage · diffuse</text>
+                            <text x="480" y="162" font-size="12.5" text-anchor="middle" fill="#999" font-style="italic">phải có đủ</text>
+
+                            <text x="300" y="112" font-size="26" text-anchor="middle" fill="#d98324"
+                                font-weight="700">+</text>
+                            <text x="660" y="112" font-size="26" text-anchor="middle" fill="#d98324"
+                                font-weight="700">+</text>
+
+                            <rect x="20" y="30" width="260" height="150" rx="12" fill="#fff8ec" stroke="#d98324"
+                                stroke-width="2.5" />
+                            <text x="150" y="62" font-size="17" font-weight="700" text-anchor="middle"
+                                fill="#c2731d">BỆNH LÝ</text>
+                            <text x="150" y="92" font-size="13.5" text-anchor="middle" fill="#555">polyp · vết ESD · vết thủng</text>
+                            <text x="150" y="118" font-size="13.5" text-anchor="middle" fill="#555">kèm <tspan font-weight="600">mask tổn thương</tspan></text>
+                            <text x="150" y="150" font-size="12.5" text-anchor="middle" fill="#c0392b"
+                                font-weight="600">hình học 3D thật</text>
+                            <text x="150" y="168" font-size="11.5" text-anchor="middle" fill="#999">không phải texture</text>
+
+                            <rect x="680" y="30" width="260" height="150" rx="12" fill="#fff8ec" stroke="#d98324"
+                                stroke-width="2.5" />
+                            <text x="810" y="62" font-size="17" font-weight="700" text-anchor="middle"
+                                fill="#c2731d">CÔNG CỤ XEM 3D</text>
+                            <text x="810" y="92" font-size="13.5" text-anchor="middle" fill="#555">mở link là bay trong ruột</text>
+                            <text x="810" y="118" font-size="13.5" text-anchor="middle" fill="#555">bật/tắt tổn thương</text>
+                            <text x="810" y="144" font-size="13.5" text-anchor="middle" fill="#555">xem lớp coverage</text>
+                            <text x="810" y="168" font-size="11.5" text-anchor="middle" fill="#999">không cần cài gì</text>
+                        </svg>
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.46em;">Nhiều bộ dữ liệu công bố xong rồi nằm im, vì
+                            <strong>không ai buồn tải hàng trăm GB về chỉ để xem nó có gì</strong>.
+                            Nên công cụ xem <strong>không phải tiện ích phụ — nó là một phần của đóng góp</strong>:
+                            <em>&ldquo;không chỉ công bố dữ liệu, mà công bố kèm công cụ để nhìn vào nó.&rdquo;</em></p>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- ═══════════ PHẦN 2 ═══════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 2</p>
+                    <h2>Tạo hình học</h2>
+                </section>
+
+                <!-- 1.1 -->
+                <section>
+                    <h2>Phần nền coi như đã có</h2>
+
+                    <div class="two-col">
+                        <div class="have">
+                            <h4>✓ Có sẵn, miễn phí</h4>
+                            <ul>
+                                <li><strong>Mesh đại tràng</strong> — C3VD / C3VDv2, đúng tỉ lệ vật lý thật,
+                                    đúc từ khuôn của mô hình đại tràng thật</li>
+                                <li><strong>Bộ render ground truth</strong> — nhóm DurrLab đã công bố mã nguồn
+                                    <em>(github.com/DurrLab/C3VDv3)</em>: xuất depth, normal, optical flow, occlusion</li>
+                                <li><strong>File hiệu chuẩn camera</strong> — của đúng ống soi Olympus CF-HQ190L</li>
+                                <li>Có cờ cho phép render <strong>mesh tĩnh</strong> — không bắt buộc phải mô phỏng
+                                    biến dạng nhu động</li>
+                            </ul>
+                        </div>
+
+                        <div class="havenot">
+                            <h4>✗ Chưa có</h4>
+                            <ul>
+                                <li><strong>Trọng số mô hình sinh ảnh</strong> — nhóm DurrLab ghi
+                                    <em>"sẽ công bố sau khi phản biện xong"</em></li>
+                                <li><strong>Bất kỳ hình học tổn thương nào</strong> — không bộ dữ liệu nào có
+                                    hố sau ESD, loét, hay vết thủng ở dạng 3D</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.46em;"><strong>Vì sao vẫn phải render lại?</strong>
+                            C3VD có sẵn depth, normal, optical flow — nhưng là <strong>của cái ruột lành lặn của họ</strong>.
+                            Ngay khi mình <strong>thay đổi hình dạng mesh</strong>, toàn bộ số liệu cũ <strong>trở thành sai</strong>,
+                            vì nó mô tả một cái ruột không còn tồn tại nữa.<br>
+                            <em>Giống như được cho một căn nhà kèm ảnh chụp. Sửa lại bức tường thì phải chụp lại.</em></p>
+                    </div>
+                </section>
+
+                <!-- 1.2 — ba loại -->
+                <section>
+                    <h2 style="font-size: 1.15em;">Ba loại tổn thương — ba phép biến đổi khác nhau</h2>
+
+                    <div class="svg-wrap" style="max-width: 68%; margin: 2px auto 0;">
+                        <svg viewBox="0 0 1000 300" width="1000" role="img"
+                            aria-label="Mặt cắt ngang ba loại tổn thương">
+
+                            <!-- ══ KHỐI U ══ -->
+                            <text x="160" y="30" font-size="19" font-weight="700" text-anchor="middle"
+                                fill="#7c5cbf">KHỐI U</text>
+                            <text x="160" y="52" font-size="14" text-anchor="middle" fill="#777">nhô RA ngoài</text>
+
+                            <!-- thành ruột -->
+                            <path d="M30,150 L110,150 Q160,80 210,150 L290,150" fill="none" stroke="#7c5cbf"
+                                stroke-width="2.5" />
+                            <path d="M30,178 L290,178" fill="none" stroke="#b9a6dd" stroke-width="2" />
+                            <path d="M30,150 L30,178 M290,150 L290,178" stroke="#b9a6dd" stroke-width="2" />
+                            <text x="160" y="205" font-size="13" text-anchor="middle" fill="#999">thành ruột 2–3 mm</text>
+
+                            <text x="160" y="245" font-size="15" text-anchor="middle" fill="#333">rộng 5–30 mm</text>
+                            <text x="160" y="268" font-size="14" text-anchor="middle" fill="#2e8b57"
+                                font-weight="600">đẩy đỉnh lưới RA</text>
+
+                            <!-- ══ VẾT RÁCH ══ -->
+                            <text x="500" y="30" font-size="19" font-weight="700" text-anchor="middle"
+                                fill="#c0392b">VẾT RÁCH</text>
+                            <text x="500" y="52" font-size="14" text-anchor="middle" fill="#777">xuyên QUA</text>
+
+                            <path d="M370,150 L468,150 M532,150 L630,150" fill="none" stroke="#c0392b"
+                                stroke-width="2.5" />
+                            <path d="M370,178 L462,178 M538,178 L630,178" fill="none" stroke="#e8a49c"
+                                stroke-width="2" />
+                            <path d="M468,150 L462,178 M532,150 L538,178" stroke="#c0392b" stroke-width="2.5" />
+                            <path d="M370,150 L370,178 M630,150 L630,178" stroke="#e8a49c" stroke-width="2" />
+                            <text x="500" y="205" font-size="13" text-anchor="middle" fill="#c0392b">lỗ thật xuyên qua</text>
+
+                            <text x="500" y="245" font-size="15" text-anchor="middle" fill="#333">rộng 5–20 mm</text>
+                            <text x="500" y="268" font-size="14" text-anchor="middle" fill="#b96d18"
+                                font-weight="600">phép trừ boolean</text>
+
+                            <!-- ══ VẾT SAU ESD ══ -->
+                            <text x="840" y="30" font-size="19" font-weight="700" text-anchor="middle"
+                                fill="#d98324">VẾT SAU ESD</text>
+                            <text x="840" y="52" font-size="14" text-anchor="middle" fill="#777">lõm NÔNG</text>
+
+                            <path d="M710,150 L740,150 Q748,158 760,158 L920,158 Q932,158 940,150 L970,150"
+                                fill="none" stroke="#d98324" stroke-width="2.5" />
+                            <path d="M710,178 L970,178" fill="none" stroke="#f0c99a" stroke-width="2" />
+                            <path d="M710,150 L710,178 M970,150 L970,178" stroke="#f0c99a" stroke-width="2" />
+
+                            <!-- mũi tên độ sâu -->
+                            <line x1="840" y1="150" x2="840" y2="158" stroke="#c0392b" stroke-width="1.5" />
+                            <text x="856" y="157" font-size="12" fill="#c0392b" font-weight="600">1–2 mm</text>
+
+                            <text x="840" y="205" font-size="13" text-anchor="middle" fill="#999">gần như phẳng</text>
+
+                            <text x="840" y="245" font-size="15" text-anchor="middle" fill="#333">rộng 20–80 mm</text>
+                            <text x="840" y="268" font-size="14" text-anchor="middle" fill="#b96d18"
+                                font-weight="600">đẩy đỉnh lưới VÀO</text>
+                        </svg>
+                    </div>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.4em; margin-top: 6px;">
+                        <div class="card c-purple">
+                            <h4>Do bệnh gì</h4>
+                            <p>U tuyến <em>(tiền ung thư)</em>, ung thư đại trực tràng giai đoạn sớm.</p>
+                            <p><strong>→ Lý do phải can thiệp</strong></p>
+                        </div>
+                        <div class="card c-muted">
+                            <h4>Do bệnh gì</h4>
+                            <p>Phần lớn là <strong>biến chứng của chính thủ thuật</strong>. Ngoài ra: viêm túi thừa,
+                                Crohn, thiếu máu ruột, ung thư ăn thủng.</p>
+                            <p><strong>→ Tai biến khi can thiệp — phải vá gấp</strong></p>
+                        </div>
+                        <div class="card c-orange">
+                            <h4>Do bệnh gì</h4>
+                            <p><strong>Không phải bệnh</strong> — là vết chính bác sĩ tạo ra khi cắt bỏ khối u ở cột đầu.</p>
+                            <p><strong>→ Kết quả của can thiệp — thứ robot in vào</strong></p>
+                        </div>
+                    </div>
+
+                    <table class="data-table" style="font-size: 0.36em; margin-top: 6px;">
+                        <thead>
+                            <tr>
+                                <th>Ảnh nội soi thật để làm chuẩn hình dạng</th>
+                                <th>Có gì</th>
+                                <th>Vấn đề</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Khối u, polyp</strong></td>
+                                <td class="yes">✓ <strong>1.000 ảnh có mask</strong> <em>(HyperKvasir, CC BY 4.0)</em></td>
+                                <td>dư dả</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vết sau ESD</strong></td>
+                                <td>~1.000 ảnh <code>dyed-resection-margins</code></td>
+                                <td>chỉ nhãn lớp, <strong>không mask</strong> · đã <strong>nhuộm xanh</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vết thủng</strong></td>
+                                <td class="no">✗ <strong>gần như không có gì công khai</strong></td>
+                                <td>tai biến — chỉ nằm trong case report</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout">
+                        <p style="font-size: 0.44em;">Ba loại không rời rạc — chúng là một mạch:
+                            <strong>tìm khối u → cắt bỏ → để lại vết → in vào. Nếu cắt thủng thì phải vá.</strong><br>
+                            Và <strong>vết sau ESD không phải cái hố</strong> — rộng bằng đế cốc nhưng chỉ sâu 1–2 mm,
+                            vì thành ruột vốn chỉ dày 2–3 mm.<br>
+                            <em>Độ sẵn có của ảnh chuẩn cũng chính là thứ quyết định thứ tự làm ba loại.</em></p>
+                    </div>
+                </section>
+
+                <!-- 1.3 — khối u -->
+                <section>
+                    <h2>Loại 1 · Khối u, polyp <span class="diff easy">DỄ</span></h2>
+
+                    <div style="font-size: 0.44em; max-width: 94%; margin: 10px auto 0; text-align: left;">
+                        <p style="margin: 0 0 6px;"><strong>Cách làm:</strong> đẩy các đỉnh lưới <strong>ra ngoài</strong>
+                            theo pháp tuyến bề mặt, độ đẩy tắt dần từ tâm ra rìa — như ấn ngón tay từ sau tấm cao su.
+                            Lưới vẫn liền một mảnh.</p>
+                        <!-- <p style="margin: 0 0 6px; color:#c0392b;"><strong>Không dùng boolean</strong> (dán quả cầu rồi hàn):
+                            tạo đường gãy sắc giả ở chỗ nối → depth map thành bậc thang →
+                            mạng học &ldquo;polyp = cạnh sắc&rdquo;. Polyp thật có vai thoải.</p> -->
+                        <p style="margin: 0;"><strong>Quà kèm:</strong> đỉnh nào bị đẩy <em>chính là</em>
+                            <strong>mask 3D ground truth</strong> — không phải vẽ tay, và biết luôn chiều cao bằng mm.</p>
+                    </div>
+
+                    <table class="data-table" style="font-size: 0.38em; margin-top: 12px;">
+                        <thead>
+                            <tr>
+                                <th>Dạng <em>(phân loại Paris)</em></th>
+                                <th>Hình</th>
+                                <th>Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Is</strong></td>
+                                <td>vòm, ngồi thẳng trên thành</td>
+                                <td>dễ nhất — làm trước</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ip</strong></td>
+                                <td>có cuống, như cây nấm</td>
+                                <td>thêm cuống</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td><strong>IIa</strong></td>
+                                <td>gồ rất nhẹ, <strong>dưới 2,5 mm</strong></td>
+                                <td><strong>khó thấy nhất → có giá trị nhất</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="font-size: 0.4em; margin: 8px auto 0; max-width: 94%; text-align: left;">
+                        <p style="margin: 0;"><strong>Hai trục độc lập, không phải chọn một trong ba:</strong>
+                            Paris cho biết <em>hình dáng</em> — nó ngồi trên thành ruột kiểu gì.
+                            Đường kính cho biết <em>nó to bao nhiêu</em>: <strong>≤5 mm</strong> ·
+                            <strong>6–9 mm</strong> · <strong>≥10 mm</strong>.
+                            Mỗi polyp có cả hai — <em>&ldquo;một polyp Is, đường kính 7 mm&rdquo;</em>.
+                            Thành một lưới <strong>3 hình × 3 cỡ</strong> để bốc ngẫu nhiên.<br>
+                            Mốc <strong>≥10 mm</strong> là chỗ <strong>cách xử trí đổi</strong> — kỹ thuật cắt khác,
+                            lịch theo dõi khác. Bốc theo lưới này thì câu hỏi
+                            <em>&ldquo;dựa vào đâu mà nặn&rdquo;</em> tự tắt: phân bố có gốc ở thứ bác sĩ dùng hằng ngày.</p>
+                    </div>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.38em; margin-top: 12px;">
+                        <div class="card c-teal">
+                            <h4>Ảnh tham chiếu · HyperKvasir</h4>
+                            <p><strong>CC BY 4.0</strong> — 1.000 ảnh polyp <strong>có mask từng điểm ảnh</strong>.</p>
+                            <p class="text-light">Đường sạch nhất. <em>Kvasir-SEG cùng bộ ảnh nhưng ghi
+                                &ldquo;chỉ nghiên cứu/giáo dục&rdquo; — không phải CC BY.</em></p>
+                        </div>
+                        <div class="card c-muted">
+                            <h4>VR-Caps</h4>
+                            <p>20 khối polyp 3D dựng từ ảnh CT.</p>
+                            <p class="text-light"><strong>Chỉ xem để học hình dạng.</strong>
+                                Không giấy phép → không phân phối lại.</p>
+                        </div>
+                        <div class="card c-muted">
+                            <h4>Dowrick et al. (MICCAI 2023)</h4>
+                            <p>Geometry Nodes của họ <strong>dựng cả cái ruột từ một đường cong</strong>, polyp mọc trong
+                                cùng hệ thống — <strong>không áp được lên mesh C3VD</strong>.</p>
+                            <p class="text-light">Ground truth chỉ có mask + bounding box, <strong>không có depth</strong>.
+                                Giá trị: đọc để học cách tổ chức.</p>
+                        </div>
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.44em;">Loại này <strong>dễ nhất, nhưng vẫn là mình tự nặn</strong> —
+                            không lấy hình khối của ai. Làm trước để chạy thử toàn bộ đường ống
+                            <em>(nặn → render depth + mask → xem lại)</em>, rồi mới sang loại khó.</p>
+                    </div>
+                </section>
+
+                <!-- 1.4 — vết rách -->
+                <section>
+                    <h2>Loại 2 · Vết rách, thủng <span class="diff med">TRUNG BÌNH</span></h2>
+
+                    <div style="font-size: 0.46em; max-width: 94%; margin: 10px auto 0; text-align: left;">
+                        <p><strong>Đây là loại duy nhất phải cắt thật.</strong>
+                            Hai loại kia chỉ cần <em>nặn</em> — như nặn một tấm cao su: ấn lõm được, kéo phồng được.
+                            Nhưng <strong>nặn cao su thì không bao giờ tạo ra được cái lỗ</strong>, trừ khi xé nó.</p>
+                        <p>Vết thủng chính là một cái lỗ. Nên phải dùng <strong>khuôn cắt</strong> —
+                            đặt một cái ống xuyên qua thành ruột rồi xoá phần chồng nhau,
+                            thật sự <strong>xoá đi các tam giác</strong> của lưới.</p>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nguyên nhân</th>
+                                <th>Kích thước trung bình</th>
+                                <th>Hình dạng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Soi chẩn đoán <em>(cơ học, áp lực khí)</em></td>
+                                <td><strong>19,3 ± 12,8 mm</strong></td>
+                                <td>vết xé hình khe hoặc hình sao</td>
+                            </tr>
+                            <tr>
+                                <td>Can thiệp <em>(cắt polyp, EMR, ESD)</em></td>
+                                <td><strong>5,8 ± 2,9 mm</strong></td>
+                                <td>nhỏ hơn, gọn hơn</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout">
+                        <p style="font-size: 0.45em;"><strong>Khó ở đâu:</strong> cắt xong thì mép lỗ lởm chởm,
+                            tam giác méo mó — lưới không còn sạch nữa. Và nếu lưới gốc có lỗi nhỏ
+                            <em>(mesh dựng từ ảnh CT rất hay bị)</em> thì công cụ cắt <strong>từ chối chạy luôn</strong>.
+                            Mép vết rách còn <strong>co rút ra hai bên</strong> vì mô đàn hồi — cần thêm một bước nữa.</p>
+                    </div>
+
+                    <div class="card-grid" style="font-size: 0.38em; margin-top: 10px;">
+                        <div class="card c-orange">
+                            <h4>Ảnh tham chiếu — gần như không có</h4>
+                            <p>Thủng là <strong>tai biến</strong>, hiếm ai chụp rồi công bố. Chỉ nằm rải rác trong
+                                case report, mỗi bài một giấy phép riêng. <strong>Không có bộ công khai nào.</strong></p>
+                        </div>
+                    </div>
+
+                    <p class="mini-note">Không phải mục tiêu in, tốn công nhất, và thiếu ảnh chuẩn nhất —
+                        em đề nghị để sau.</p>
+                </section>
+
+                <!-- 1.5 — ESD -->
+                <section>
+                    <h2>Loại 3 · Vết sau cắt ESD <span class="diff med">TRUNG BÌNH</span> — mục tiêu chính</h2>
+
+                    <div style="font-size: 0.47em; max-width: 94%; margin: 10px auto 0; text-align: left;">
+                        <p><strong>Cách làm:</strong> chỉ cần <strong>ấn các đỉnh lưới vào trong</strong>,
+                            càng xa tâm thì ấn càng nhẹ. Không phải cắt gì cả — dễ hơn loại 2 nhiều.</p>
+                    </div>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.41em; margin-top: 12px;">
+                        <div class="card c-purple">
+                            <h4>Hình dạng cần dựng</h4>
+                            <p>Đáy phẳng → thành cong lên → <strong>mép hơi nhô và lật ra ngoài</strong>.</p>
+                            <p>Chính cái mép đó tạo cảm giác chiều sâu khi nhìn, chứ không phải độ lõm.</p>
+                        </div>
+                        <div class="card c-teal">
+                            <h4>Ưu điểm lớn</h4>
+                            <p>Vì định nghĩa bằng công thức nên <strong>biết chính xác độ sâu tại mọi điểm</strong>
+                                — ground truth không phải suy ra từ ảnh render.</p>
+                            <p>Lưới giữ nguyên hình dạng gốc, không bị vỡ như khi cắt.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.44em;"><strong>Chỗ trống thật sự nằm ở đây.</strong>
+                            Bài <em>He et al. 2025 (Computers in Biology and Medicine)</em> có làm loét bằng biến dạng lưới,
+                            nhưng <strong>đóng — không công bố code hay dữ liệu</strong>.
+                            Ngoài ra không có bộ dữ liệu nào chứa hình học vết cắt ESD.<br>
+                            <strong>Ảnh tham chiếu:</strong> HyperKvasir có ~1.000 ảnh <code>dyed-resection-margins</code>
+                            <em>(CC BY 4.0)</em> — nhưng <strong>chỉ nhãn lớp, không mask</strong>, và đã
+                            <strong>nhuộm xanh indigo carmine</strong> nên màu không tự nhiên. Dùng để chuẩn hình dạng,
+                            không dùng để chuẩn màu.</p>
+                    </div>
+                </section>
+
+                <!-- 1.6 — cái bẫy khoảng cách -->
+
+                <!-- 1.7 — vá vào ảnh thật -->
+                <section>
+                    <h2>Làm sao thành ảnh thật — chỉ vá đúng vùng tổn thương</h2>
+
+                    <div class="svg-wrap" style="max-width: 82%; margin: 8px auto 0;">
+                        <svg viewBox="0 0 960 232" width="960" role="img"
+                            aria-label="Ảnh thật C3VD cộng mask polyp bằng ảnh có polyp, nền vẫn thật">
+
+                            <!-- ══ 1 · KHUNG HÌNH THẬT ══ -->
+                            <rect x="20" y="18" width="250" height="150" rx="10" fill="#d9a08c" />
+                            <ellipse cx="145" cy="93" rx="52" ry="42" fill="#8d4f42" />
+                            <ellipse cx="145" cy="93" rx="24" ry="19" fill="#5a2f27" />
+                            <rect x="20" y="18" width="250" height="150" rx="10" fill="none" stroke="#2e8b57"
+                                stroke-width="3" />
+                            <text x="145" y="192" font-size="16" font-weight="700" text-anchor="middle"
+                                fill="#2e8b57">KHUNG HÌNH THẬT</text>
+                            <text x="145" y="213" font-size="13" text-anchor="middle" fill="#777">C3VD · ống Olympus chụp</text>
+
+                            <text x="303" y="102" font-size="30" text-anchor="middle" fill="#d98324"
+                                font-weight="700">+</text>
+
+                            <!-- ══ 2 · MASK ══ -->
+                            <rect x="336" y="18" width="250" height="150" rx="10" fill="#1f1f1f" />
+                            <ellipse cx="500" cy="72" rx="38" ry="30" fill="#ffffff" />
+                            <rect x="336" y="18" width="250" height="150" rx="10" fill="none" stroke="#7c5cbf"
+                                stroke-width="3" />
+                            <text x="461" y="192" font-size="16" font-weight="700" text-anchor="middle"
+                                fill="#7c5cbf">MASK POLYP</text>
+                            <text x="461" y="213" font-size="13" text-anchor="middle" fill="#777">render từ <tspan
+                                    font-weight="600">đúng pose đó</tspan></text>
+
+                            <text x="619" y="102" font-size="30" text-anchor="middle" fill="#d98324"
+                                font-weight="700">=</text>
+
+                            <!-- ══ 3 · KẾT QUẢ ══ -->
+                            <rect x="652" y="18" width="250" height="150" rx="10" fill="#d9a08c" />
+                            <ellipse cx="777" cy="93" rx="52" ry="42" fill="#8d4f42" />
+                            <ellipse cx="777" cy="93" rx="24" ry="19" fill="#5a2f27" />
+                            <ellipse cx="816" cy="72" rx="38" ry="30" fill="#c9705f" />
+                            <ellipse cx="806" cy="63" rx="13" ry="10" fill="#e0917f" opacity=".75" />
+                            <rect x="652" y="18" width="250" height="150" rx="10" fill="none" stroke="#d98324"
+                                stroke-width="3" />
+                            <text x="777" y="192" font-size="16" font-weight="700" text-anchor="middle"
+                                fill="#c2731d">CHỈ VÙNG NÀY LÀ SINH</text>
+                            <text x="777" y="213" font-size="13" text-anchor="middle" fill="#777">nền vẫn là <tspan
+                                    font-weight="600">ảnh chụp thật</tspan></text>
+                        </svg>
+                    </div>
+
+                    <div style="font-size: 0.42em; max-width: 94%; margin: 10px auto 0; text-align: left;">
+                        <p style="margin: 0;"><strong>Không phải sinh lại cả khung hình.</strong>
+                            Nền ruột lấy nguyên từ ảnh C3VD — ánh sáng thật, niêm mạc thật, nếp gấp thật.
+                            Mô hình chỉ phải vẽ <em>trong vùng mask</em>. Việc của nó co lại từ
+                            <em>&ldquo;vẽ một ca nội soi&rdquo;</em> thành <em>&ldquo;tô cho hợp lý vào đúng chỗ này&rdquo;</em>.</p>
+                    </div>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.38em; margin-top: 12px;">
+                        <div class="card c-teal">
+                            <h4>Chỉ C3VD làm được</h4>
+                            <p>Cần <strong>ba thứ cùng lúc</strong>: ảnh thật · biết camera đứng đâu lúc chụp
+                                <em>(sai số 0,321 mm)</em> · mesh của đúng cái ruột đó.</p>
+                            <p class="text-light">VR-Caps không có ảnh thật. EndoMapper không có mesh và pose —
+                                nên DEFCOL mới phải nhờ ColonCrafter đoán depth.</p>
+                        </div>
+                        <div class="card c-purple">
+                            <h4>Ground truth tự khớp</h4>
+                            <p>Depth = <strong>depth gốc C3VD + phần mình nặn</strong>. Mask = chính vùng đỉnh đã đẩy,
+                                chiếu từ pose đó.</p>
+                            <p class="text-light">Không chỗ nào phải đoán.</p>
+                        </div>
+                        <div class="card c-orange">
+                            <h4>⚠ Hai chỗ hụt</h4>
+                            <p><strong>1.</strong> Ảnh thật của C3VD là ảnh chụp thật của <strong>ống silicone</strong> —
+                                không có mạch máu, không có ánh ướt niêm mạc.</p>
+                            <p><strong>2.</strong> Khoá ở <strong>10.015 khung hình</strong> có sẵn, và khoá luôn góc nhìn.</p>
+                        </div>
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.42em;">Nên em đề nghị coi tập vá này là <strong>tập lõi chắc chắn đúng</strong>,
+                            rồi dùng chính nó làm dữ liệu huấn luyện <em>(hoặc mỏ neo kiểm chứng)</em> cho hướng
+                            sinh cả khung hình — hướng đó không giới hạn số lượng và góc nhìn, nhưng phải tin
+                            mô hình giữ đúng hình học. <strong>Hai hướng bổ sung nhau, không phải chọn một.</strong></p>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- ═══════════ PHẦN 3 ═══════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 3</p>
+                    <h2>Mô phỏng để xem được</h2>
+                    <p class="text-light" style="font-size: 0.58em;">Ý thầy Xiêm và thầy Thái đã bàn</p>
+                </section>
+
+                <!-- 3.1 -->
+                <section>
+                    <h2>Bốn mức — từ rẻ đến đắt</h2>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Mức</th>
+                                <th>Làm được gì</th>
+                                <th>Công sức</th>
+                                <th>Ai đã làm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1 · Xem trong Blender</strong></td>
+                                <td>bay camera trong lòng mesh ngay trên máy mình</td>
+                                <td class="yes">0 — có sẵn</td>
+                                <td>—</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td><strong>2 · Web viewer</strong></td>
+                                <td>mở link là xoay được, bay được, bật/tắt tổn thương bằng nút gạt</td>
+                                <td><strong>1–2 ngày</strong></td>
+                                <td>giống Mol* · AlphaFold DB</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3 · Unity thời gian thực</strong></td>
+                                <td>tương tác, có vật lý mô mềm</td>
+                                <td>tuần → tháng</td>
+                                <td>VR-Caps · SimCol3D</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4 · Mô phỏng phẫu thuật</strong></td>
+                                <td>cắt được, mô biến dạng theo lực tác động</td>
+                                <td>tháng → năm</td>
+                                <td>iMSTK / Kitware VESS · ViGaTu <em>(đều mã nguồn mở)</em></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout">
+                        <p style="font-size: 0.44em;"><strong>Blender để <em>làm</em> dữ liệu, thời gian thực để <em>xem</em> dữ liệu.</strong>
+                            Blender tính đường đi từng tia sáng — chậm, vài giây một khung hình, nhưng <strong>đúng vật lý</strong>,
+                            nên ảnh và depth khớp nhau. Unity/web thì ánh sáng chỉ là xấp xỉ, nhưng <strong>mượt, bay được</strong>.
+                            Hai công cụ cho hai việc — không phải chọn một.<br>
+                            <strong>Phân biệt hai thứ hay bị lẫn:</strong>
+                            <strong>AlphaFold DB</strong> và <strong>Mol*</strong> là <em>viewer</em> — mở link, xoay, nhìn.
+                            <strong>Foldit</strong> của nhóm David Baker mới là <em>game</em> để người chơi tự gấp protein.
+                            Cái nhóm mình cần trước là <strong>viewer</strong>.</p>
+                    </div>
+                </section>
+
+                <!-- 3.2 -->
+                <section>
+                    <h2>Web viewer — và vì sao nó không phải đồ chơi</h2>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.42em; margin-top: 12px;">
+                        <div class="card c-purple">
+                            <h4>Làm được gì</h4>
+                            <p>Tải mesh đại tràng lên · <strong>bay camera như ống nội soi</strong> trong lòng ruột ·
+                                nút gạt bật/tắt tổn thương · thanh trượt chỉnh đường kính và độ sâu ·
+                                hiện depth map và mask <strong>bên cạnh ảnh màu</strong>.</p>
+                        </div>
+                        <div class="card c-teal">
+                            <h4>Công dụng 1 — kiểm tra trước khi render</h4>
+                            <p>Nhìn thấy vết thương trông sai thì <strong>sửa tham số ngay</strong>,
+                                thay vì render xong 10.000 khung hình rồi mới phát hiện.</p>
+                        </div>
+                        <div class="card c-orange">
+                            <h4>Công dụng 2 — bác sĩ mở link là xem được</h4>
+                            <p>TS. Chi <strong>không cần cài Blender, không cần biết code</strong>.
+                                Gửi link, bác sĩ xoay thử rồi nói <em>&ldquo;cái này không giống vết ESD thật&rdquo;</em>.</p>
+                            <p>Đó chính là <strong>reader study</strong> mình cần cho phần thẩm định lâm sàng.</p>
+                        </div>
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.49em;">Thứ hai thầy muốn cho vui hoá ra
+                            <strong>lại đúng là dụng cụ cần cho phần khó nhất của đề tài</strong> —
+                            kiểm chứng xem tổn thương mô phỏng có giống thật không.</p>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- ═══════════ PHẦN 4 ═══════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 4</p>
+                    <h2>Bắt đầu</h2>
+                </section>
+
+                <section>
+                    <h2>Bốn tuần đầu</h2>
+
+                    <ul class="timeline">
+                        <li style="--dot: var(--sl-purple);">
+                            <span class="tl-when">Tuần 1 – 2</span><br>
+                            <span class="tl-what">Dựng lại đường ống có sẵn</span><br>
+                            <span class="tl-note">Clone repo C3VDv3, build bộ render, render lại một chuỗi C3VD có sẵn,
+                                xác nhận depth xuất ra đúng đơn vị milimét.
+                                <strong>Thuần lắp ráp — không nghiên cứu gì</strong>, nhưng nó gỡ rủi ro cho mọi bước sau.</span>
+                        </li>
+                        <li style="--dot: var(--sl-teal);">
+                            <span class="tl-when">Tuần 3 – 4</span><br>
+                            <span class="tl-what">Tổn thương đầu tiên</span><br>
+                            <span class="tl-note">Khoét một đĩa nông vào một mesh bằng phương pháp đẩy đỉnh theo
+                                khoảng cách trắc địa. Render ra depth và mask.
+                                <strong>Một tấm ảnh</strong> — đó là thứ em mang tới buổi sau.</span>
+                        </li>
+                        <li style="--dot: var(--sl-orange);">
+                            <span class="tl-when">Song song</span><br>
+                            <span class="tl-what">Web viewer bản thô</span><br>
+                            <span class="tl-note">Chỉ cần tải mesh lên và bay camera được. Đủ để cả nhóm nhìn thấy
+                                thứ mình đang nói tới.</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Những điều em muốn hỏi thầy</h2>
+
+                    <div style="font-size: 0.5em;">
+                        <ul>
+                            <li><strong>Thứ tự ba loại tổn thương</strong> — em đề nghị làm khối u trước để chạy thử
+                                đường ống, rồi ESD, rồi vết rách. Thầy thấy hợp lý không ạ?</li>
+
+                            <li><strong>Ảnh nội soi thật của bệnh viện đối tác</strong> — nhóm có xin được không ạ,
+                                để làm chuẩn hình dạng cho tổn thương? Nhất là <strong>vết sau ESD và vết thủng</strong> —
+                                hai loại này gần như không có ảnh công khai. Cần thủ tục gì về đạo đức nghiên cứu ạ?</li>
+
+                            <li><strong>Phantom vật lý — có nên làm không ạ?</strong>
+                                C3VD <strong>công bố file khuôn</strong> của phantom silicone, nên mình đúc lại được
+                                đúng hình học đó, cắt vết thương thật, rồi quay bằng camera nội soi.
+                                <em>Đây là hướng duy nhất có cả ngoại hình thật lẫn hình học thật</em> — đo được trực tiếp
+                                khoảng cách sim-to-real thay vì phỏng đoán. Nhưng tốn thời gian phòng lab và kinh phí,
+                                và không sinh ra được hàng chục nghìn khung hình.<br>
+                                Em nghĩ dùng nó làm <strong>mỏ neo kiểm chứng</strong> — một tập nhỏ nhưng thật,
+                                không phải nguồn dữ liệu chính. Thầy thấy có đáng làm không, hay để giai đoạn sau ạ?</li>
+
+                            <li><strong>Bản quyền:</strong> C3VDv2 là CC BY-NC-SA — dữ liệu dẫn xuất
+                                <strong>thừa hưởng điều kiện phi thương mại và chia sẻ tương tự</strong>.
+                                Có ảnh hưởng gì tới định hướng sáng chế của đề tài không ạ?</li>
+
+                            <li><strong>Web viewer</strong> — thầy muốn em ưu tiên làm sớm, hay tập trung vào dữ liệu trước ạ?</li>
+                        </ul>
+                    </div>
+
+                    <div class="ask-box">
+                        <strong>Và câu hỏi lớn nhất: kế hoạch này thầy thấy đã ổn chưa ạ?</strong><br>
+                        Nếu thầy thấy hướng đi được, buổi sau em sẽ mang tới <strong>tấm ảnh render đầu tiên</strong>
+                        và một <strong>kế hoạch chi tiết</strong>. Nếu có chỗ nào thầy thấy sai hướng,
+                        em muốn biết ngay bây giờ hơn là sau bốn tuần.
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Tài liệu tham khảo</h2>
+                    <div style="font-size: 0.42em; text-align: left;">
+                        <p>[1] <em>C3VDv2 — Colonoscopy 3D Video Dataset with Enhanced Realism.</em>
+                            Scientific Data, 2026 · durrlab.github.io/C3VDv2 · mã nguồn: github.com/DurrLab/C3VDv3</p>
+
+                        <p>[2] <em>C3VD-DEFCOL: A Deformable Colonoscopy Dataset with Time-Resolved 3D Ground Truth
+                                and Realistic Appearance.</em> arXiv:2606.07891, 2026</p>
+
+                        <p>[3] K. Incetan và cộng sự. <em>VR-Caps: A Virtual Environment for Capsule Endoscopy.</em>
+                            Medical Image Analysis, 2021 · doi:10.1016/j.media.2021.101990 ·
+                            mesh dựng từ ảnh CT (TCIA) · polyp có hình khối 3D, loét chỉ có texture ·
+                            <strong style="color:#c0392b;">không có file LICENSE</strong></p>
+
+                        <p>[4] T. Dowrick và cộng sự. <em>Procedurally Generated Colonoscopy and Laparoscopy Data
+                                for Improved Model Training Performance.</em>
+                            DEMI @ MICCAI 2023 · doi:10.1007/978-3-031-44992-5_7 · doi:10.5522/04/23843904 ·
+                            Geometry Nodes <strong>dựng cả ruột từ một đường cong</strong> — không áp được lên mesh
+                            có sẵn · ground truth chỉ có mask + bounding box, <strong>không có depth</strong> ·
+                            <em>không nêu giấy phép</em></p>
+
+                        <p>[4b] H. Borgli và cộng sự. <em>HyperKvasir: a comprehensive multi-class image and video
+                                dataset for gastrointestinal endoscopy.</em> Scientific Data, 2020 ·
+                            doi:10.1038/s41597-020-00622-y · <strong>CC BY 4.0</strong> · 110.079 ảnh, 23 lớp ·
+                            1.000 ảnh polyp có mask · có lớp <code>dyed-resection-margins</code><br>
+                            <em>Lưu ý: Kvasir-SEG cùng bộ ảnh nhưng điều khoản ghi &ldquo;chỉ nghiên cứu và giáo dục,
+                                thương mại phải xin phép bằng văn bản&rdquo; — không phải CC BY.</em></p>
+
+                        <p>[5] He và cộng sự. <em>Synthesized colonoscopy dataset from high-fidelity virtual colon
+                                with abnormal simulation.</em> Computers in Biology and Medicine, 2025 ·
+                            doi:10.1016/j.compbiomed.2025.109672 · <em>(đóng — không công bố code/dữ liệu)</em></p>
+
+                        <p>[6] <em>Iatrogenic colon perforation: mechanisms and management.</em> Clinical Endoscopy ·
+                            số liệu kích thước vết thủng</p>
+
+                        <p>[7] iMSTK / Kitware VESS — Virtual Endoscopic Surgical Simulator cho ESD · imstk.org
+                            <em>(mã nguồn mở)</em></p>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- ─── KẾT ─── -->
+            <section class="title-slide">
+                <h1>Xin cảm ơn thầy</h1>
+                <p class="title-sub">Nguyễn Hải Toàn</p>
+                <p class="title-contact">
+                    <a href="mailto:nguyenhaitoan@vnu.edu.vn">nguyenhaitoan@vnu.edu.vn</a>
+                </p>
+            </section>
+
+            <div class="footer">
+                Nguyễn Hải Toàn · Hướng tạo bộ dữ liệu
+            </div>
+        </div>
+    </div>
+
+    <script src="revealjs/dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script>
+        Reveal.initialize({
+            controlsLayout: "edges",
+            slideNumber: true,
+            hashOneBasedIndex: true,
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+    </script>
+</body>
+
+</html>
