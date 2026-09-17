@@ -1,0 +1,180 @@
+{
+ "sequences": [
+  {
+   "name": "cecum_t1_a",
+   "segment": "Cecum",
+   "label": "Cecum \u00b7 t1 a",
+   "dir": "seq/cecum_t1_a",
+   "build": "d7e91a27b360",
+   "frames": 276,
+   "observed": 0.8398,
+   "observed_faces": 0.838,
+   "area_mm2": 20776.2,
+   "source_triangles": 745537,
+   "decimated": true,
+   "clear": 0.7803,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0085,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0
+    ],
+    [
+     2.0,
+     5.0,
+     0.0001
+    ],
+    [
+     5.0,
+     10.0,
+     0.0509
+    ],
+    [
+     10.0,
+     20.0,
+     0.6617
+    ],
+    [
+     20.0,
+     null,
+     0.1186
+    ]
+   ],
+   "glb_mb": 9.6
+  },
+  {
+   "name": "trans_t1_a",
+   "segment": "Transverse colon",
+   "label": "Transverse colon \u00b7 t1 a",
+   "dir": "seq/trans_t1_a",
+   "build": "8d2abf9c7c33",
+   "frames": 61,
+   "observed": 0.4625,
+   "observed_faces": 0.4744,
+   "area_mm2": 22845.6,
+   "source_triangles": 231410,
+   "decimated": false,
+   "clear": 0.2683,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0025,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0003
+    ],
+    [
+     2.0,
+     5.0,
+     0.0553
+    ],
+    [
+     5.0,
+     10.0,
+     0.1362
+    ],
+    [
+     10.0,
+     20.0,
+     0.1165
+    ],
+    [
+     20.0,
+     null,
+     0.1518
+    ]
+   ],
+   "glb_mb": 6.59
+  },
+  {
+   "name": "desc_t4_a",
+   "segment": "Descending colon",
+   "label": "Descending colon \u00b7 t4 a",
+   "dir": "seq/desc_t4_a",
+   "build": "ef56c893c2ca",
+   "frames": 148,
+   "observed": 0.2083,
+   "observed_faces": 0.2051,
+   "area_mm2": 33588.4,
+   "source_triangles": 465032,
+   "decimated": true,
+   "clear": 0.1515,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0035,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0
+    ],
+    [
+     2.0,
+     5.0,
+     0.003
+    ],
+    [
+     5.0,
+     10.0,
+     0.0502
+    ],
+    [
+     10.0,
+     20.0,
+     0.0741
+    ],
+    [
+     20.0,
+     null,
+     0.0774
+    ]
+   ],
+   "glb_mb": 9.6
+  },
+  {
+   "name": "sigmoid_t3_b",
+   "segment": "Sigmoid colon",
+   "label": "Sigmoid colon \u00b7 t3 b",
+   "dir": "seq/sigmoid_t3_b",
+   "build": "59b4432ead0d",
+   "frames": 536,
+   "observed": 0.3577,
+   "observed_faces": 0.3345,
+   "area_mm2": 19385.0,
+   "source_triangles": 260850,
+   "decimated": false,
+   "clear": 0.2811,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0077,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0
+    ],
+    [
+     2.0,
+     5.0,
+     0.0054
+    ],
+    [
+     5.0,
+     10.0,
+     0.0634
+    ],
+    [
+     10.0,
+     20.0,
+     0.127
+    ],
+    [
+     20.0,
+     null,
+     0.1541
+    ]
+   ],
+   "glb_mb": 7.39
+  }
+ ]
+}

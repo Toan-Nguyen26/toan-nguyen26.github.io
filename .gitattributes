@@ -1,2 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Binary data for slides/c3vd-coverage — never line-ending-normalize these
+*.glb binary
+*.bin binary
+*.jpg binary
+*.png binary

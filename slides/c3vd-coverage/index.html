@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C3VD — colonoscope coverage</title>
+<style>
+  :root {
+    --surface:   #1a1a19;
+    --ink:       #ffffff;
+    --muted:     #898781;
+    --panel:     #12121190;
+    --hairline:  #383835;
+    --observed:  #c3c2b7;   /* sequential ramp, high end  */
+    --unobserved:#d03b3b;   /* sequential ramp, low end   */
+    --unresolved:#3987e5;   /* out of band, not a value   */
+    --blurry:    #7a766f;   /* clarity ramp, low end      */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; height:100vh; overflow:hidden; background:var(--surface); color:var(--ink);
+    font:14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  canvas { display:block; cursor:crosshair; }
+  .panel {
+    position:fixed; background:var(--panel); backdrop-filter:blur(10px);
+    border:1px solid var(--hairline); border-radius:8px; padding:14px 16px;
+  }
+  .note { margin:10px 0 0; padding-top:9px; border-top:1px solid var(--hairline);
+          font-size:11.5px; color:var(--muted); }
+
+  #title { top:16px; left:16px; max-width:340px; }
+  #title h1 { margin:0; font-size:15px; font-weight:600; letter-spacing:-0.01em; }
+  #title p  { margin:5px 0 0; font-size:12.5px; color:var(--muted); }
+  #title .hint { color:var(--ink); margin-top:8px; }
+  #picker { display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; }
+  #picker button { padding:4px 9px; border:1px solid var(--hairline); border-radius:6px;
+                   background:none; color:var(--muted); font-family:inherit; font-size:12px;
+                   cursor:pointer; }
+  #picker button:hover { color:var(--ink); }
+  #picker button[aria-pressed="true"] { color:var(--ink); border-color:var(--ink); }
+  #picker button[disabled] { opacity:.45; cursor:progress; }
+  #picker button[data-failed] { border-style:dashed; }
+  #reset { margin-top:10px; padding:4px 10px; border:1px solid var(--hairline); border-radius:6px;
+           background:none; color:var(--ink); font-family:inherit; font-size:12px; cursor:pointer; }
+  #reset:hover, #reset:focus-visible { border-color:var(--muted); }
+  #reset kbd { margin-left:6px; padding:0 4px; border:1px solid var(--hairline); border-radius:3px;
+               color:var(--muted); font-family:inherit; font-size:11px; }
+
+  #stats { top:16px; right:16px; width:360px; }
+  #hero { font-size:30px; font-weight:650; letter-spacing:-0.02em; line-height:1.1;
+          font-variant-numeric:tabular-nums; }
+  #hero small { display:block; font-size:12px; font-weight:400; color:var(--muted);
+                letter-spacing:0; margin-top:3px; }
+  .row { display:flex; justify-content:space-between; gap:18px; font-size:12.5px;
+         padding:3px 0; font-variant-numeric:tabular-nums; }
+  .row span:first-child { color:var(--muted); }
+  #stats hr { border:0; border-top:1px solid var(--hairline); margin:11px 0 8px; }
+
+  #legend { bottom:16px; left:16px; width:262px; }
+  #legend h2 { margin:0 0 9px; font-size:12px; font-weight:600; letter-spacing:0.03em;
+               text-transform:uppercase; color:var(--muted); }
+  .bar { height:12px; border-radius:3px; border:1px solid var(--hairline); }
+  .ticks { display:flex; justify-content:space-between; font-size:11.5px;
+           color:var(--muted); margin-top:5px; }
+  #modes { display:flex; gap:5px; margin-bottom:11px; }
+  #modes button { flex:1; padding:4px 8px; border:1px solid var(--hairline); border-radius:6px;
+                  background:none; color:var(--muted); font-family:inherit; font-size:12px; cursor:pointer; }
+  #modes button:hover { color:var(--ink); }
+  #modes button[aria-pressed="true"] { color:var(--ink); border-color:var(--ink); }
+  .swatch { display:flex; align-items:center; gap:8px; font-size:12px;
+            margin-top:10px; color:var(--muted); }
+  .chip { width:13px; height:13px; border-radius:3px; border:1px solid var(--hairline); flex:none; }
+
+  #inspect { top:206px; right:16px; width:360px; max-height:calc(100vh - 222px); overflow:auto; }
+  .ihead { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .ihead h2 { margin:0; font-size:14px; font-weight:600; }
+  .ihead small { display:block; margin-top:2px; font-size:12px; font-weight:400; color:var(--muted); }
+  #i-close { flex:none; width:26px; height:26px; border:1px solid var(--hairline); border-radius:6px;
+             background:none; color:var(--muted); font-size:16px; line-height:1; cursor:pointer; }
+  #i-close:hover, #i-close:focus-visible { color:var(--ink); border-color:var(--muted); }
+  #i-view { position:relative; margin-top:12px; border-radius:6px; overflow:hidden;
+            background:#000; aspect-ratio:1350/1080; }
+  #i-view img { display:block; width:100%; height:100%; }
+  #i-dot { position:absolute; width:24px; height:24px; border-radius:50%;
+           border:2px solid #fff; box-shadow:0 0 0 2px #000d, inset 0 0 0 2px #000d;
+           transform:translate(-50%,-50%); pointer-events:none; }
+  .fcap { margin-top:5px; font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums; }
+  #i-thumbs { display:flex; gap:8px; margin-top:8px; }
+  #i-thumbs button { flex:1; min-width:0; padding:0 0 3px; border:1px solid var(--hairline);
+                     border-radius:5px; background:#000; color:var(--muted); cursor:pointer;
+                     overflow:hidden; font-family:inherit; font-size:11px; }
+  #i-thumbs button[aria-pressed="true"] { border-color:var(--ink); color:var(--ink); }
+  #i-thumbs button:focus-visible { outline:2px solid var(--ink); outline-offset:1px; }
+  #i-thumbs img { display:block; width:100%; aspect-ratio:1350/1080; margin-bottom:2px; }
+  #i-never { margin:12px 0 0; padding:12px; border:1px solid var(--hairline); border-radius:6px;
+             font-size:13px; color:var(--ink); }
+
+  #credit { bottom:16px; right:16px; font-size:11.5px; color:var(--muted);
+            text-align:right; max-width:360px; }
+  #credit a { color:var(--muted); }
+  body.inspecting #credit { display:none; }
+  #err { color:var(--unobserved); font-size:12.5px; white-space:pre-wrap; }
+  @media (max-width:820px) {
+    #stats, #credit { display:none; }
+    #inspect { top:auto; bottom:16px; left:16px; right:16px; width:auto; max-height:55vh; }
+    body.inspecting #legend { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="panel" id="title">
+  <h1>Where the colonoscope never looked</h1>
+  <p id="subtitle">C3VD · loading…</p>
+  <div id="picker" role="group" aria-label="Colon segment"></div>
+  <p class="hint">Drag to spin · scroll to zoom · click the wall to see the real frames that captured it.</p>
+  <button id="reset" type="button">Reset view <kbd>R</kbd></button>
+</div>
+
+<div class="panel" id="stats" hidden>
+  <div id="hero">—<small>of the surface was seen</small></div>
+  <hr>
+  <div class="row"><span>seen clearly · ≥10 px/mm</span> <b id="s-clear">—</b></div>
+  <div class="row"><span>seen, by triangle count</span> <b id="s-faces">—</b></div>
+  <div class="row"><span>wall area</span>            <b id="s-area">—</b></div>
+  <div class="row"><span>triangles</span>            <b id="s-tri">—</b></div>
+  <div class="row"><span>frames</span>               <b id="s-frames">—</b></div>
+  <div class="row"><span>unresolved</span>           <b id="s-unr">—</b></div>
+</div>
+
+<aside class="panel" id="inspect" hidden aria-live="polite">
+  <div class="ihead">
+    <h2><span id="i-title">—</span><small id="i-face"></small></h2>
+    <button id="i-close" aria-label="Close">×</button>
+  </div>
+  <div id="i-seen">
+    <div id="i-view"><img id="i-frame" alt=""><i id="i-dot"></i></div>
+    <div class="fcap" id="i-fcap"></div>
+    <div id="i-thumbs"></div>
+    <p class="note" id="i-note"></p>
+  </div>
+  <p id="i-never" hidden></p>
+</aside>
+
+<div class="panel" id="legend">
+  <div id="modes" role="group" aria-label="Colour by">
+    <button type="button" data-mode="clarity" aria-pressed="true">Clarity</button>
+    <button type="button" data-mode="seen" aria-pressed="false">Seen or not</button>
+  </div>
+  <div id="lg-clarity">
+    <div class="bar" style="background:linear-gradient(90deg, var(--blurry), var(--observed))"></div>
+    <div class="ticks"><span>blurry · 2 px/mm</span><span>sharp · 20+ px/mm</span></div>
+    <div class="swatch"><i class="chip" style="background:var(--unobserved)"></i>never seen</div>
+    <div class="swatch"><i class="chip" style="background:var(--unresolved)"></i>unresolved — no value in source</div>
+    <p class="note">Clarity = how many pixels covered 1&nbsp;mm of wall in the clearest frame of that
+    spot. Close and head-on is sharp; far away or at an angle is blurry.
+    <b>Thresholds are provisional</b> — where "clear enough" sits is a clinical call.</p>
+  </div>
+  <div id="lg-seen" hidden>
+    <div class="bar" style="background:linear-gradient(90deg, var(--unobserved), var(--observed))"></div>
+    <div class="ticks"><span>0.0 never observed</span><span>observed 1.0</span></div>
+    <div class="swatch"><i class="chip" style="background:var(--unresolved)"></i>unresolved — no value in source</div>
+    <p class="note">C3VD's own flag: in view at least once, however briefly or blurrily. Stored as a
+    float in [0,1] so a calibrated per-region uncertainty drops in unchanged.</p>
+  </div>
+  <p class="note" id="err" hidden></p>
+</div>
+
+<div class="panel" id="credit">
+  C3VD — Bobrow et al., <i>Medical Image Analysis</i> 2023.<br>
+  Mesh, coverage, frames and poses are dataset ground truth; which frames saw each spot is
+  computed here by ray casting those poses.<br>
+  Data <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+</div>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+
+import * as THREE from 'three';
+import { GLTFLoader }        from 'three/addons/loaders/GLTFLoader.js';
+import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
+
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('en-US');
+
+// ---------------------------------------------------------------- palette ---
+// Validated with the dataviz six-checks against surface #1a1a19, all-pairs:
+//   unobserved vs observed  deltaE 23.7 (deuteranopia) / 30.0 (normal vision)
+// The ramp is MONOTONE in OKLab lightness (0.575 -> 0.812), so the coverage
+// boundary survives full achromatopsia as a light/dark step, not colour alone.
+const RAMP_LO    = [0xd0, 0x3b, 0x3b];   // coverage 0.0
+const RAMP_HI    = [0xc3, 0xc2, 0xb7];   // coverage 1.0
+const UNRESOLVED = [0x39, 0x87, 0xe5];   // out of band -- deliberately not on the ramp
+
+// Clarity is a SEPARATE encoding, not a stretch of the ramp above. A single
+// red->grey ramp cannot keep "never seen" apart from "seen but blurry": at the
+// halfway point the pair measures deltaE 13.3 normal vision (floor 15). So never
+// seen keeps the reserved red, and clarity runs one warm grey, dark -> light:
+//   never #d03b3b vs blurry #7a766f   deltaE 8.5 deuteranopia / 18.0 normal  PASS
+const BLURRY = [0x7a, 0x76, 0x6f];
+const CLARITY_LO = 2, CLARITY_HI = 20;          // px across 1 mm; PROVISIONAL thresholds
+function clarityColour(c, cov, out) {
+  if (cov < 0 || c < 0) return out.setRGB(UNRESOLVED[0]/255, UNRESOLVED[1]/255, UNRESOLVED[2]/255);
+  if (c <= 0) return out.setRGB(RAMP_LO[0]/255, RAMP_LO[1]/255, RAMP_LO[2]/255);   // never seen
+  const u = (Math.log(c) - Math.log(CLARITY_LO)) / (Math.log(CLARITY_HI) - Math.log(CLARITY_LO));
+  const t = u < 0 ? 0 : u > 1 ? 1 : u;        // log scale: halving the distance doubles px/mm
+  return out.setRGB((BLURRY[0] + (RAMP_HI[0]-BLURRY[0])*t) / 255,
+                    (BLURRY[1] + (RAMP_HI[1]-BLURRY[1])*t) / 255,
+                    (BLURRY[2] + (RAMP_HI[2]-BLURRY[2])*t) / 255);
+}
+
+function ramp(v, out) {
+  if (v < 0) return out.setRGB(UNRESOLVED[0]/255, UNRESOLVED[1]/255, UNRESOLVED[2]/255);
+  const t = v > 1 ? 1 : v;
+  return out.setRGB((RAMP_LO[0] + (RAMP_HI[0]-RAMP_LO[0])*t) / 255,
+                    (RAMP_LO[1] + (RAMP_HI[1]-RAMP_LO[1])*t) / 255,
+                    (RAMP_LO[2] + (RAMP_HI[2]-RAMP_LO[2])*t) / 255);
+}
+
+// ------------------------------------------------------------------ scene ---
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+document.body.appendChild(renderer.domElement);
+
+const scene  = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1a19);
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 10000);
+
+// TrackballControls, not OrbitControls. Orbit is a turntable: it keeps a fixed
+// "up" and clamps the camera between the poles (three r160 OrbitControls.js:242),
+// so the colon can never be tumbled over the top. Trackball rotates about any
+// axis without limit, and a flick keeps it spinning for a moment.
+function makeControls() {
+  const c = new TrackballControls(camera, renderer.domElement);
+  c.rotateSpeed = 3.0;
+  c.zoomSpeed = 1.2;
+  c.panSpeed = 0.8;
+  c.staticMoving = false;          // keep a little momentum after release
+  c.dynamicDampingFactor = 0.15;
+  return c;
+}
+let controls = makeControls();
+let glide = null;                  // camera tween that slides a clicked spot clear of the panel
+
+// An endoscope lights the wall from its own tip. Ambient light would flatten the
+// haustral folds into nothing, and the folds are what make the shadows legible.
+camera.add(new THREE.PointLight(0xffffff, 1.35, 0, 0.0));
+scene.add(camera);
+scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+
+const marker = new THREE.Group();
+marker.visible = false;
+scene.add(marker);
+
+// ----------------------------------------------------------------- loaders --
+// Kept pluggable on purpose: a 3D Gaussian-splat surface (handoff SS10 q2) would
+// register here as another entry rather than reshaping the viewer around itself.
+const LOADERS = [
+  // match on the path only: asset URLs carry a ?v=<build> fingerprint
+  { name:'gltf', test: u => /\.(glb|gltf)$/i.test(u.split('?')[0]), load: loadGLTF },
+];
+function loadSurface(url) {
+  const h = LOADERS.find(l => l.test(url));
+  if (!h) return Promise.reject(new Error(`no loader registered for ${url}`));
+  return h.load(url);
+}
+function loadGLTF(url) {
+  return new Promise((res, rej) => new GLTFLoader().load(url, gltf => {
+    let mesh = null;
+    gltf.scene.traverse(o => { if (o.isMesh && !mesh) mesh = o; });
+    if (!mesh) return rej(new Error('glTF contains no mesh'));
+    // three.js lowercases unknown glTF attributes and keeps the underscore,
+    // so _COVERAGE arrives as _coverage.
+    const cov = mesh.geometry.attributes._coverage;
+    if (!cov) return rej(new Error(
+      'no _coverage attribute — the coverage channel was stripped.\n' +
+      'found: ' + Object.keys(mesh.geometry.attributes).join(', ')));
+    res({ root: gltf.scene, mesh, coverage: cov,
+          clarity: mesh.geometry.attributes._clarity || null });
+  }, undefined, rej));
+}
+async function loadJSON(url, init) {
+  const r = await fetch(url, init);
+  if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  return r.json();
+}
+// visibility.bin (compute_coverage.py), format 3: u32 F, u32 K, u32 version, then
+// u16[F*K] best frames per SOURCE face, clearest first (65535 = none), u16[F]
+// frames where it was visible, u16[F] clarity in px/mm x 10. 16-bit because
+// sequences run past 255 frames.
+const NO_FRAME = 65535;
+async function loadVisibility(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  const buf = await r.arrayBuffer();
+  const [F, K, version] = new Uint32Array(buf, 0, 3);
+  if (version !== 3) throw new Error(`${url}: format ${version}, expected 3 — rebuild with build_web.py`);
+  const o1 = 12, o2 = o1 + F*K*2, o3 = o2 + F*2;
+  return { F, K, top: new Uint16Array(buf, o1, F*K), nFrames: new Uint16Array(buf, o2, F),
+           clarity: new Uint16Array(buf, o3, F) };
+}
+// face_map.bin (build_glb.py): only written when the mesh was decimated. Maps each
+// GLB face back to the source face that visibility.bin is indexed by. The manifest
+// says which sequences have one, so an undecimated sequence is never probed for it.
+async function loadFaceMap(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  const buf = await r.arrayBuffer();
+  const n = new Uint32Array(buf, 0, 1)[0];
+  return new Uint32Array(buf, 4, n);
+}
+
+// ------------------------------------------------------------ c3vd camera ---
+// Port of c3vd_camera.project (itself Render.cu:forwardProjectVertex): world
+// point -> full-resolution pixel in frame n. Poses are camera-to-world rows.
+function makeProjector(cam) {
+  const K = cam.intrinsics, S = cam.stretch;
+  const polyZ = r => K.a0 + K.a2*r*r + K.a3*r*r*r + K.a4*r*r*r*r;
+  return function project(p, n) {
+    const M = cam.poses[n];
+    const dx = p.x - M[0][3], dy = p.y - M[1][3], dz = p.z - M[2][3];
+    const x = M[0][0]*dx + M[1][0]*dy + M[2][0]*dz;      // R^T (p - t)
+    const y = M[0][1]*dx + M[1][1]*dy + M[2][1]*dz;
+    const z = M[0][2]*dx + M[1][2]*dy + M[2][2]*dz;
+    const r = Math.hypot(x, y) + 1e-20, m = z / r;
+    let lo = 1e-3, hi = 1000;                            // polyZ(rho)/rho decreases here
+    for (let i = 0; i < 64; i++) {
+      const mid = 0.5*(lo + hi);
+      if (polyZ(mid)/mid > m) lo = mid; else hi = mid;
+    }
+    const rho = 0.5*(lo + hi), u = x/r*rho, v = y/r*rho;
+    return [S[0][0]*u + S[0][1]*v + K.cx, S[1][0]*u + S[1][1]*v + K.cy];
+  };
+}
+
+// --------------------------------------------------------------- inspector --
+let S = null;                      // everything about the sequence on screen
+let mode = 'clarity';              // 'clarity' | 'seen'
+
+function paint() {
+  if (!S) return;
+  const useClarity = mode === 'clarity' && S.clarity;
+  const n = S.coverage.count, out = S.colours, c = new THREE.Color();
+  for (let i = 0; i < n; i++) {
+    const v = S.coverage.getX(i);
+    if (useClarity) clarityColour(S.clarity.getX(i), v, c); else ramp(v, c);
+    out[i*3] = c.r; out[i*3+1] = c.g; out[i*3+2] = c.b;
+  }
+  S.mesh.geometry.attributes.color.needsUpdate = true;
+}
+
+function closeInspector() {
+  $('inspect').hidden = true;
+  marker.visible = false;
+  document.body.classList.remove('inspecting');
+}
+
+// If the inspector panel now covers the spot that was clicked, slide the view
+// (camera and orbit target together, so nothing rotates) until the spot sits in
+// the middle of the uncovered area. Most of the observed wall is on the right,
+// exactly where the panel opens, so without this the marker vanishes on click.
+function keepInView(worldPoint) {
+  const panel = $('inspect').getBoundingClientRect();
+  const ndcP = worldPoint.clone().project(camera);
+  const sx = (ndcP.x + 1) / 2 * innerWidth, sy = (1 - ndcP.y) / 2 * innerHeight;
+  const pad = 28;
+  if (sx < panel.left - pad || sx > panel.right + pad ||
+      sy < panel.top - pad  || sy > panel.bottom + pad) return;
+  const panelOnRight = panel.left > innerWidth / 2;
+  const tx = panelOnRight ? panel.left / 2 : sx;
+  const ty = panelOnRight ? sy : panel.top / 2;
+  const fwd = camera.getWorldDirection(new THREE.Vector3());
+  const depth = worldPoint.clone().sub(camera.position).dot(fwd);
+  const perPx = 2 * depth * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) / innerHeight;
+  const rightV = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0);
+  const upV    = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+  const delta  = rightV.multiplyScalar(-(tx - sx) * perPx).add(upV.multiplyScalar((ty - sy) * perPx));
+  glide = { t0: performance.now(), from: camera.position.clone(), target0: controls.target.clone(), delta };
+}
+
+function showFrame(fr, local, btn) {
+  $('i-frame').src = asset(S.entry, S.cam.frames[fr]);
+  $('i-frame').alt = `Colonoscope frame ${fr}, with the clicked spot ringed`;
+  const [u, v] = S.project(local, fr);
+  const dot = $('i-dot');
+  dot.hidden = !(u >= 0 && u < S.cam.width && v >= 0 && v < S.cam.height);
+  dot.style.left = (100 * u / S.cam.width) + '%';
+  dot.style.top  = (100 * v / S.cam.height) + '%';
+  $('i-fcap').textContent = `frame ${fr} of ${S.cam.poses.length}`;
+  for (const b of $('i-thumbs').children) b.setAttribute('aria-pressed', String(b === btn));
+}
+
+function inspect(glbFace, worldPoint) {
+  marker.position.copy(worldPoint);
+  marker.visible = true;
+  const local = S.mesh.worldToLocal(worldPoint.clone());
+  // a decimated mesh has its own faces; visibility.bin is indexed by source face
+  const face = S.faceMap ? S.faceMap[glbFace] : glbFace;
+  const seenBy = S.vis.nFrames[face];
+  const c3vdSeen = S.coverage.getX(S.idx[glbFace*3]) >= 0.5;
+  const total = S.cam.poses.length;
+  document.body.classList.add('inspecting');
+  $('inspect').hidden = false;
+  const clr = S.vis.clarity[face] / 10;
+  const band = clr < 5 ? 'blurry' : clr < 10 ? 'medium' : clr < 20 ? 'good' : 'sharp';
+  $('i-face').textContent = clr > 0
+    ? `triangle ${fmt(face)} · clearest view ${clr.toFixed(1)} px/mm (${band})`
+    : `triangle ${fmt(face)}`;
+
+  if (seenBy > 0) {
+    $('i-title').textContent = `Seen in ${seenBy} of ${total} frames`;
+    $('i-seen').hidden = false;
+    $('i-never').hidden = true;
+    const frames = [];
+    for (let k = 0; k < S.vis.K; k++) {
+      const fr = S.vis.top[face*S.vis.K + k];
+      if (fr !== NO_FRAME) frames.push(fr);
+    }
+    $('i-thumbs').replaceChildren(...frames.map(fr => {
+      const b = document.createElement('button');
+      const im = document.createElement('img');
+      im.src = asset(S.entry, S.cam.frames[fr]); im.alt = '';
+      b.append(im, `frame ${fr}`);
+      b.addEventListener('click', () => showFrame(fr, local, b));
+      return b;
+    }));
+    showFrame(frames[0], local, $('i-thumbs').firstElementChild);
+    $('i-note').textContent = c3vdSeen
+      ? 'The clearest views of this spot first. The ring marks where you clicked.'
+      : "Borderline: this triangle is smaller than a pixel in every frame. C3VD's own map calls it unseen; our computation catches it with a single pixel.";
+  } else {
+    $('i-title').textContent = 'Never seen';
+    $('i-seen').hidden = true;
+    $('i-never').hidden = false;
+    $('i-never').textContent = c3vdSeen
+      ? "C3VD counts this spot as seen, but it only ever fell in the black corners of the video or was smaller than a pixel — nobody watching could have seen it."
+      : `None of the ${total} frames captured this spot — the colonoscope never pointed here, or a fold hid it.`;
+  }
+  keepInView(worldPoint);
+}
+
+// ------------------------------------------------------------ load one seq --
+function disposeCurrent() {
+  if (!S) return;
+  scene.remove(S.root);
+  S.root.traverse(o => {
+    if (o.isMesh) { o.geometry.dispose(); (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose()); }
+  });
+  S = null;
+}
+
+// One segment failing must never take the others down: the buttons always come
+// back, the failed one is marked, and whatever was on screen stays on screen.
+async function loadSequence(entry) {
+  closeInspector();
+  const buttons = [...$('picker').children];
+  const mine = buttons.find(b => b.dataset.name === entry.name);
+  buttons.forEach(b => b.disabled = true);
+  try {
+    await loadSequenceUnguarded(entry);
+    $('err').hidden = true;
+    if (mine) { delete mine.dataset.failed; mine.title = `${entry.label} — ${entry.frames} frames`; }
+  } catch (e) {
+    if (mine) { mine.dataset.failed = '1'; mine.title = `Could not load: ${e.message}`; }
+    throw e;
+  } finally {
+    for (const b of buttons) {
+      b.disabled = false;
+      b.setAttribute('aria-pressed', String(S?.entry.name === b.dataset.name));
+    }
+    if (S) $('subtitle').textContent = `C3VD · ${S.entry.label} · ${fmt(S.entry.frames)} frames`;
+  }
+}
+
+// every asset URL carries the build fingerprint, so a republish is never mixed
+// with files a browser cached from the previous build
+const asset = (entry, file) => `${entry.dir}/${file}${entry.build ? `?v=${entry.build}` : ''}`;
+
+async function loadSequenceUnguarded(entry) {
+  $('subtitle').textContent = `C3VD · ${entry.label} · loading…`;
+
+  const [{ root, mesh, coverage, clarity }, cam, vis, faceMap] = await Promise.all([
+    loadSurface(asset(entry, 'coverage.glb')),
+    loadJSON(asset(entry, 'camera.json')),
+    loadVisibility(asset(entry, 'visibility.bin')),
+    entry.decimated ? loadFaceMap(asset(entry, 'face_map.bin')) : null]);
+
+  disposeCurrent();
+  const g = mesh.geometry, idx = g.index.array, nTri = idx.length / 3;
+
+  const col = new Float32Array(coverage.count * 3);          // filled by paint()
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  mesh.material = new THREE.MeshStandardMaterial({
+    vertexColors:true, roughness:0.85, metalness:0.0, side:THREE.DoubleSide });
+
+  // Picking only means something if face order survived the export. Check it:
+  // C3VD's flag (in the GLB) vs whether the face was visible in the video
+  // (visibility.bin, via the face map). They legitimately differ on sub-pixel
+  // specks and on faces C3VD counts as seen only through the video's black
+  // corners -- a fraction of a percent. A scrambled face order would be ~50%.
+  if (faceMap && faceMap.length !== nTri)
+    throw new Error(`face_map has ${faceMap.length} faces, the mesh has ${nTri}`);
+  if (!faceMap && vis.F !== nTri)
+    throw new Error(`visibility.bin has ${vis.F} faces, the mesh has ${nTri}`);
+  let disagree = 0, unresolved = 0;
+  for (let f = 0; f < nTri; f++) {
+    const v = coverage.getX(idx[f*3]);
+    if (v < 0) unresolved++;
+    if ((v >= 0.5) !== (vis.nFrames[faceMap ? faceMap[f] : f] > 0)) disagree++;
+  }
+  console.info(`[${entry.name}] face-order check: C3VD flag vs visible-in-video differ on ` +
+               `${disagree} of ${nTri} faces (${(100*disagree/nTri).toFixed(2)}%; scrambled would be ~50%)`);
+
+  // stats: AREA is the headline -- how much wall was seen, not how many triangles
+  $('hero').innerHTML = (100*entry.observed).toFixed(2) + '%<small>of the wall area was seen</small>';
+  $('s-clear').textContent  = entry.clear != null ? (100*entry.clear).toFixed(2) + '%' : '—';
+  $('s-faces').textContent  = (100*entry.observed_faces).toFixed(2) + '%';
+  $('s-area').textContent   = fmt(Math.round(entry.area_mm2)) + ' mm²';
+  $('s-tri').textContent    = entry.decimated
+    ? `${fmt(nTri)} (from ${fmt(entry.source_triangles)})` : fmt(nTri);
+  $('s-frames').textContent = fmt(entry.frames);
+  $('s-unr').textContent    = fmt(unresolved);
+  $('stats').hidden = false;
+  $('subtitle').textContent = `C3VD · ${entry.label} · ${fmt(entry.frames)} frames`;
+
+  // A colon segment is long and thin. Two things follow: lay its long axis
+  // ACROSS the screen rather than up it, and fit the bounding box projected onto
+  // the view plane -- fitting the bounding sphere would waste most of the frame.
+  g.computeBoundingBox();
+  const bb = g.boundingBox, ctr = bb.getCenter(new THREE.Vector3());
+  const ext = new THREE.Vector3().subVectors(bb.max, bb.min);
+  const e = [ext.x, ext.y, ext.z];
+  const li = e.indexOf(Math.max(...e));
+  const longAxis = new THREE.Vector3(+(li===0), +(li===1), +(li===2));
+  let p1 = new THREE.Vector3(1, 0, 0);
+  if (Math.abs(p1.dot(longAxis)) > 0.9) p1.set(0, 1, 0);
+  p1.crossVectors(longAxis, p1).normalize();
+  const p2 = new THREE.Vector3().crossVectors(longAxis, p1).normalize();
+  const dir = p1.clone().multiplyScalar(0.86).addScaledVector(p2, 0.38)
+                .addScaledVector(longAxis, 0.16).normalize();
+  camera.up.copy(new THREE.Vector3().crossVectors(dir, longAxis).normalize());
+  const right = new THREE.Vector3().crossVectors(camera.up, dir).normalize();
+  const halfW = 0.5*(Math.abs(ext.x*right.x) + Math.abs(ext.y*right.y) + Math.abs(ext.z*right.z));
+  const halfH = 0.5*(Math.abs(ext.x*camera.up.x) + Math.abs(ext.y*camera.up.y) + Math.abs(ext.z*camera.up.z));
+  const tan = Math.tan(THREE.MathUtils.degToRad(camera.fov)/2);
+  const dist = Math.max(halfH/tan, halfW/(tan*camera.aspect)) * 1.16;
+  camera.position.copy(ctr).addScaledVector(dir, dist);
+  camera.near = dist/200; camera.far = dist*20; camera.updateProjectionMatrix();
+
+  // Rebuild the controls now that the view is framed. TrackballControls
+  // snapshots position, target and up when constructed, and reset() returns
+  // to that snapshot -- so "Reset view" means this framed view.
+  controls.dispose();
+  controls = makeControls();
+  controls.target.copy(ctr);
+  controls.target0.copy(ctr);
+  controls.update();
+  glide = null;
+
+  const size = ext.length() * 0.005;
+  marker.clear();
+  marker.add(new THREE.Mesh(new THREE.SphereGeometry(size*1.5, 20, 14),
+                            new THREE.MeshBasicMaterial({ color:0x000000, side:THREE.BackSide })));
+  marker.add(new THREE.Mesh(new THREE.SphereGeometry(size, 20, 14),
+                            new THREE.MeshBasicMaterial({ color:0xffffff })));
+
+  scene.add(root);
+  S = { entry, root, mesh, coverage, clarity, colours: col, idx, nTri, cam, vis, faceMap,
+        project: makeProjector(cam), disagree, inspect, loadSequence };
+  paint();
+  $('modes').querySelector('[data-mode="clarity"]').disabled = !clarity;
+  if (!clarity && mode === 'clarity') setMode('seen');
+
+  window.__viewer = S;
+}
+
+// -------------------------------------------------------------------- main --
+function fail(e) {
+  const el = $('err');
+  el.hidden = false; el.textContent = String(e && e.message || e);
+  if (!S) $('subtitle').textContent = 'C3VD · failed to load';   // keep the label of what IS on screen
+}
+
+try {
+  // the manifest is tiny and is what names each build, so never take it from cache
+  const manifest = await loadJSON('manifest.json', { cache: 'no-store' });
+  $('picker').replaceChildren(...manifest.sequences.map(entry => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = entry.segment;
+    b.title = `${entry.label} — ${entry.frames} frames`;
+    b.dataset.name = entry.name;
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => { if (S?.entry.name !== entry.name) loadSequence(entry).catch(fail); });
+    return b;
+  }));
+  window.__manifest = manifest;
+  // start on the first segment that actually loads, rather than stopping at the first failure
+  let firstError = null;
+  for (const entry of manifest.sequences) {
+    try { await loadSequence(entry); firstError = null; break; }
+    catch (e) { console.warn(`[${entry.name}] could not load: ${e.message}`); firstError ??= e; }
+  }
+  if (firstError) throw firstError;
+} catch (e) {
+  console.error(e);
+  fail(e);
+}
+
+function setMode(m) {
+  mode = m;
+  for (const b of $('modes').children) b.setAttribute('aria-pressed', String(b.dataset.mode === m));
+  $('lg-clarity').hidden = m !== 'clarity';
+  $('lg-seen').hidden = m !== 'seen';
+  paint();
+}
+for (const b of $('modes').children) b.addEventListener('click', () => setMode(b.dataset.mode));
+
+$('i-close').addEventListener('click', closeInspector);
+addEventListener('keydown', ev => { if (ev.key === 'Escape') closeInspector(); });
+
+// a click is a press and release without dragging; anything else is orbiting
+const raycaster = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+let down = null;
+renderer.domElement.addEventListener('pointerdown', ev => { down = [ev.clientX, ev.clientY]; glide = null; });
+renderer.domElement.addEventListener('pointerup', ev => {
+  if (!S || !down || Math.hypot(ev.clientX - down[0], ev.clientY - down[1]) > 5) return;
+  const rect = renderer.domElement.getBoundingClientRect();
+  ndc.set(((ev.clientX - rect.left) / rect.width) * 2 - 1,
+          -((ev.clientY - rect.top) / rect.height) * 2 + 1);
+  raycaster.setFromCamera(ndc, camera);
+  const hit = raycaster.intersectObject(S.mesh, false)[0];
+  if (hit) inspect(hit.faceIndex, hit.point);
+});
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  controls.handleResize();         // Trackball caches the canvas size
+});
+
+// free spinning makes it easy to end up upside down -- always offer a way home
+function resetView() { glide = null; controls.reset(); }
+$('reset').addEventListener('click', resetView);
+addEventListener('keydown', ev => { if (ev.key === 'r' || ev.key === 'R') resetView(); });
+
+renderer.setAnimationLoop(() => {
+  if (glide) {
+    const k = Math.min(1, (performance.now() - glide.t0) / 350), ease = 1 - Math.pow(1 - k, 3);
+    camera.position.copy(glide.from).addScaledVector(glide.delta, ease);
+    controls.target.copy(glide.target0).addScaledVector(glide.delta, ease);
+    if (k === 1) glide = null;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+});
+</script>
+</body>
+</html>
