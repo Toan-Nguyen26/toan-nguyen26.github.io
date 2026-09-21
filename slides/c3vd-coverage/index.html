@@ -15,6 +15,7 @@
     --unobserved:#d03b3b;   /* sequential ramp, low end   */
     --unresolved:#3987e5;   /* out of band, not a value   */
     --zone:      #e8b400;   /* a highlighted slice band, e.g. where a polyp was reported */
+    --polyp:     #b44fd6;   /* a located polyp candidate */
     --blurry:    #7a766f;   /* clarity ramp, low end      */
   }
   * { box-sizing: border-box; }
@@ -60,6 +61,15 @@
   #stats hr { border:0; border-top:1px solid var(--hairline); margin:11px 0 8px; }
 
   #legend { bottom:16px; left:16px; width:262px; }
+  #legend[hidden], #lg-show[hidden] { display:none; }
+  .lg-head { display:flex; justify-content:flex-end; margin:-4px -6px 6px 0; }
+  #lg-hide { padding:2px 8px; border:1px solid var(--hairline); border-radius:6px; background:none;
+             color:var(--muted); font-family:inherit; font-size:11.5px; cursor:pointer; }
+  #lg-hide:hover, #lg-hide:focus-visible { color:var(--ink); border-color:var(--muted); }
+  #lg-show { bottom:16px; left:16px; padding:6px 12px; color:var(--ink); font-family:inherit;
+             font-size:12px; cursor:pointer; }
+  #lg-show kbd, #lg-hide kbd { margin-left:6px; padding:0 4px; border:1px solid var(--hairline);
+             border-radius:3px; color:var(--muted); font-family:inherit; font-size:11px; }
   #legend h2 { margin:0 0 9px; font-size:12px; font-weight:600; letter-spacing:0.03em;
                text-transform:uppercase; color:var(--muted); }
   .bar { height:12px; border-radius:3px; border:1px solid var(--hairline); }
@@ -145,7 +155,9 @@
   <p id="i-never" hidden></p>
 </aside>
 
+<button class="panel" id="lg-show" type="button" hidden aria-controls="legend">Legend <kbd>L</kbd></button>
 <div class="panel" id="legend">
+  <div class="lg-head"><button id="lg-hide" type="button" aria-controls="legend">Hide <kbd>L</kbd></button></div>
   <div id="modes" role="group" aria-label="Colour by">
     <button type="button" data-mode="clarity" aria-pressed="true">Clarity</button>
     <button type="button" data-mode="seen" aria-pressed="false">Seen or not</button>
@@ -172,6 +184,13 @@
       <i class="chip" style="background:var(--zone)"></i><span id="zone-label"></span>
     </label>
     <p class="note" id="zone-note"></p>
+  </div>
+  <div id="polyp-row" hidden>
+    <label class="swatch" style="cursor:pointer">
+      <input type="checkbox" id="polyp-on" checked style="margin:0">
+      <i class="chip" style="background:var(--polyp)"></i><span id="polyp-label"></span>
+    </label>
+    <p class="note" id="polyp-note"></p>
   </div>
   <p class="note" id="err" hidden></p>
 </div>
@@ -322,9 +341,10 @@ const CREDITS = {
     html: `National CT Colonography Trial (ACRIN 6664) &mdash; Johnson et al.,
       <i>NEJM</i> 2008; images from TCIA,
       <a href="https://doi.org/10.7937/K9/TCIA.2015.NWTESAY1">doi:10.7937/K9/TCIA.2015.NWTESAY1</a>.<br>
-      A real patient's CT. Which gas is colon: TotalSegmentator (Wasserthal et al., 2023);
-      where the wall is: the scan's own gas edge (marching cubes). Blue = colon cut off from
-      the camera in this scan, left out of every percentage. The camera path is a centreline
+      A real patient's CT (second supine scan). Colon mask: HQColon, checked by an expert
+      abdominal radiologist (Sci Data 2026, CC BY 4.0); our TotalSegmentator-based mask agrees
+      at Dice 0.958. Purple = polyp candidate found by surface shape, not yet read by a
+      radiologist. Blue = colon cut off from the camera, left out of every percentage. The camera path is a centreline
       generated here; frames are ray-cast under a headlight, so they show shape only &mdash;
       CT records no mucosa. Coverage is simulated, through the real colonoscope lens.<br>
       Data <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.`
@@ -389,14 +409,18 @@ let mode = 'clarity';              // 'clarity' | 'seen'
 // A height band on the mesh, e.g. the CT slices a polyp was reported on. Mesh
 // positions are the scan's own patient millimetres, so slice z maps straight across.
 const ZONE = [0xe8, 0xb4, 0x00];
+const POLYP = [0xb4, 0x4f, 0xd6];
 function paint() {
   if (!S) return;
   const useClarity = mode === 'clarity' && S.clarity;
   const n = S.coverage.count, out = S.colours, c = new THREE.Color();
   const z = S.entry.zone, zoneOn = z && $('zone-on').checked, pos = S.mesh.geometry.attributes.position;
+  const pp = S.entry.polyp, polypOn = pp && $('polyp-on').checked, r2 = pp ? pp.r * pp.r : 0;
   for (let i = 0; i < n; i++) {
     const v = S.coverage.getX(i);
-    if (zoneOn && pos.getZ(i) >= z.z_min && pos.getZ(i) <= z.z_max) c.setRGB(ZONE[0]/255, ZONE[1]/255, ZONE[2]/255);
+    const dx = pp ? pos.getX(i) - pp.x : 0, dy = pp ? pos.getY(i) - pp.y : 0, dz = pp ? pos.getZ(i) - pp.z : 0;
+    if (polypOn && dx*dx + dy*dy + dz*dz <= r2) c.setRGB(POLYP[0]/255, POLYP[1]/255, POLYP[2]/255);
+    else if (zoneOn && pos.getZ(i) >= z.z_min && pos.getZ(i) <= z.z_max) c.setRGB(ZONE[0]/255, ZONE[1]/255, ZONE[2]/255);
     else if (useClarity) clarityColour(S.clarity.getX(i), v, c); else ramp(v, c);
     out[i*3] = c.r; out[i*3+1] = c.g; out[i*3+2] = c.b;
   }
@@ -623,6 +647,8 @@ async function loadSequenceUnguarded(entry) {
   S = { entry, root, mesh, coverage, clarity, colours: col, idx, nTri, cam, vis, faceMap,
         project: makeProjector(cam), disagree, inspect, loadSequence };
   $('zone-row').hidden = !entry.zone;
+  $('polyp-row').hidden = !entry.polyp;
+  if (entry.polyp) { $('polyp-label').textContent = entry.polyp.label; $('polyp-note').textContent = entry.polyp.note || ''; }
   if (entry.zone) { $('zone-label').textContent = entry.zone.label; $('zone-note').textContent = entry.zone.note || ''; }
   paint();
   $('modes').querySelector('[data-mode="clarity"]').disabled = !clarity;
@@ -673,6 +699,7 @@ function setMode(m) {
 }
 for (const b of $('modes').children) b.addEventListener('click', () => setMode(b.dataset.mode));
 $('zone-on').addEventListener('change', paint);
+$('polyp-on').addEventListener('change', paint);
 
 $('i-close').addEventListener('click', closeInspector);
 addEventListener('keydown', ev => { if (ev.key === 'Escape') closeInspector(); });
@@ -702,6 +729,20 @@ addEventListener('resize', () => {
 function resetView() { glide = null; controls.reset(); }
 $('reset').addEventListener('click', resetView);
 addEventListener('keydown', ev => { if (ev.key === 'r' || ev.key === 'R') resetView(); });
+
+// The legend can be hidden to leave the colon unobstructed. Remembered per viewer
+// (a convenience only: without storage it simply starts shown).
+function setLegend(show) {
+  $('legend').hidden = !show;
+  $('lg-show').hidden = show;
+  try { localStorage.setItem('legendHidden', show ? '0' : '1'); } catch (e) {}
+}
+$('lg-hide').addEventListener('click', () => setLegend(false));
+$('lg-show').addEventListener('click', () => setLegend(true));
+addEventListener('keydown', ev => {
+  if ((ev.key === 'l' || ev.key === 'L') && !ev.metaKey && !ev.ctrlKey && !ev.altKey) setLegend($('legend').hidden);
+});
+try { if (localStorage.getItem('legendHidden') === '1') setLegend(false); } catch (e) {}
 
 renderer.setAnimationLoop(() => {
   if (glide) {
