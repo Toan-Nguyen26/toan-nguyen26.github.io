@@ -42,7 +42,8 @@
      0.1186
     ]
    ],
-   "glb_mb": 9.6
+   "glb_mb": 9.6,
+   "source_id": "c3vd"
   },
   {
    "name": "trans_t1_a",
@@ -86,7 +87,8 @@
      0.1518
     ]
    ],
-   "glb_mb": 6.59
+   "glb_mb": 6.59,
+   "source_id": "c3vd"
   },
   {
    "name": "desc_t4_a",
@@ -130,7 +132,8 @@
      0.0774
     ]
    ],
-   "glb_mb": 9.6
+   "glb_mb": 9.6,
+   "source_id": "c3vd"
   },
   {
    "name": "sigmoid_t3_b",
@@ -174,7 +177,108 @@
      0.1541
     ]
    ],
-   "glb_mb": 7.39
+   "glb_mb": 7.39,
+   "source_id": "c3vd"
+  },
+  {
+   "name": "colon_6",
+   "segment": "RealSynCol colon",
+   "dir": "seq/colon_6",
+   "label": "Whole colon \u00b7 ACRIN 6664",
+   "build": "ce88e91100e5",
+   "frames": 152,
+   "observed": 0.7833,
+   "observed_faces": 0.7479,
+   "area_mm2": 164619.3,
+   "source_triangles": 204291,
+   "decimated": false,
+   "clear": 0.7469,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0,
+   "clarity_bands": [
+    [
+     0,
+     2,
+     0.0037
+    ],
+    [
+     2,
+     5,
+     0.0101
+    ],
+    [
+     5,
+     10,
+     0.0226
+    ],
+    [
+     10,
+     20,
+     0.2753
+    ],
+    [
+     20,
+     null,
+     0.4716
+    ]
+   ],
+   "glb_mb": 6.01,
+   "source": "RealSynCol / TCIA ACRIN 6664 (CT colonography)",
+   "path": "generated centreline",
+   "source_id": "realsyncol"
+  },
+  {
+   "name": "acrin_0233_supine",
+   "segment": "ACRIN patient 0233",
+   "dir": "seq/acrin_0233_supine",
+   "label": "Whole colon \u00b7 patient 0233",
+   "build": "ba04b2b82e2b",
+   "frames": 153,
+   "observed": 0.7585,
+   "observed_faces": 0.7385,
+   "area_mm2": 150600.3,
+   "source_triangles": 300000,
+   "decimated": false,
+   "clear": 0.7147,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0027
+    ],
+    [
+     2.0,
+     5.0,
+     0.0091
+    ],
+    [
+     5.0,
+     10.0,
+     0.032
+    ],
+    [
+     10.0,
+     20.0,
+     0.2523
+    ],
+    [
+     20.0,
+     null,
+     0.4624
+    ]
+   ],
+   "glb_mb": 8.75,
+   "source": "TCIA CT COLONOGRAPHY (ACRIN 6664), segmented here",
+   "source_id": "acrin",
+   "path": "generated centreline",
+   "zone": {
+    "z_min": -319.59999999999843,
+    "z_max": -303.5999999999982,
+    "label": "polyp search band \u00b7 slices 343\u2013363",
+    "note": "ACRIN lists an 18 mm polyp at supine slice 353. Shown: every wall within \u00b110 slices (\u00b18 mm). A flat slice cuts the colon in 3 places \u2014 cecum, descending, and a sigmoid loop \u2014 so the polyp is in one of these, not all."
+   }
   }
  ]
 }

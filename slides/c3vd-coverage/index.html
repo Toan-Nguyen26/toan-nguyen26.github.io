@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>C3VD — colonoscope coverage</title>
+<title>Colon coverage</title>
 <style>
   :root {
     --surface:   #1a1a19;
@@ -14,6 +14,7 @@
     --observed:  #c3c2b7;   /* sequential ramp, high end  */
     --unobserved:#d03b3b;   /* sequential ramp, low end   */
     --unresolved:#3987e5;   /* out of band, not a value   */
+    --zone:      #e8b400;   /* a highlighted slice band, e.g. where a polyp was reported */
     --blurry:    #7a766f;   /* clarity ramp, low end      */
   }
   * { box-sizing: border-box; }
@@ -113,9 +114,9 @@
 
 <div class="panel" id="title">
   <h1>Where the colonoscope never looked</h1>
-  <p id="subtitle">C3VD · loading…</p>
+  <p id="subtitle">loading…</p>
   <div id="picker" role="group" aria-label="Colon segment"></div>
-  <p class="hint">Drag to spin · scroll to zoom · click the wall to see the real frames that captured it.</p>
+  <p class="hint">Drag to spin · scroll to zoom · click the wall to see the frames that captured it.</p>
   <button id="reset" type="button">Reset view <kbd>R</kbd></button>
 </div>
 
@@ -165,15 +166,17 @@
     <p class="note">C3VD's own flag: in view at least once, however briefly or blurrily. Stored as a
     float in [0,1] so a calibrated per-region uncertainty drops in unchanged.</p>
   </div>
+  <div id="zone-row" hidden>
+    <label class="swatch" style="cursor:pointer">
+      <input type="checkbox" id="zone-on" checked style="margin:0">
+      <i class="chip" style="background:var(--zone)"></i><span id="zone-label"></span>
+    </label>
+    <p class="note" id="zone-note"></p>
+  </div>
   <p class="note" id="err" hidden></p>
 </div>
 
-<div class="panel" id="credit">
-  C3VD — Bobrow et al., <i>Medical Image Analysis</i> 2023.<br>
-  Mesh, coverage, frames and poses are dataset ground truth; which frames saw each spot is
-  computed here by ray casting those poses.<br>
-  Data <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
-</div>
+<div class="panel" id="credit"></div>
 
 <script type="importmap">
 {"imports":{
@@ -291,6 +294,44 @@ async function loadJSON(url, init) {
   if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
   return r.json();
 }
+// Each sequence carries its own provenance and licence. They are different
+// datasets by different authors under different terms -- the CT colon is not
+// C3VD's and must not be credited to it, nor shared under C3VD's non-commercial
+// licence. The page keeps the markup; the manifest only names which one.
+const CREDITS = {
+  c3vd: {
+    short: 'C3VD',
+    html: `C3VD &mdash; Bobrow et al., <i>Medical Image Analysis</i> 2023.<br>
+      Sculpted silicone phantom imaged with a clinical colonoscope. Mesh, coverage, frames
+      and poses are dataset ground truth; which frames saw each spot is computed here by
+      ray casting those poses.<br>
+      Data <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.`
+  },
+  realsyncol: {
+    short: 'CT patient',
+    html: `Colon segmented from CT colonography &mdash; RealSynCol (Lena et al.), built from
+      the National CT Colonography Trial <b>ACRIN 6664</b> on TCIA.<br>
+      A real patient's anatomy. The camera path is a centreline generated here, not the
+      dataset's trajectory; frames are ray-cast from the mesh under a headlight, so they show
+      shape only &mdash; CT records no mucosa. Coverage is computed through the real
+      colonoscope lens.<br>
+      Data <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.`
+  },
+  acrin: {
+    short: 'CT patient',
+    html: `National CT Colonography Trial (ACRIN 6664) &mdash; Johnson et al.,
+      <i>NEJM</i> 2008; images from TCIA,
+      <a href="https://doi.org/10.7937/K9/TCIA.2015.NWTESAY1">doi:10.7937/K9/TCIA.2015.NWTESAY1</a>.<br>
+      A real patient's CT. The colon was segmented from the raw scan here (gas threshold,
+      marching cubes); the camera path is a centreline generated here; frames are ray-cast
+      from the mesh under a headlight, so they show shape only &mdash; CT records no mucosa.
+      Coverage is computed through the real colonoscope lens.<br>
+      Data <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.`
+  }
+};
+const creditFor = e => CREDITS[(e && e.source_id) || 'c3vd'] || CREDITS.c3vd;
+function setCredit(entry) { $('credit').innerHTML = creditFor(entry).html; }
+
 // visibility.bin (compute_coverage.py), format 3: u32 F, u32 K, u32 version, then
 // u16[F*K] best frames per SOURCE face, clearest first (65535 = none), u16[F]
 // frames where it was visible, u16[F] clarity in px/mm x 10. 16-bit because
@@ -344,13 +385,18 @@ function makeProjector(cam) {
 let S = null;                      // everything about the sequence on screen
 let mode = 'clarity';              // 'clarity' | 'seen'
 
+// A height band on the mesh, e.g. the CT slices a polyp was reported on. Mesh
+// positions are the scan's own patient millimetres, so slice z maps straight across.
+const ZONE = [0xe8, 0xb4, 0x00];
 function paint() {
   if (!S) return;
   const useClarity = mode === 'clarity' && S.clarity;
   const n = S.coverage.count, out = S.colours, c = new THREE.Color();
+  const z = S.entry.zone, zoneOn = z && $('zone-on').checked, pos = S.mesh.geometry.attributes.position;
   for (let i = 0; i < n; i++) {
     const v = S.coverage.getX(i);
-    if (useClarity) clarityColour(S.clarity.getX(i), v, c); else ramp(v, c);
+    if (zoneOn && pos.getZ(i) >= z.z_min && pos.getZ(i) <= z.z_max) c.setRGB(ZONE[0]/255, ZONE[1]/255, ZONE[2]/255);
+    else if (useClarity) clarityColour(S.clarity.getX(i), v, c); else ramp(v, c);
     out[i*3] = c.r; out[i*3+1] = c.g; out[i*3+2] = c.b;
   }
   S.mesh.geometry.attributes.color.needsUpdate = true;
@@ -475,7 +521,7 @@ async function loadSequence(entry) {
       b.disabled = false;
       b.setAttribute('aria-pressed', String(S?.entry.name === b.dataset.name));
     }
-    if (S) $('subtitle').textContent = `C3VD · ${S.entry.label} · ${fmt(S.entry.frames)} frames`;
+    if (S) $('subtitle').textContent = `${creditFor(S.entry).short} · ${S.entry.label} · ${fmt(S.entry.frames)} frames`;
   }
 }
 
@@ -484,7 +530,8 @@ async function loadSequence(entry) {
 const asset = (entry, file) => `${entry.dir}/${file}${entry.build ? `?v=${entry.build}` : ''}`;
 
 async function loadSequenceUnguarded(entry) {
-  $('subtitle').textContent = `C3VD · ${entry.label} · loading…`;
+  $('subtitle').textContent = `${creditFor(entry).short} · ${entry.label} · loading…`;
+  setCredit(entry);
 
   const [{ root, mesh, coverage, clarity }, cam, vis, faceMap] = await Promise.all([
     loadSurface(asset(entry, 'coverage.glb')),
@@ -528,7 +575,7 @@ async function loadSequenceUnguarded(entry) {
   $('s-frames').textContent = fmt(entry.frames);
   $('s-unr').textContent    = fmt(unresolved);
   $('stats').hidden = false;
-  $('subtitle').textContent = `C3VD · ${entry.label} · ${fmt(entry.frames)} frames`;
+  $('subtitle').textContent = `${creditFor(entry).short} · ${entry.label} · ${fmt(entry.frames)} frames`;
 
   // A colon segment is long and thin. Two things follow: lay its long axis
   // ACROSS the screen rather than up it, and fit the bounding box projected onto
@@ -574,6 +621,8 @@ async function loadSequenceUnguarded(entry) {
   scene.add(root);
   S = { entry, root, mesh, coverage, clarity, colours: col, idx, nTri, cam, vis, faceMap,
         project: makeProjector(cam), disagree, inspect, loadSequence };
+  $('zone-row').hidden = !entry.zone;
+  if (entry.zone) { $('zone-label').textContent = entry.zone.label; $('zone-note').textContent = entry.zone.note || ''; }
   paint();
   $('modes').querySelector('[data-mode="clarity"]').disabled = !clarity;
   if (!clarity && mode === 'clarity') setMode('seen');
@@ -585,7 +634,7 @@ async function loadSequenceUnguarded(entry) {
 function fail(e) {
   const el = $('err');
   el.hidden = false; el.textContent = String(e && e.message || e);
-  if (!S) $('subtitle').textContent = 'C3VD · failed to load';   // keep the label of what IS on screen
+  if (!S) $('subtitle').textContent = 'failed to load';   // keep the label of what IS on screen
 }
 
 try {
@@ -622,6 +671,7 @@ function setMode(m) {
   paint();
 }
 for (const b of $('modes').children) b.addEventListener('click', () => setMode(b.dataset.mode));
+$('zone-on').addEventListener('change', paint);
 
 $('i-close').addEventListener('click', closeInspector);
 addEventListener('keydown', ev => { if (ev.key === 'Escape') closeInspector(); });
