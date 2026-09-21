@@ -8,7 +8,7 @@ A **self-contained static site**. No build step, no server code, no dependencies
 install. It needs only a static host and, in the visitor's browser, internet access for
 one library (three.js from unpkg.com).
 
-- 1350 files, 123 MB total; largest single file 9.6 MB
+- 1347 files, 124 MB total; largest single file 9.6 MB
   (GitHub rejects files over 100 MB and recommends repos under 1 GB - both fine)
 - All paths are **relative**, so it works in a subfolder
 

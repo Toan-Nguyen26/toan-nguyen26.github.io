@@ -154,7 +154,7 @@
     <div class="bar" style="background:linear-gradient(90deg, var(--blurry), var(--observed))"></div>
     <div class="ticks"><span>blurry · 2 px/mm</span><span>sharp · 20+ px/mm</span></div>
     <div class="swatch"><i class="chip" style="background:var(--unobserved)"></i>never seen</div>
-    <div class="swatch"><i class="chip" style="background:var(--unresolved)"></i>unresolved — no value in source</div>
+    <div class="swatch"><i class="chip" style="background:var(--unresolved)"></i>unresolved — no value in the source, or cut off from the camera in this scan</div>
     <p class="note">Clarity = how many pixels covered 1&nbsp;mm of wall in the clearest frame of that
     spot. Close and head-on is sharp; far away or at an angle is blurry.
     <b>Thresholds are provisional</b> — where "clear enough" sits is a clinical call.</p>
@@ -162,7 +162,7 @@
   <div id="lg-seen" hidden>
     <div class="bar" style="background:linear-gradient(90deg, var(--unobserved), var(--observed))"></div>
     <div class="ticks"><span>0.0 never observed</span><span>observed 1.0</span></div>
-    <div class="swatch"><i class="chip" style="background:var(--unresolved)"></i>unresolved — no value in source</div>
+    <div class="swatch"><i class="chip" style="background:var(--unresolved)"></i>unresolved — no value in the source, or cut off from the camera in this scan</div>
     <p class="note">C3VD's own flag: in view at least once, however briefly or blurrily. Stored as a
     float in [0,1] so a calibrated per-region uncertainty drops in unchanged.</p>
   </div>
@@ -322,10 +322,11 @@ const CREDITS = {
     html: `National CT Colonography Trial (ACRIN 6664) &mdash; Johnson et al.,
       <i>NEJM</i> 2008; images from TCIA,
       <a href="https://doi.org/10.7937/K9/TCIA.2015.NWTESAY1">doi:10.7937/K9/TCIA.2015.NWTESAY1</a>.<br>
-      A real patient's CT. The colon was segmented from the raw scan here (gas threshold,
-      marching cubes); the camera path is a centreline generated here; frames are ray-cast
-      from the mesh under a headlight, so they show shape only &mdash; CT records no mucosa.
-      Coverage is computed through the real colonoscope lens.<br>
+      A real patient's CT. Which gas is colon: TotalSegmentator (Wasserthal et al., 2023);
+      where the wall is: the scan's own gas edge (marching cubes). Blue = colon cut off from
+      the camera in this scan, left out of every percentage. The camera path is a centreline
+      generated here; frames are ray-cast under a headlight, so they show shape only &mdash;
+      CT records no mucosa. Coverage is simulated, through the real colonoscope lens.<br>
       Data <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.`
   }
 };

@@ -205,6 +205,8 @@
                             <li>Lấy ảnh CT của <strong>một bệnh nhân thật</strong> (thử nghiệm ACRIN 6664), tự dựng ra
                                 <strong>cả đại tràng liền một ống</strong>, từ manh tràng đến trực tràng</li>
                             <li>Không dùng Unity, không dùng mesh có sẵn</li>
+                            <li>Kiểm tra bằng <strong>TotalSegmentator</strong> (mô hình đã công bố): phần em chọn đúng là
+                                đại tràng (98,9%)</li>
                             <li>Đã đưa vào công cụ xem 3D, kèm độ phủ</li>
                         </ul>
                     </div>
@@ -379,7 +381,7 @@
                 <section>
                     <h2>Đầu vào: chỉ có ảnh CT</h2>
                     <h3>Chỉ các file DICOM: mật độ từng điểm ảnh (HU), điểm ảnh 0,59 mm, lát cắt cách nhau 0,8 mm.
-                        Không mesh, không nhãn, không Unity.</h3>
+                        Theo quy trình chuẩn của chụp CT đại tràng (nội soi ảo), có từ những năm 1990.</h3>
                     <div class="cols">
                         <figure class="img-slot img-slot--mid" style="flex: 0 0 34%;" data-src="img/ct-colon/ct_slice.jpg">
                             <img src="img/ct-colon/ct_slice.jpg" alt="Một lát cắt CT vùng chậu, ruột chứa khí hiện màu đen">
@@ -393,36 +395,37 @@
                             </tr>
                             <tr><td>1</td><td>Xếp các lát cắt thành một khối 3D</td><td>501 × 512 × 512</td></tr>
                             <tr><td>2</td><td>Giữ mọi điểm tối hơn −700 HU: đó là khí</td><td>khí trong ruột</td></tr>
-                            <tr><td>3</td><td>Cắt các chỗ nối mảnh để tách thành từng khối</td><td>76 khối</td></tr>
-                            <tr class="highlight"><td>4</td><td>Chọn khối là đại tràng; bỏ khí bên ngoài, phổi, ruột non</td><td>874 cm³, dài 1,25 m</td></tr>
-                            <tr><td>5</td><td>Bọc bề mặt quanh khối đó (marching cubes)</td><td>300.000 tam giác</td></tr>
-                            <tr><td>6</td><td>Vạch đường camera đi giữa lòng ruột</td><td>1.252 mm</td></tr>
+                            <tr class="highlight"><td>3</td><td>TotalSegmentator đánh dấu đại tràng (mô hình đã công bố)</td><td>cả cơ quan</td></tr>
+                            <tr class="highlight"><td>4</td><td>Giữ phần khí nằm trong đại tràng đó</td><td>967 cm³ khí</td></tr>
+                            <tr><td>5</td><td>Bọc bề mặt theo mép khí (marching cubes)</td><td>300.000 tam giác</td></tr>
+                            <tr><td>6</td><td>Vạch đường camera đi giữa lòng ruột</td><td>1.197 mm</td></tr>
                         </table>
                     </div>
-                    <aside class="notes">Trước khi chụp, đại tràng được bơm đầy khí, nên lòng ruột là thứ tối nhất trong ổ bụng: khoảng -1000 HU so với khoảng 0 của mô. Các bước 1–3 và 5–6 là máy móc. Bước 4 là chỗ cần phán đoán, slide sau.</aside>
+                    <aside class="notes">Trước khi chụp, đại tràng được bơm đầy khí, nên lòng ruột là thứ tối nhất trong ổ bụng: khoảng -1000 HU so với khoảng 0 của mô. Việc chọn khí nào là đại tràng do TotalSegmentator quyết định, không phải em đoán; slide sau.</aside>
                 </section>
 
                 <section>
                     <h2>Khối khí nào là đại tràng?</h2>
-                    <h3>Bước 4 là bước duy nhất cần phán đoán.</h3>
+                    <h3>Không để em đoán: một mô hình đã công bố quyết định. Lát cắt số 353.</h3>
                     <div class="cols">
-                        <figure class="img-slot img-slot--colon" style="flex: 0 0 38%;" data-src="img/ct-colon/gas_pieces.png">
-                            <img src="img/ct-colon/gas_pieces.png" alt="Nhìn từ phía trước: mọi khối khí trong ảnh CT, tô màu theo loại">
+                        <figure class="img-slot img-slot--half" data-src="img/ct-colon/ts_output.jpg">
+                            <img src="img/ct-colon/ts_output.jpg" alt="Đầu ra TotalSegmentator trên lát cắt 353" style="max-height: 245px;">
+                            <figcaption>Đầu ra TotalSegmentator: <strong style="color:#c85a12">cam</strong> đại tràng,
+                                <strong style="color:#3b6fc4">xanh</strong> ruột non</figcaption>
                         </figure>
-                        <div style="font-size: 0.5em;">
-                            <p><span class="sw" style="background:#e6e2d6"></span><strong>Đại tràng: giữ lại.</strong>
-                                874 cm³, dài 1,25 m từ đầu này đến đầu kia. Khung quen thuộc bao quanh ổ bụng, xuống
-                                đến trực tràng.</p>
-                            <p><span class="sw" style="background:#5b8fd9"></span><strong>Nhiều khả năng là ruột non: bỏ.</strong>
-                                652 cm³. Khí tràn sang từ đại tràng, chuyện hay gặp khi chụp CT đại tràng.</p>
-                            <p><span class="sw" style="background:#7fb07f"></span><strong>Đáy phổi: bỏ.</strong> Ở đỉnh
-                                vùng chụp.</p>
-                            <p><span class="sw" style="background:#d9a441"></span><strong>Có lẽ là dạ dày: bỏ.</strong>
-                                17 cm³.</p>
-                            <p class="text-light">Em phán đoán dựa vào thể tích và chiều dài, chưa có bác sĩ chẩn đoán
-                                hình ảnh xác nhận. Để so sánh: cả đại tràng của RealSynCol là 907 cm³.</p>
-                        </div>
+                        <figure class="img-slot img-slot--half" data-src="img/ct-colon/colon_gas.jpg">
+                            <img src="img/ct-colon/colon_gas.jpg" alt="Khí nằm trong đại tràng trên lát cắt 353" style="max-height: 245px;">
+                            <figcaption>Khí trong đại tràng: <strong style="color:#c85a12">cam</strong> lòng ruột camera đi
+                                qua, <strong style="color:#3b6fc4">xanh</strong> túi khí bị tách</figcaption>
+                        </figure>
                     </div>
+                    <div class="callout">
+                        <p><strong>Mô hình quyết định khí nào là đại tràng; mép khí của ảnh CT quyết định thành ruột ở
+                                đâu</strong> (nhãn của mô hình là cả cơ quan, nằm ngoài thành trong trung bình 1,2 mm).
+                            Kiểm tra cách cũ "giữ khối lớn nhất": 98,9% đúng là đại tràng, nhưng bỏ sót khoảng 11%, gồm
+                            một quai manh tràng bị gộp vào ruột non.</p>
+                    </div>
+                    <aside class="notes">TotalSegmentator (Wasserthal và cs., Radiology: AI 2023) là mạng 3D U-Net học trên khoảng 1.200 ca CT có nhãn vẽ tay; đầu vào chỉ là khối CT, đầu ra là mặt nạ từng cơ quan trên cùng lưới điểm. Nó cũng có thể sai và không được huấn luyện riêng cho CT đại tràng, nhưng hai cách độc lập cho cùng kết luận. Khối em từng tưởng là dạ dày thực ra là một túi đại tràng.</aside>
                 </section>
 
                 <section>
@@ -434,20 +437,22 @@
                         </figure>
                         <div>
                             <div class="stat-grid">
-                                <div class="stat"><b class="hot">75,85%</b><span>thành ruột được nhìn thấy ít nhất một lần</span></div>
-                                <div class="stat"><b>71,47%</b><span>nhìn rõ: từ 10 px/mm trở lên (ngưỡng tạm thời)</span></div>
-                                <div class="stat"><b>1.252 mm</b><span>đường camera, từ manh tràng đến trực tràng</span></div>
-                                <div class="stat"><b>150.600 mm²</b><span>diện tích thành ruột</span></div>
+                                <div class="stat"><b class="hot">74,66%</b><span>thành ruột đánh giá được đã được nhìn thấy (mô phỏng)</span></div>
+                                <div class="stat"><b>70,01%</b><span>nhìn rõ: từ 10 px/mm trở lên (ngưỡng tạm thời)</span></div>
+                                <div class="stat"><b>1.197 mm</b><span>đường camera, từ manh tràng đến trực tràng</span></div>
+                                <div class="stat"><b>82%</b><span>thành ruột đánh giá được (152.791 / 185.712 mm²)</span></div>
                             </div>
                             <p style="font-size: 0.46em; margin-top: 18px;"><span class="sw" style="background:#b9b6ab"></span>đã thấy
-                                &nbsp; <span class="sw" style="background:#c2412f"></span>chưa bao giờ thấy, phần lớn nằm sau các nếp gấp</p>
+                                &nbsp; <span class="sw" style="background:#c2412f"></span>chưa bao giờ thấy &nbsp;
+                                <span class="sw" style="background:#3987e5"></span>túi bị tách, không tính</p>
                             <div class="callout">
-                                <p>153 vị trí camera, ống kính nội soi thật. Bấm vào thành ruột trong
+                                <p>Mô phỏng, không phải ca nội soi thật: 150 vị trí camera, đi một chiều dọc đường tâm, ống kính
+                                    nội soi thật. Bấm vào thành ruột trong
                                     <a href="c3vd-coverage/">công cụ xem 3D</a> để xem khung hình đã chụp chỗ đó.</p>
                             </div>
                         </div>
                     </div>
-                    <aside class="notes">Một đại tràng liền mạch của một bệnh nhân thật, em tự phân đoạn thẳng từ ảnh TCIA. Các mảng đỏ nằm sau nếp gấp, đúng như hình học dự đoán: nếp gấp che khuất thành ruột phía sau.</aside>
+                    <aside class="notes">Diện tích thành ruột 1.857 cm², trong khoảng đã công bố (2.743 ± 759 cm² trên 20 bệnh nhân). Màu xanh là các túi đại tràng bị tách khỏi lòng ruột trong lần chụp này, do đoạn bị xẹp hoặc đọng dịch; camera ở trong lòng ruột không tới được nên em không tính vào phần trăm, giống cách CT đại tràng báo cáo phần bề mặt đánh giá được. Mảng đỏ nằm sau nếp gấp, đúng như hình học dự đoán.</aside>
                 </section>
 
                 <section>
@@ -504,9 +509,14 @@
                             <td class="yes">77,33%</td>
                         </tr>
                     </table>
+                    <div class="callout">
+                        <p><strong>Khớp với kết quả đã công bố:</strong> mô phỏng trên CT của 20 bệnh nhân, góc nhìn 90° → 68,0%,
+                            140° → 86,6%, 170° → 92,2% (Am J Gastroenterol, 2007). Nên đây là <strong>bằng chứng phương
+                                pháp của em đúng</strong>, không phải phát hiện mới.</p>
+                    </div>
                     <p class="mini-note">RealSynCol colon 6, 608 vị trí camera. Ống kính thật thấy được góc khối gấp
                         2,14 lần mỗi khung hình.</p>
-                    <aside class="notes">Ma trận nội tham số 3x3 theo định nghĩa là camera lỗ kim. Nó không mô tả được ống kính rộng hơn 180 độ, và đã vô dụng từ trước mức đó. Ống nội soi thật rộng 140–170 độ. Số tia bằng nhau, nên chênh lệch hoàn toàn là do quang học. Đây là con số mà SimCol và RealSynCol không đo được.</aside>
+                    <aside class="notes">Ma trận nội tham số 3x3 theo định nghĩa là camera lỗ kim. Nó không mô tả được ống kính rộng hơn 180 độ, và đã vô dụng từ trước mức đó. Ống nội soi thật rộng 140–170 độ. Số tia bằng nhau, nên chênh lệch hoàn toàn là do quang học. Hiệu ứng góc nhìn thì đã được đo từ 2007 (Surface visualization at CT colonography simulated colonoscopy: effect of varying field of view and retrograde view). Phần mới của em hẹp hơn: dùng đúng ống kính đã hiệu chuẩn, chỉ số độ nét, và câu hỏi robot có tới và in được không.</aside>
                 </section>
             </section>
 
@@ -631,12 +641,13 @@
                                     <th style="width: 34%;">Dọc đường đi</th>
                                     <th>Bên</th>
                                 </tr>
-                                <tr><td>Manh tràng</td><td>0–30 mm</td><td>bên phải bệnh nhân</td></tr>
-                                <tr><td>Đại tràng xuống</td><td>810–870 mm</td><td>bên trái</td></tr>
+                                <tr><td>Manh tràng</td><td>0–30 mm</td><td>phải · chỉ 37% đánh giá được</td></tr>
+                                <tr><td>Đại tràng xuống</td><td>800–870 mm</td><td>bên trái</td></tr>
                                 <tr><td>Quai sigma</td><td>960–1.110 mm</td><td>ngang qua vùng chậu</td></tr>
                             </table>
                             <div class="callout callout--wip">
-                                <p>Polyp nằm ở một trong ba chỗ này. Bước tiếp: tìm chỗ lồi 18 mm trong dải vàng.</p>
+                                <p>Polyp nằm ở một trong ba chỗ này. Nếu ở manh tràng thì ảnh nằm ngửa này không đủ, cần thêm
+                                    ảnh nằm sấp.</p>
                             </div>
                         </div>
                     </div>
@@ -650,12 +661,13 @@
                 <div class="card-grid" style="font-size: 0.5em;">
                     <div class="card c-orange">
                         <h4>Độ chính xác khi phân đoạn</h4>
-                        <p>Chưa có mesh chuẩn để so. Cách kiểm tra: phân đoạn thêm ảnh chụp nằm sấp, chiều dài và thể
-                            tích phải khớp.</p>
+                        <p>Chưa có mesh chuẩn để so. 18% thành ruột nằm trong các túi bị tách. Cách kiểm tra: phân đoạn
+                            thêm ảnh nằm sấp, chiều dài và thể tích phải khớp.</p>
                     </div>
                     <div class="card c-orange">
-                        <h4>Đại tràng hay ruột non</h4>
-                        <p>Phán đoán theo thể tích và chiều dài, chưa có bác sĩ chẩn đoán hình ảnh.</p>
+                        <h4>TotalSegmentator cũng có thể sai</h4>
+                        <p>Là mô hình, học trên CT thường chứ không riêng CT đại tràng. Hai cách độc lập đồng ý, nhưng
+                            chưa phải chuẩn vàng.</p>
                     </div>
                     <div class="card c-orange">
                         <h4>Bản thân polyp</h4>
@@ -666,8 +678,8 @@
                         <p>Kích thước (mm) thì rõ. Mã đoạn đại tràng không có chú giải.</p>
                     </div>
                     <div class="card c-muted">
-                        <h4>Cách đánh số lát cắt</h4>
-                        <p>Em giả định đếm từ đỉnh vùng chụp, như trên máy trạm chẩn đoán hình ảnh.</p>
+                        <h4>Lát cắt số 353 thuộc lần chụp nào</h4>
+                        <p>Bệnh nhân có hai lần chụp nằm ngửa cách nhau một phút. Em giả định lần đầu, đếm từ đỉnh vùng chụp.</p>
                     </div>
                     <div class="card c-muted">
                         <h4>Video thật khớp với CT</h4>
@@ -684,7 +696,7 @@
                         <h4>Tiếp theo</h4>
                         <ul>
                             <li>Tìm polyp ở bệnh nhân 0233</li>
-                            <li>Đối chiếu với ảnh chụp nằm sấp</li>
+                            <li>Chạy ảnh nằm sấp (series 5): lấp các túi bị tách, nhất là manh tràng</li>
                             <li>Khớp ống kính mắt cá của Blender với ống kính đã đo, rồi dựng hình</li>
                             <li>Thêm các bệnh nhân ACRIN khác</li>
                         </ul>
@@ -714,7 +726,7 @@
                 </p>
                 <p class="mini-note">Dữ liệu: C3VD (Bobrow và cs., 2023, CC BY-NC-SA 4.0) · RealSynCol (Zenodo 19705803,
                     CC BY 4.0) · ACRIN 6664 (Johnson và cs., NEJM 2008), ảnh từ TCIA,
-                    doi:10.7937/K9/TCIA.2015.NWTESAY1 (CC BY 3.0)</p>
+                    doi:10.7937/K9/TCIA.2015.NWTESAY1 (CC BY 3.0) · TotalSegmentator (Wasserthal và cs., Radiology: AI 2023)</p>
             </section>
 
             <div class="footer">

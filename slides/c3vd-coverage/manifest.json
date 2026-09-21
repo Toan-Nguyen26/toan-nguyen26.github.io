@@ -232,52 +232,53 @@
    "segment": "ACRIN patient 0233",
    "dir": "seq/acrin_0233_supine",
    "label": "Whole colon \u00b7 patient 0233",
-   "build": "ba04b2b82e2b",
-   "frames": 153,
-   "observed": 0.7585,
-   "observed_faces": 0.7385,
-   "area_mm2": 150600.3,
-   "source_triangles": 300000,
+   "build": "c74a484dde39",
+   "frames": 150,
+   "observed": 0.7466,
+   "observed_faces": 0.7339,
+   "area_mm2": 152790.6,
+   "source_triangles": 299980,
    "decimated": false,
-   "clear": 0.7147,
+   "clear": 0.7001,
    "clear_px_per_mm": 10.0,
    "corner_only": 0.0,
    "clarity_bands": [
     [
      0.0,
      2.0,
-     0.0027
+     0.0033
     ],
     [
      2.0,
      5.0,
-     0.0091
+     0.0101
     ],
     [
      5.0,
      10.0,
-     0.032
+     0.0331
     ],
     [
      10.0,
      20.0,
-     0.2523
+     0.2525
     ],
     [
      20.0,
      null,
-     0.4624
+     0.4476
     ]
    ],
-   "glb_mb": 8.75,
-   "source": "TCIA CT COLONOGRAPHY (ACRIN 6664), segmented here",
+   "glb_mb": 8.72,
+   "evaluable": 0.8227,
+   "source": "TCIA CT COLONOGRAPHY (ACRIN 6664); colon identified by TotalSegmentator, surface from the CT gas edge",
    "source_id": "acrin",
    "path": "generated centreline",
    "zone": {
     "z_min": -319.59999999999843,
     "z_max": -303.5999999999982,
     "label": "polyp search band \u00b7 slices 343\u2013363",
-    "note": "ACRIN lists an 18 mm polyp at supine slice 353. Shown: every wall within \u00b110 slices (\u00b18 mm). A flat slice cuts the colon in 3 places \u2014 cecum, descending, and a sigmoid loop \u2014 so the polyp is in one of these, not all."
+    "note": "ACRIN lists an 18 mm polyp at supine slice 353. Shown: every wall within \u00b110 slices (\u00b18 mm). A flat slice cuts the colon in 3 places, so the polyp is in one of these, not all."
    }
   }
  ]

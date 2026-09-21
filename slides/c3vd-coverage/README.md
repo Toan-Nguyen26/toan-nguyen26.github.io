@@ -9,7 +9,7 @@ colonoscope captured, how clearly, and the frames behind each spot.
 |---|---|---|
 | Cecum, Transverse, Descending, Sigmoid | segments of a sculpted silicone phantom, real colonoscope video | C3VD |
 | RealSynCol colon | a whole human colon segmented from CT colonography | RealSynCol (from ACRIN 6664) |
-| ACRIN patient 0233 | a whole human colon, segmented here from the raw CT scan | TCIA CT COLONOGRAPHY (ACRIN 6664) |
+| ACRIN patient 0233 | a whole human colon from the raw CT scan: TotalSegmentator identifies the colon, the CT's gas edge gives the wall | TCIA CT COLONOGRAPHY (ACRIN 6664) |
 
 - **Clarity** (default): the pixels that covered 1 mm of wall in the clearest frame of
   each spot. The 10 px/mm "clear" threshold is **provisional**; where "clear enough"
@@ -18,6 +18,9 @@ colonoscope captured, how clearly, and the frames behind each spot.
 - **Click the wall** to see the frames that captured that spot.
 - **Polyp search band** (ACRIN patient 0233 only): the colon wall within +/-10 CT
   slices of where ACRIN recorded an 18 mm polyp.
+
+Blue on the CT colons marks colon cut off from the camera in that scan (a collapsed or
+fluid-filled stretch); it is shown but left out of every percentage.
 
 For the C3VD segments the frames are the real colonoscope video. For the two CT colons
 there is no video: the camera path is a centreline generated here, and the frames are
@@ -43,5 +46,8 @@ shown; keep it, and keep this file.
   colonography for detection of large adenomas and cancers.* NEJM, 2008.
   doi:10.1056/NEJMoa0800996. Images from The Cancer Imaging Archive,
   doi:10.7937/K9/TCIA.2015.NWTESAY1. Licence **CC BY 3.0**.
+- **TotalSegmentator** - Wasserthal, J., et al. *TotalSegmentator: robust segmentation of
+  104 anatomic structures in CT images.* Radiology: Artificial Intelligence, 2023. Used to
+  decide which gas in the ACRIN scan is colon.
 
 Because the C3VD parts are non-commercial, do not use this bundle commercially.
