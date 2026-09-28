@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <title>Báo cáo tiến độ — Đại tràng 3D và dò tổn thương</title>
+    <link rel="stylesheet" href="revealjs/dist/reset.css" />
+    <link rel="stylesheet" href="revealjs/dist/reveal.css" />
+    <link rel="stylesheet" href="revealjs/dist/theme/white.css" />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <link rel="stylesheet" href="slide-style.css" />
+    <link rel="stylesheet" href="intro-style.css" />
+    <style>
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.46em; margin-top: 12px; }
+        .data-table th, .data-table td {
+            padding: 8px 11px; text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, .1); vertical-align: top;
+        }
+        .data-table th {
+            font-weight: 600; color: var(--sl-muted, #667); font-size: .9em;
+            letter-spacing: .02em; text-transform: uppercase;
+        }
+        .data-table td.yes { color: #2e8b57; font-weight: 700; }
+        .data-table td.no { color: #c0392b; font-weight: 700; }
+        .data-table tr.highlight td { background: rgba(217, 131, 36, .08); }
+        .data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+        .mini-note { font-size: 0.4em; color: var(--sl-muted, #778); text-align: center; margin-top: 8px; }
+
+        .big-claim {
+            font-size: 0.8em; line-height: 1.45; font-weight: 600;
+            text-align: center; max-width: 92%; margin: 22px auto 14px;
+        }
+        .big-claim em { font-style: normal; color: var(--sl-orange, #d98324); }
+
+        .diff {
+            display: inline-block; font-size: .82em; font-weight: 700;
+            border-radius: 5px; padding: 1px 8px; margin-left: 6px; vertical-align: 2px;
+        }
+        .diff.hard { background: rgba(192, 57, 43, .13); color: #c0392b; }
+        .diff.later { background: rgba(0, 0, 0, .07); color: #667; }
+
+        .ask-box {
+            margin-top: 18px; padding: 15px 19px; border-radius: 12px;
+            border-left: 5px solid var(--sl-orange, #d98324);
+            background: rgba(217, 131, 36, .09); font-size: 0.5em; line-height: 1.5;
+        }
+        .ask-box.crit { border-left-color: #c0392b; background: rgba(192, 57, 43, .08); }
+
+        .two-col { display: flex; gap: 18px; margin-top: 16px; font-size: 0.48em; text-align: left; }
+        .two-col > div { flex: 1; background: rgba(0, 0, 0, .035); border-radius: 10px; padding: 13px 16px; }
+        .two-col h4 { margin: 0 0 8px; font-size: 1.05em; }
+        .two-col ul { margin: 0; padding-left: 18px; }
+        .two-col li { margin-bottom: 6px; }
+        .have { border-left: 4px solid #2e8b57; }
+        .havenot { border-left: 4px solid #c0392b; }
+        .neutral { border-left: 4px solid #8a8a8a; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; font-size: 0.5em; }
+        .stat b { display: block; font-size: 2.2em; line-height: 1.1; color: var(--sl-ink); }
+        .stat b.hot { color: var(--sl-orange); }
+        .stat span { color: var(--sl-muted); }
+
+        .svg-wrap { text-align: center; margin-top: 8px; }
+        .svg-wrap svg { max-width: 100%; height: auto; }
+
+        .qlist { font-size: 0.5em; text-align: left; margin-top: 12px; }
+        .qlist li { margin-bottom: 12px; line-height: 1.45; }
+        .qlist li strong { color: var(--sl-orange, #d98324); }
+
+        .lede { font-size: 0.56em; line-height: 1.5; max-width: 88%; margin: 14px auto; text-align: left; }
+
+        .funnel { font-size: 0.72em; font-weight: 600; text-align: center; margin: 30px auto; }
+        .funnel .from { color: var(--sl-muted); }
+        .funnel .to { color: var(--sl-orange); font-size: 1.2em; }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ═══════════ BÌA ═══════════ -->
+            <section class="title-slide">
+                <h1>Báo cáo tiến độ</h1>
+                <p class="title-sub">Đại tràng 3D từ CT · dò tổn thương</p>
+                <p class="title-host">
+                    <strong>Nguyễn Hải Toàn</strong><br>
+                    <span class="text-light">Kính gửi: TS. Mai Thanh Thái &amp; PGS.TS. Hoàng Văn Xiêm</span>
+                </p>
+                <aside class="notes">Ba phần: 3D và dò tổn thương (chính, có demo), lộ trình (lướt), NVIDIA (thầy Thành hỏi).</aside>
+            </section>
+
+            <!-- ═══════════ TÓM TẮT ═══════════ -->
+            <section>
+                <h2>Tóm tắt</h2>
+                <div class="two-col">
+                    <div class="have">
+                        <h4>✓ Tuần này</h4>
+                        <ul>
+                            <li>Dựng <strong>3 đại tràng người thật</strong> từ CT</li>
+                            <li><strong>Rà soát cách dựng mesh 3D</strong> — chốt được đường đi tốt nhất</li>
+                            <li><strong>Đếm cohort:</strong> 31 đại tràng / 22 bệnh nhân có polyp</li>
+                            <li><strong>Rà soát công cụ AI của NVIDIA</strong> — cái nào dùng được, cái nào không</li>
+                        </ul>
+                    </div>
+                    <div class="havenot">
+                        <h4>✗ Chưa chắc</h4>
+                        <ul>
+                            <li><strong>Chưa có bác sĩ kiểm chứng</strong> mô hình</li>
+                            <li><strong>Cách tạo màu nội tạng là câu hỏi khó</strong> — chưa có lời giải</li>
+                            <li>Cần tìm hiểu thêm <strong>cách tạo sinh video</strong> và màu</li>
+                        </ul>
+                    </div>
+                </div>
+                <aside class="notes">Ba phần chính của buổi. Phần 3D có demo trên web nên slide để gọn.</aside>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- PHẦN 1                                          -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <section>
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 1</p>
+                    <h2>Đại tràng 3D và dò tổn thương</h2>
+                </section>
+
+                <section>
+                    <h2>Dữ liệu: HQColon + ACRIN</h2>
+                    <div class="two-col" style="margin-top: 10px;">
+                        <div class="have">
+                            <h4>HQColon — mặt nạ 3D</h4>
+                            <ul>
+                                <li><strong>435 đại tràng / 315 bệnh nhân</strong></li>
+                                <li>Scientific Data 01/2026, CC BY 4.0</li>
+                                <li>⚠️ <strong>Không có nhãn polyp nào</strong></li>
+                                <li>⚠️ Mặt nạ <strong>sinh tự động</strong> — bác sĩ chỉ chấm điểm mẫu 50/435,
+                                    không công bố là ca nào</li>
+                            </ul>
+                        </div>
+                        <div class="neutral">
+                            <h4>ACRIN 6664 — hồ sơ tổn thương</h4>
+                            <ul>
+                                <li>Ghi <strong>kích thước + số lát cắt</strong> của polyp</li>
+                                <li>Mỗi bệnh nhân thường có <strong>hai tư thế</strong>: nằm ngửa và nằm sấp</li>
+                                <li>Ca 0233: series 3 (ngửa), <strong>series 4 (ngửa, phồng tốt hơn)</strong>,
+                                    series 5 (sấp), + 2 topogram</li>
+                                <li>HQColon thường chỉ curate <strong>một series</strong> mỗi ca</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <table class="data-table" style="margin-top: 16px;">
+                        <tr>
+                            <th style="width: 52%;">Ghép hai bộ qua mã bệnh nhân</th>
+                            <th style="width: 24%;">Bệnh nhân</th>
+                            <th>Đại tràng</th>
+                        </tr>
+                        <tr class="highlight">
+                            <td><strong>ACRIN có polyp, CÓ mặt nạ HQColon</strong></td>
+                            <td class="num"><strong>22</strong></td>
+                            <td class="num"><strong>31</strong></td>
+                        </tr>
+                        <tr>
+                            <td>ACRIN có polyp, KHÔNG có mặt nạ</td>
+                            <td class="num">82</td>
+                            <td class="num">—</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tổng ACRIN có polyp</strong></td>
+                            <td class="num"><strong>104</strong></td>
+                            <td class="num">—</td>
+                        </tr>
+                    </table>
+                    <p class="mini-note">31 đại tràng &gt; 22 bệnh nhân vì nhiều ca được công bố cả bản nằm ngửa lẫn nằm sấp</p>
+                    <aside class="notes">HQColon: Finocchiaro et al., doi:10.1038/s41597-025-06518-z, mặt nạ trên OSF. Lưu ý 40 trong 104 ca ACRIN dùng mã CTC- không ánh xạ được sang mã DICOM, nên con số 22 có thể còn thấp hơn thực tế. Nếu thầy hỏi thì nói vậy, còn slide để đơn giản.</aside>
+                </section>
+
+                <section>
+                    <h2>Cắt kiểu nào thì để lại hố kiểu đó</h2>
+                    <div class="svg-wrap">
+                        <svg viewBox="0 0 1120 300" xmlns="http://www.w3.org/2000/svg" font-family="inherit">
+                            <rect x="70" y="52" width="1000" height="24" fill="#f2b8bd" stroke="#d98a92" stroke-width="1" />
+                            <rect x="70" y="76" width="1000" height="42" fill="#f7e2c0" stroke="#dcc296" stroke-width="1" />
+                            <rect x="70" y="118" width="1000" height="34" fill="#d9b9a6" stroke="#bd9986" stroke-width="1" />
+                            <text x="62" y="68" text-anchor="end" font-size="13" fill="#666">niêm mạc</text>
+                            <text x="62" y="102" text-anchor="end" font-size="13" fill="#666">dưới niêm</text>
+                            <text x="62" y="140" text-anchor="end" font-size="13" fill="#666">lớp cơ</text>
+                            <text x="570" y="32" text-anchor="middle" font-size="13.5" fill="#888">↑ lòng ruột — camera ở phía này ↑</text>
+
+                            <path d="M150 52 q35 20 70 0" fill="#e39aa2" stroke="#c0392b" stroke-width="2" />
+                            <text x="185" y="196" text-anchor="middle" font-size="15.5" font-weight="700" fill="#444">Cold snare</text>
+                            <text x="185" y="217" text-anchor="middle" font-size="13" fill="#777">tổn thương &lt; 10 mm</text>
+                            <text x="185" y="236" text-anchor="middle" font-size="13" fill="#777">hố sâu &lt; 1 mm</text>
+
+                            <path d="M370 52 q55 42 110 0" fill="#dd8a92" stroke="#c0392b" stroke-width="2" />
+                            <text x="425" y="196" text-anchor="middle" font-size="15.5" font-weight="700" fill="#2e8b57">EMR</text>
+                            <text x="425" y="217" text-anchor="middle" font-size="13" fill="#777">tổn thương 10–20 mm</text>
+                            <text x="425" y="236" text-anchor="middle" font-size="13" fill="#777">hố sâu 1–2 mm</text>
+                            <rect x="330" y="180" width="190" height="66" rx="9" fill="none" stroke="#2e8b57" stroke-width="2.5" />
+                            <text x="425" y="264" text-anchor="middle" font-size="13" font-weight="700" fill="#2e8b57">khớp với cohort</text>
+
+                            <path d="M620 52 q95 64 190 0" fill="#c9737d" stroke="#c0392b" stroke-width="2.5" />
+                            <text x="715" y="196" text-anchor="middle" font-size="15.5" font-weight="700" fill="#c0392b">ESD</text>
+                            <text x="715" y="217" text-anchor="middle" font-size="13" fill="#777">tổn thương &gt; 20 mm</text>
+                            <text x="715" y="236" text-anchor="middle" font-size="13" fill="#777">hố sâu 2–3 mm</text>
+                            <text x="715" y="264" text-anchor="middle" font-size="13" font-weight="700" fill="#c0392b">cohort gần như không có</text>
+
+                            <path d="M910 52 L910 152 L1000 152 L1000 52" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-dasharray="6 3" />
+                            <text x="955" y="196" text-anchor="middle" font-size="15.5" font-weight="700" fill="#444">EFTR</text>
+                            <text x="955" y="217" text-anchor="middle" font-size="13" fill="#777">thủng toàn bộ thành</text>
+                            <text x="955" y="236" text-anchor="middle" font-size="13" fill="#777">hiếm, phải đóng clip</text>
+                        </svg>
+                    </div>
+                    <div class="callout">
+                        <p><strong>Cả bốn loại đều NÔNG và RỘNG:</strong> hố rộng 10–50 mm nhưng chỉ sâu 1–3 mm.
+                            Voxel CT là 0,8 × 0,8 × 1 mm — nên <strong>CT không đo được độ sâu hố</strong>,
+                            phải dựng ra và coi độ sâu là tham số.</p>
+                    </div>
+                    <aside class="notes">Độ dày các lớp là con số tham khảo từ y văn, cần bác sĩ xác nhận. Điểm cần nhấn: nếu CT không phân giải được thứ mà máy in phải lấp, thì camera ở đầu ống là dụng cụ duy nhất đo được — đó là luận điểm của cả đề tài.</aside>
+                </section>
+
+                <section>
+                    <h2>Cohort chủ yếu là tổn thương nhỏ</h2>
+                    <div class="stat-grid" style="margin-top: 26px;">
+                        <div class="stat"><b>235</b><span>tổn thương trên 104 bệnh nhân ACRIN có polyp</span></div>
+                        <div class="stat"><b class="hot">6 mm</b><span>trung vị kích thước</span></div>
+                        <div class="stat"><b>12</b><span>người có gì đó ≥ 20 mm (trên 104)</span></div>
+                    </div>
+                    <table class="data-table" style="margin-top: 22px; width: 62%; margin-left: auto; margin-right: auto;">
+                        <tr><th>Trong 22 ca có mặt nạ</th><th style="width: 26%;">Bệnh nhân</th></tr>
+                        <tr class="highlight"><td><strong>≥ 20 mm</strong></td><td class="num"><strong>3</strong></td></tr>
+                        <tr><td>10 – 19 mm</td><td class="num">5</td></tr>
+                        <tr><td>6 – 9 mm</td><td class="num">14</td></tr>
+                    </table>
+                    <div class="ask-box crit">
+                        <strong>Câu hỏi cho thầy:</strong> ESD cần tổn thương <strong>&gt; 20 mm</strong> — cohort này
+                        chỉ có <strong>3 bệnh nhân</strong>. Thầy muốn mô phỏng <strong>hố loại nào</strong> ạ?
+                        Nếu vẫn muốn ESD: làm được bằng <strong>hố tổng hợp</strong> — đặt tại vị trí polyp thật,
+                        kích thước lấy từ y văn.
+                    </div>
+                    <aside class="notes">Đây là câu hỏi, không phải kết luận. Việc của mình là đưa số, thầy quyết.</aside>
+                </section>
+
+                <section>
+                    <h2>Máy không kết luận "đây là polyp"</h2>
+                    <h3>Máy chỉ hỏi: chỗ này có cong đều như cái vòm, và to cỡ polyp không?</h3>
+                    <div class="svg-wrap">
+                        <svg viewBox="0 0 1120 330" xmlns="http://www.w3.org/2000/svg" font-family="inherit">
+                            <g>
+                                <text x="185" y="26" text-anchor="middle" font-size="19" font-weight="700" fill="#c0392b">POLYP</text>
+                                <text x="185" y="48" text-anchor="middle" font-size="14" fill="#777">quả bóng dán trên tường · <tspan font-style="italic">cap</tspan></text>
+                                <text x="60" y="94" font-size="13.5" fill="#888">vuốt ngang</text>
+                                <line x1="55" y1="130" x2="315" y2="130" stroke="#bbb" stroke-width="2" />
+                                <path d="M145 130 q40 -46 80 0" fill="rgba(192,57,43,.14)" stroke="#c0392b" stroke-width="3" />
+                                <text x="330" y="136" font-size="22" fill="#2e8b57">✓</text>
+                                <text x="60" y="186" font-size="13.5" fill="#888">vuốt dọc</text>
+                                <line x1="55" y1="222" x2="315" y2="222" stroke="#bbb" stroke-width="2" />
+                                <path d="M145 222 q40 -46 80 0" fill="rgba(192,57,43,.14)" stroke="#c0392b" stroke-width="3" />
+                                <text x="330" y="228" font-size="22" fill="#2e8b57">✓</text>
+                                <rect x="45" y="252" width="290" height="58" rx="10" fill="rgba(192,57,43,.09)" stroke="#c0392b" stroke-width="2" />
+                                <text x="190" y="277" text-anchor="middle" font-size="15" font-weight="700" fill="#8e2a20">Cong ra xa theo MỌI hướng</text>
+                                <text x="190" y="298" text-anchor="middle" font-size="13.5" fill="#6f3630">→ giữ lại làm ứng viên</text>
+                            </g>
+                            <line x1="375" y1="20" x2="375" y2="312" stroke="#e2e2e2" stroke-width="1.5" />
+                            <g>
+                                <text x="560" y="26" text-anchor="middle" font-size="19" font-weight="700" fill="#b96d18">NẾP GẤP RUỘT</text>
+                                <text x="560" y="48" text-anchor="middle" font-size="14" fill="#777">cái ống dọc theo tường · <tspan font-style="italic">ridge</tspan></text>
+                                <text x="430" y="94" font-size="13.5" fill="#888">vuốt ngang</text>
+                                <line x1="425" y1="130" x2="690" y2="130" stroke="#bbb" stroke-width="2" />
+                                <path d="M518 130 q40 -46 80 0" fill="rgba(217,131,36,.14)" stroke="#d98324" stroke-width="3" />
+                                <text x="705" y="136" font-size="22" fill="#2e8b57">✓</text>
+                                <text x="430" y="186" font-size="13.5" fill="#888">vuốt dọc</text>
+                                <line x1="425" y1="222" x2="690" y2="222" stroke="#bbb" stroke-width="2" />
+                                <line x1="518" y1="222" x2="598" y2="222" stroke="#d98324" stroke-width="3" />
+                                <text x="705" y="228" font-size="22" fill="#c0392b">✗</text>
+                                <rect x="418" y="252" width="290" height="58" rx="10" fill="rgba(217,131,36,.09)" stroke="#d98324" stroke-width="2" />
+                                <text x="563" y="277" text-anchor="middle" font-size="15" font-weight="700" fill="#8f5510">Chỉ cong theo MỘT hướng</text>
+                                <text x="563" y="298" text-anchor="middle" font-size="13.5" fill="#6d4b22">→ loại ngay ở bộ lọc thứ nhất</text>
+                            </g>
+                            <line x1="748" y1="20" x2="748" y2="312" stroke="#e2e2e2" stroke-width="1.5" />
+                            <g>
+                                <text x="935" y="26" text-anchor="middle" font-size="19" font-weight="700" fill="#555">THÀNH RUỘT THƯỜNG</text>
+                                <text x="935" y="48" text-anchor="middle" font-size="14" fill="#777">tường trơn ôm quanh mình · <tspan font-style="italic">cup</tspan></text>
+                                <text x="800" y="94" font-size="13.5" fill="#888">vuốt ngang</text>
+                                <line x1="795" y1="130" x2="1075" y2="130" stroke="#bbb" stroke-width="2" stroke-dasharray="3 3" />
+                                <path d="M855 116 q80 42 160 0" fill="none" stroke="#8a8a8a" stroke-width="3" />
+                                <text x="1090" y="136" font-size="22" fill="#c0392b">✗</text>
+                                <text x="800" y="186" font-size="13.5" fill="#888">vuốt dọc</text>
+                                <line x1="795" y1="222" x2="1075" y2="222" stroke="#bbb" stroke-width="2" stroke-dasharray="3 3" />
+                                <path d="M855 208 q80 42 160 0" fill="none" stroke="#8a8a8a" stroke-width="3" />
+                                <text x="1090" y="228" font-size="22" fill="#c0392b">✗</text>
+                                <rect x="790" y="252" width="290" height="58" rx="10" fill="rgba(0,0,0,.05)" stroke="#8a8a8a" stroke-width="2" />
+                                <text x="935" y="277" text-anchor="middle" font-size="15" font-weight="700" fill="#555">Cong ÔM QUANH mình</text>
+                                <text x="935" y="298" text-anchor="middle" font-size="13.5" fill="#666">→ không phải ứng viên</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <p class="mini-note">Đúng phân loại của <strong>Yoshida &amp; Näppi (IEEE TMI 2001)</strong>:
+                        polyp = <em>cap</em>, nếp gấp = <em>ridge</em>, thành ruột = <em>cup</em> — không phải phương pháp tự nghĩ</p>
+                    <aside class="notes">Yoshida dùng shape index với thang cup 0, rut 0.25, saddle 0.5, ridge 0.75, cap 1, cộng với curvedness để biết kích thước. Ngưỡng họ đặt cho polyp là shape index 0.9 đến 1.0. Bốn bước của mình: làm mềm bề mặt để đo được độ cong; tại mỗi điểm hỏi cong đều mọi hướng không và cong gắt tới đâu; hai bộ lọc giữ thứ cong gần đều và kích thước 5-30mm; gom cụm xếp hạng theo diện tích.</aside>
+                </section>
+
+                <section>
+                    <h2>Kết quả · bệnh nhân 0233</h2>
+                    <div class="funnel">
+                        <span class="from">1.233 cm³ đại tràng</span> &nbsp;→&nbsp;
+                        <span class="to">4 chỗ cần bác sĩ nhìn</span>
+                    </div>
+                    <div class="two-col">
+                        <div class="have">
+                            <h4>Kết quả</h4>
+                            <ul>
+                                <li>Hạng 1 trúng polyp <strong>18 mm</strong> ACRIN ghi nhận, lệch <strong>4 mm</strong></li>
+                                <li><strong>Quét mù toàn bộ đại tràng</strong> — không dùng vị trí ACRIN làm gợi ý</li>
+                            </ul>
+                        </div>
+                        <div class="neutral">
+                            <h4>Ý nghĩa</h4>
+                            <ul>
+                                <li>Máy <strong>không thay bác sĩ</strong></li>
+                                <li>Máy <strong>thu hẹp chỗ cần nhìn</strong> — bác sĩ không phải soi từng lát cắt</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="mini-note"><strong>→ demo trên web</strong></p>
+                    <aside class="notes">Chữ "trúng" dựa trên quy ước đánh số lát cắt mới chốt được trên đúng ca này. Hai ca mới 0516 và 0639 đều trượt ở tư thế nằm ngửa; 0516 lật sấp thì ra hạng 1. Nguyên nhân: mặt nạ chỉ ghi chỗ nào là khí, polyp chìm trong dịch hoặc ở đoạn xẹp thì không có trong dữ liệu. Bài học: luôn dựng cả hai tư thế. Sẽ demo trên web.</aside>
+                </section>
+
+                <section>
+                    <h2>Chưa có cách tự kiểm</h2>
+                    <div class="two-col">
+                        <div class="havenot">
+                            <h4>Ứng viên chưa ai xác nhận</h4>
+                            <ul>
+                                <li>Chưa bác sĩ X-quang nào xem</li>
+                                <li>Bộ dò chỉ đọc <strong>hình dạng</strong> — phân, bóng ống thông,
+                                    đầu nếp gấp cũng có hình vòm</li>
+                            </ul>
+                        </div>
+                        <div class="havenot">
+                            <h4>Không tự đối chiếu được</h4>
+                            <ul>
+                                <li>ACRIN chỉ ghi <strong>số lát cắt</strong>, không có toạ độ</li>
+                                <li>Không rõ đếm theo lần quét nào</li>
+                                <li><strong>Đại tràng là ống gấp khúc</strong> — một lát cắt cắt qua nhiều đoạn ruột</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="ask-box crit">
+                        <strong>Phải có người nhìn ảnh.</strong> Không phải vì lười kiểm — mà vì không có cách tự kiểm.
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Bước tiếp theo</h2>
+                    <table class="data-table" style="font-size: 0.5em; margin-top: 24px;">
+                        <tr>
+                            <th style="width: 46%;">Việc</th>
+                            <th style="width: 24%;">Chi phí</th>
+                            <th>Kết quả</th>
+                        </tr>
+                        <tr>
+                            <td>Dựng cả <strong>31 đại tràng</strong>, cả hai tư thế</td>
+                            <td>~2 giờ máy</td>
+                            <td>tập đánh giá đầy đủ</td>
+                        </tr>
+                        <tr>
+                            <td>Chạy <strong>TotalSegmentator</strong> cho tư thế HQColon không có</td>
+                            <td>máy chạy</td>
+                            <td>phủ 13 ca chỉ có một tư thế</td>
+                        </tr>
+                        <tr>
+                            <td>Chạy bộ dò, xuất ứng viên</td>
+                            <td>~1,5 giờ máy</td>
+                            <td>~140 chỗ có toạ độ</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td><strong>Nhờ bác sĩ X-quang phân xử</strong></td>
+                            <td><strong>~1,5 giờ người</strong></td>
+                            <td><strong>~140 nhãn thật</strong></td>
+                        </tr>
+                    </table>
+                    <aside class="notes">Dòng cuối là nút thắt duy nhất. Xong thì có tỉ lệ trúng thật đưa vào bài, thay cho một ca lẻ. Về mặt nạ cho tư thế còn thiếu: sẽ tự chạy TotalSegmentator, cùng công thức HQColon chỉ thiếu bước tinh chỉnh; trên ca duy nhất có cả hai cách, lệch Dice 0,958 — đó là mức sai số dự kiến.</aside>
+                </section>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- PHẦN 2 — LỘ TRÌNH                               -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <section>
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 2</p>
+                    <h2>Lộ trình — nói lướt</h2>
+                </section>
+
+                <section>
+                    <h2>Năm giai đoạn</h2>
+                    <div class="svg-wrap">
+                        <svg viewBox="0 0 1180 300" xmlns="http://www.w3.org/2000/svg" font-family="inherit">
+                            <defs>
+                                <marker id="ar" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 9 3.5, 0 7" fill="#8a8a8a" />
+                                </marker>
+                            </defs>
+                            <rect x="20" y="100" width="200" height="100" rx="12" fill="rgba(46,139,87,.13)" stroke="#2e8b57" stroke-width="2" />
+                            <text x="120" y="132" text-anchor="middle" font-size="17" font-weight="700" fill="#1f5e3a">1 · Mesh 3D</text>
+                            <text x="120" y="155" text-anchor="middle" font-size="14" fill="#33513f">CT → khí → lưới</text>
+                            <text x="120" y="175" text-anchor="middle" font-size="14" fill="#33513f">+ dò tổn thương</text>
+                            <text x="120" y="193" text-anchor="middle" font-size="13" font-weight="700" fill="#2e8b57">ĐANG LÀM</text>
+
+                            <rect x="248" y="100" width="200" height="100" rx="12" fill="rgba(46,139,87,.10)" stroke="#2e8b57" stroke-width="2" stroke-dasharray="5 4" />
+                            <text x="348" y="132" text-anchor="middle" font-size="17" font-weight="700" fill="#1f5e3a">2 · Camera + nhãn</text>
+                            <text x="348" y="155" text-anchor="middle" font-size="14" fill="#33513f">ống kính ĐÃ CÓ</text>
+                            <text x="348" y="175" text-anchor="middle" font-size="14" fill="#33513f">ghi depth · normal</text>
+                            <text x="348" y="193" text-anchor="middle" font-size="13" font-weight="700" fill="#2e8b57">GẦN MIỄN PHÍ</text>
+
+                            <rect x="476" y="100" width="200" height="100" rx="12" fill="rgba(192,57,43,.10)" stroke="#c0392b" stroke-width="2" />
+                            <text x="576" y="132" text-anchor="middle" font-size="17" font-weight="700" fill="#8e2a20">3 · Màu</text>
+                            <text x="576" y="155" text-anchor="middle" font-size="14" fill="#6f3630">niêm mạc</text>
+                            <text x="576" y="175" text-anchor="middle" font-size="14" fill="#6f3630">gắn vào mesh</text>
+                            <text x="576" y="193" text-anchor="middle" font-size="13" font-weight="700" fill="#c0392b">KHÓ NHẤT</text>
+
+                            <rect x="704" y="100" width="200" height="100" rx="12" fill="rgba(217,131,36,.16)" stroke="#d98324" stroke-width="3" />
+                            <text x="804" y="132" text-anchor="middle" font-size="17" font-weight="700" fill="#8f5510">4 · Hố sau cắt</text>
+                            <text x="804" y="155" text-anchor="middle" font-size="14" fill="#6d4b22">khoét vào mesh</text>
+                            <text x="804" y="175" text-anchor="middle" font-size="14" fill="#6d4b22">tại vị trí tổn thương</text>
+                            <text x="804" y="193" text-anchor="middle" font-size="13" font-weight="700" fill="#b96d18">ĐÓNG GÓP CHÍNH</text>
+
+                            <rect x="932" y="100" width="200" height="100" rx="12" fill="rgba(0,0,0,.05)" stroke="#8a8a8a" stroke-width="2" />
+                            <text x="1032" y="132" text-anchor="middle" font-size="17" font-weight="700" fill="#555">5 · Isaac</text>
+                            <text x="1032" y="155" text-anchor="middle" font-size="14" fill="#666">biến dạng mô</text>
+                            <text x="1032" y="175" text-anchor="middle" font-size="14" fill="#666">mô phỏng in</text>
+                            <text x="1032" y="193" text-anchor="middle" font-size="13" font-weight="700" fill="#777">SAU CÙNG</text>
+
+                            <line x1="222" y1="150" x2="244" y2="150" stroke="#8a8a8a" stroke-width="2" marker-end="url(#ar)" />
+                            <line x1="450" y1="150" x2="472" y2="150" stroke="#8a8a8a" stroke-width="2" marker-end="url(#ar)" />
+                            <line x1="678" y1="150" x2="700" y2="150" stroke="#8a8a8a" stroke-width="2" marker-end="url(#ar)" />
+                            <line x1="906" y1="150" x2="928" y2="150" stroke="#8a8a8a" stroke-width="2" marker-end="url(#ar)" />
+
+                            <path d="M804 100 L804 62" stroke="#d98324" stroke-width="2" fill="none" />
+                            <rect x="640" y="20" width="330" height="42" rx="10" fill="rgba(217,131,36,.10)" stroke="#d98324" stroke-width="1.6" stroke-dasharray="4 3" />
+                            <text x="805" y="38" text-anchor="middle" font-size="13.5" fill="#8f5510">Không cần đợi giai đoạn 3:</text>
+                            <text x="805" y="55" text-anchor="middle" font-size="13.5" fill="#8f5510">hình dạng hố độc lập với màu</text>
+
+                            <text x="590" y="262" text-anchor="middle" font-size="13" fill="#888">Thứ tự phụ thuộc, chưa gắn mốc thời gian</text>
+                        </svg>
+                    </div>
+                    <div class="callout">
+                        <p><strong>Camera không phải việc phải làm</strong> — mô hình ống kính đã có và đang chạy
+                            (chính nó tính ra con số độ phủ). Việc còn lại chỉ là <strong>ghi nhãn ra file</strong>.</p>
+                    </div>
+                    <aside class="notes">Nói lướt phần này.</aside>
+                </section>
+
+                <section>
+                    <h2>Màu: điểm mấu chốt</h2>
+                    <div class="two-col">
+                        <div class="havenot">
+                            <h4>Mô hình sinh làm việc trên <em>frame</em></h4>
+                            <ul>
+                                <li>C3VD-DEFCOL, ColonCrafter, ArSDM — đều dịch <strong>ảnh sang ảnh</strong></li>
+                                <li>Không ràng buộc <strong>cùng một điểm 3D phải có cùng màu</strong></li>
+                                <li>→ Nhìn lại cùng một chỗ có thể ra màu khác</li>
+                            </ul>
+                        </div>
+                        <div class="have">
+                            <h4>Màu phải gắn vào <em>mesh</em></h4>
+                            <ul>
+                                <li><strong>A</strong> · dán texture (nhanh, làm trước)</li>
+                                <li><strong>B</strong> · tô màu từng đỉnh, lan theo cạnh — dùng cho hố sau cắt</li>
+                                <li><strong>C</strong> · nướng ngược: sinh frame rồi chiếu lên mesh</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="ask-box">
+                        <strong>Câu hỏi:</strong> màu <em>không cần</em> cho hình học và độ phủ, nhưng <em>cần</em> để
+                        nhận ra hố sau cắt và để vượt sang ảnh thật.
+                        <strong>Có nên hoãn phần màu lại sau giai đoạn hố không ạ?</strong>
+                    </div>
+                    <aside class="notes">Nếu thầy Xiêm hỏi sâu thì đây là sân của thầy: sinh màu trên frame nằm đúng chuyên môn video coding. Hai thứ không thay thế nhau mà ở hai vị trí khác nhau: màu gắn mesh là tài sản của bộ dữ liệu, mô hình sinh là lớp thích nghi miền ở cuối, và phải có phép kiểm hình học giữa hai bước.</aside>
+                </section>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- PHẦN 3 — NVIDIA                                 -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <section>
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 3</p>
+                    <h2>Hai công cụ NVIDIA</h2>
+                </section>
+
+                <section>
+                    <h2>MAISI — sinh ảnh CT <span class="diff hard">KHÔNG DÙNG ĐƯỢC</span></h2>
+                    <div class="lede">
+                        MAISI nhận vào một <strong>mặt nạ</strong> — tức là khối 0/1 đánh dấu mỗi voxel thuộc cơ quan
+                        nào (gan, thận, đại tràng…, 127 cấu trúc) — rồi <strong>vẽ ra ảnh CT tương ứng</strong> với
+                        mặt nạ đó. Mặt nạ là <em>bản thiết kế</em>, ảnh CT là <em>sản phẩm</em>.
+                    </div>
+                    <div class="svg-wrap">
+                        <svg viewBox="0 0 1000 150" xmlns="http://www.w3.org/2000/svg" font-family="inherit">
+                            <defs>
+                                <marker id="arw" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                                    <polygon points="0 0, 10 4, 0 8" fill="#888" />
+                                </marker>
+                            </defs>
+                            <rect x="40" y="22" width="180" height="62" rx="10" fill="rgba(46,139,87,.12)" stroke="#2e8b57" stroke-width="2" />
+                            <text x="130" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#1f5e3a">MẶT NẠ</text>
+                            <text x="130" y="70" text-anchor="middle" font-size="13" fill="#33513f">hình học — đầu vào</text>
+                            <line x1="228" y1="53" x2="278" y2="53" stroke="#888" stroke-width="2" marker-end="url(#arw)" />
+                            <rect x="288" y="22" width="130" height="62" rx="10" fill="rgba(0,0,0,.05)" stroke="#8a8a8a" stroke-width="2" />
+                            <text x="353" y="58" text-anchor="middle" font-size="16" font-weight="700" fill="#555">MAISI</text>
+                            <line x1="426" y1="53" x2="476" y2="53" stroke="#888" stroke-width="2" marker-end="url(#arw)" />
+                            <rect x="486" y="22" width="180" height="62" rx="10" fill="rgba(0,0,0,.05)" stroke="#8a8a8a" stroke-width="2" />
+                            <text x="576" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#555">ẢNH CT</text>
+                            <text x="576" y="70" text-anchor="middle" font-size="13" fill="#666">đầu ra</text>
+
+                            <text x="720" y="42" font-size="14" fill="#c0392b" font-weight="700">Pipeline của mình:</text>
+                            <text x="720" y="64" font-size="14" fill="#8e2a20">ảnh CT → mặt nạ → mesh</text>
+                            <text x="720" y="86" font-size="14" fill="#8e2a20">→ <tspan font-weight="700">đi ngược chiều</tspan></text>
+
+                            <text x="500" y="128" text-anchor="middle" font-size="14" fill="#c0392b" font-weight="700">Muốn dùng MAISI thì phải đưa vào chính cái mặt nạ mình đã có — rồi lấy ra ảnh để phân đoạn lại. Vòng tròn.</text>
+                        </svg>
+                    </div>
+                    <div class="ask-box">
+                        Thêm nữa: MAISI huấn luyện trên <strong>TCIA_Colon</strong> — <em>chính là bộ ACRIN mình đang
+                        dùng</em>. Và chính bài báo của họ ghi rằng mô phỏng hình dạng bất quy tắc như
+                        <strong>u đại tràng là khó</strong>.
+                    </div>
+                    <aside class="notes">Đây là câu trả lời trực tiếp cho gợi ý của bạn thầy. Điểm mấu chốt: mình cần mesh, không cần ảnh CT. Mà mesh thì đến từ mặt nạ, tức là thứ MAISI đòi làm đầu vào.</aside>
+                </section>
+
+                <section>
+                    <h2>Isaac — mô phỏng vật lý robot <span class="diff later">SAU NÀY</span></h2>
+                    <div class="two-col">
+                        <div class="neutral">
+                            <h4>Là gì</h4>
+                            <ul>
+                                <li>Môi trường <strong>mô phỏng vật lý cho robot</strong>, không phải công cụ ảnh y tế</li>
+                                <li><strong>BYO Anatomy</strong> — mang mesh của mình vào, Isaac không sinh giải phẫu</li>
+                                <li>Giá trị thật: <strong>mô biến dạng, tiếp xúc, điều khiển vòng kín</strong></li>
+                                <li>→ Hợp <strong>giai đoạn 5</strong>, không giúp gì cho giai đoạn 1–4</li>
+                            </ul>
+                        </div>
+                        <div class="havenot">
+                            <h4>Hai điều cần biết</h4>
+                            <ul>
+                                <li><em>Soft Tissue &amp; Fluid Surgical Simulator</em> — thứ cần để mô phỏng bơm
+                                    bioink — đang ghi <strong>"Coming Soon"</strong></li>
+                                <li>Phần đã xong là <em>Endoluminal Solver</em>, nhưng đó là <strong>ống thông trong
+                                    mạch máu</strong>, render bằng tia X</li>
+                                <li><strong>ARCGym</strong> (arXiv 2609.22803, 9/2026) đã làm xong nhánh điều hướng:
+                                    CT → mesh → mô biến dạng → Isaac Lab. <strong>Dùng lại, không xây lại</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="ask-box">
+                        Nếu nhóm muốn làm điều hướng tự động thì đóng góp riêng nên là <strong>phần thưởng theo độ bao
+                        phủ và độ bất định</strong> — thứ chưa ai làm — chứ không phải xây lại môi trường.
+                    </div>
+                    <aside class="notes">Hai lập luận này mạnh hơn lập luận chi phí, vì chi phí có thể bị vô hiệu hoá bằng một câu "trường có GPU rồi". Nếu thầy hỏi về phần cứng: Isaac bắt buộc GPU có RT core, A100 và H100 không chạy được, phải là dòng RTX tối thiểu 16GB VRAM, chỉ chạy Linux với driver ghim phiên bản.</aside>
+                </section>
+
+                <section>
+                    <h2>Isaac làm được gì — xem trực tiếp</h2>
+                    <div style="display: flex; gap: 18px; align-items: flex-start; margin-top: 14px;">
+                        <div style="flex: 0 0 62%;">
+                            <iframe
+                                data-src="https://www.youtube.com/embed/v1hdsGUHAgE?rel=0"
+                                width="100%" height="330"
+                                style="border-radius: 10px; border: 1px solid rgba(0,0,0,.15);"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <div style="flex: 1; font-size: 0.48em; text-align: left;">
+                            <h4 style="margin-top: 0;">Chú ý khi xem</h4>
+                            <ul style="padding-left: 18px; line-height: 1.5;">
+                                <li><strong>Giải phẫu</strong> trong video là do người dùng <strong>mang vào</strong> —
+                                    Isaac không sinh ra nó</li>
+                                <li>Isaac đóng góp phần <strong>vật lý</strong>: mô lún, dụng cụ chạm</li>
+                                <li>Đây là <strong>giai đoạn 5</strong> của mình</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">Mở 30-60 giây là đủ. Cần mạng — nên mở sẵn tab trước buổi họp.</aside>
+                </section>
+            </section>
+
+            <!-- ═══════════ CÂU HỎI ═══════════ -->
+            <section>
+                <h2>Câu hỏi cho thầy</h2>
+                <ol class="qlist">
+                    <li><strong>Mô phỏng hố loại nào ạ?</strong> Cohort chỉ có 3 bệnh nhân ≥ 20 mm — EMR hợp hơn ESD,
+                        hoặc dùng hố tổng hợp.</li>
+                    <li><strong>Cơ quan nào ạ?</strong> Đại tràng, dạ dày, hay thực quản?</li>
+                    <li><strong>Có nên hoãn phần màu</strong> lại sau giai đoạn hố không ạ?</li>
+                    <li><strong>Xin được bác sĩ X-quang phân xử ứng viên không ạ?</strong> Đây là cách duy nhất
+                        để có tỉ lệ trúng thật.</li>
+                    <li><strong>F3DB đắp ra hình gì</strong> ở độ phân giải nào, và <strong>mang camera gì</strong> ạ?</li>
+                    <li><strong>SLAM của anh Mạnh dừng ở đâu, phần của em bắt đầu ở đâu ạ?</strong></li>
+                </ol>
+            </section>
+
+            <!-- ═══════════ KẾT ═══════════ -->
+            <section class="title-slide">
+                <h1>Xin cảm ơn thầy</h1>
+                <p class="title-sub">Nguyễn Hải Toàn</p>
+                <p class="title-contact">
+                    <a href="mailto:nguyenhaitoan@vnu.edu.vn">nguyenhaitoan@vnu.edu.vn</a>
+                </p>
+                <p class="mini-note">
+                    HQColon (Finocchiaro và cs., <em>Sci Data</em> 2026, doi:10.1038/s41597-025-06518-z, CC BY 4.0) ·
+                    ACRIN 6664 (Johnson và cs., <em>NEJM</em> 2008), TCIA doi:10.7937/K9/TCIA.2015.NWTESAY1 (CC BY 3.0) ·
+                    C3VD (Bobrow và cs., <em>Med Image Anal</em> 2023) ·
+                    TotalSegmentator (Wasserthal và cs., <em>Radiol AI</em> 2023) ·
+                    Yoshida &amp; Näppi, <em>IEEE TMI</em> 2001 · ARCGym arXiv:2609.22803
+                </p>
+            </section>
+
+            <div class="footer">
+                Nguyễn Hải Toàn · Báo cáo tiến độ · Đại tràng 3D
+            </div>
+        </div>
+    </div>
+
+    <script src="revealjs/dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script>
+        Reveal.initialize({
+            controlsLayout: "edges",
+            slideNumber: true,
+            hashOneBasedIndex: true,
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+    </script>
+</body>
+
+</html>

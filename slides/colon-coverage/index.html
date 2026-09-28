@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colon coverage</title>
+<style>
+  :root {
+    --surface:   #1a1a19;
+    --ink:       #ffffff;
+    --muted:     #898781;
+    --panel:     #12121190;
+    --hairline:  #383835;
+    --observed:  #c3c2b7;   /* sequential ramp, high end  */
+    --unobserved:#d03b3b;   /* sequential ramp, low end   */
+    --unresolved:#3987e5;   /* out of band, not a value   */
+    --polyp:     #b44fd6;   /* a located polyp candidate */
+    --zone:      #e8b400;   /* the CT slices a lesion was reported on */
+    --blurry:    #7a766f;   /* clarity ramp, low end      */
+    --beam:      #ffe9a8;   /* lit by the scope in THIS frame */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; height:100vh; overflow:hidden; background:var(--surface); color:var(--ink);
+    font:14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  canvas { display:block; cursor:grab; }
+  canvas:active { cursor:grabbing; }
+  .panel {
+    position:fixed; background:var(--panel); backdrop-filter:blur(10px);
+    border:1px solid var(--hairline); border-radius:8px; padding:14px 16px;
+  }
+  .note { margin:10px 0 0; padding-top:9px; border-top:1px solid var(--hairline);
+          font-size:11.5px; color:var(--muted); }
+
+  #title { top:16px; left:16px; max-width:340px; }
+  #title h1 { margin:0; font-size:15px; font-weight:600; letter-spacing:-0.01em; }
+  #title p  { margin:5px 0 0; font-size:12.5px; color:var(--muted); }
+  #title .hint { color:var(--ink); margin-top:8px; }
+  #picker { display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; }
+  #picker button { padding:4px 9px; border:1px solid var(--hairline); border-radius:6px;
+                   background:none; color:var(--muted); font-family:inherit; font-size:12px;
+                   cursor:pointer; }
+  #picker button:hover { color:var(--ink); }
+  #picker button[aria-pressed="true"] { color:var(--ink); border-color:var(--ink); }
+  #picker button[disabled] { opacity:.45; cursor:progress; }
+  #picker button[data-failed] { border-style:dashed; }
+  #reset { margin-top:10px; padding:4px 10px; border:1px solid var(--hairline); border-radius:6px;
+           background:none; color:var(--ink); font-family:inherit; font-size:12px; cursor:pointer; }
+  #reset:hover, #reset:focus-visible { border-color:var(--muted); }
+  #reset kbd { margin-left:6px; padding:0 4px; border:1px solid var(--hairline); border-radius:3px;
+               color:var(--muted); font-family:inherit; font-size:11px; }
+
+  /* The numbers and the frame view share one right-hand column, so collapsing the
+     numbers lifts the frame view instead of leaving a hole where they were. */
+  #right { position:fixed; top:16px; right:16px; width:360px;
+           display:flex; flex-direction:column; align-items:flex-end; gap:12px;
+           max-height:calc(100vh - 32px); overflow-y:auto; }
+  #right .panel { position:static; width:100%; }
+  #right > [hidden] { display:none; }
+  #st-show { width:auto; padding:6px 12px; color:var(--ink); font-family:inherit;
+             font-size:12px; cursor:pointer; }
+  #st-show:hover, #st-show:focus-visible { border-color:var(--muted); }
+  #hero { font-size:30px; font-weight:650; letter-spacing:-0.02em; line-height:1.1;
+          font-variant-numeric:tabular-nums; }
+  #hero small { display:block; font-size:12px; font-weight:400; color:var(--muted);
+                letter-spacing:0; margin-top:3px; }
+  .row { display:flex; justify-content:space-between; gap:18px; font-size:12.5px;
+         padding:3px 0; font-variant-numeric:tabular-nums; }
+  .row span:first-child { color:var(--muted); }
+  #stats hr { border:0; border-top:1px solid var(--hairline); margin:11px 0 8px; }
+
+  #legend { bottom:16px; left:16px; width:288px; }
+  #legend[hidden], #lg-show[hidden] { display:none; }
+  .lg-head { display:flex; justify-content:flex-end; margin:-4px -6px 6px 0; }
+  #lg-hide { padding:2px 8px; border:1px solid var(--hairline); border-radius:6px; background:none;
+             color:var(--muted); font-family:inherit; font-size:11.5px; cursor:pointer; }
+  #lg-hide:hover, #lg-hide:focus-visible { color:var(--ink); border-color:var(--muted); }
+  #lg-show { bottom:16px; left:16px; padding:6px 12px; color:var(--ink); font-family:inherit;
+             font-size:12px; cursor:pointer; }
+  #lg-show kbd, #lg-hide kbd { margin-left:6px; padding:0 4px; border:1px solid var(--hairline);
+             border-radius:3px; color:var(--muted); font-family:inherit; font-size:11px; }
+  #play kbd { padding:0 4px; border:1px solid var(--hairline); border-radius:3px;
+              color:var(--muted); font-family:inherit; font-size:11px; }
+  #legend h2 { margin:0 0 9px; font-size:12px; font-weight:600; letter-spacing:0.03em;
+               text-transform:uppercase; color:var(--muted); }
+  .bar { height:12px; border-radius:3px; border:1px solid var(--hairline); }
+  .ticks { display:flex; justify-content:space-between; font-size:11.5px;
+           color:var(--muted); margin-top:5px; }
+  #modes { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:11px; }
+  #modes button { flex:1 1 auto; padding:4px 8px; border:1px solid var(--hairline); border-radius:6px;
+                  background:none; color:var(--muted); font-family:inherit; font-size:12px; cursor:pointer; }
+  #modes button:hover { color:var(--ink); }
+  #modes button[aria-pressed="true"] { color:var(--ink); border-color:var(--ink); }
+  .swatch { display:flex; align-items:center; gap:8px; font-size:12px;
+            margin-top:10px; color:var(--muted); }
+  .chip { width:13px; height:13px; border-radius:3px; border:1px solid var(--hairline); flex:none; }
+
+  #frame h2 { margin:0; font-size:14px; font-weight:600; }
+  #frame h2 small { display:block; margin-top:2px; font-size:12px; font-weight:400;
+                    color:var(--muted); font-variant-numeric:tabular-nums; }
+  #fr-view { margin-top:11px; border-radius:6px; overflow:hidden; background:#000;
+             aspect-ratio:1350/1080; }
+  #fr-view img { display:block; width:100%; height:100%; }
+
+  /* The transport sits between the legend and the credit, both 288-360px wide, so it
+     is centred on the viewport rather than the gap -- that keeps it put while a
+     sequence loads and the panels around it change height. */
+  #play { bottom:16px; left:50%; transform:translateX(-50%);
+          width:min(440px, calc(100vw - 32px)); padding:10px 14px; }
+  #play[hidden] { display:none; }
+  .pl-row { display:flex; align-items:center; gap:11px; }
+  #play-toggle { flex:none; width:32px; height:32px; border:1px solid var(--hairline);
+                 border-radius:50%; background:none; color:var(--ink); font-size:13px;
+                 line-height:1; cursor:pointer; font-family:inherit; }
+  #play-toggle:hover, #play-toggle:focus-visible { border-color:var(--ink); }
+  #play-slider { flex:1; min-width:0; accent-color:var(--beam); cursor:pointer; }
+  #play-label { flex:none; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums;
+                min-width:104px; text-align:right; }
+  .pl-foot { display:flex; align-items:center; justify-content:space-between; gap:12px;
+             margin-top:9px; padding-top:8px; border-top:1px solid var(--hairline); }
+  .pl-foot .note { margin:0; padding:0; border:0; }
+  #side-view { flex:none; padding:3px 9px; border:1px solid var(--hairline); border-radius:6px;
+               background:none; color:var(--ink); font-family:inherit; font-size:11.5px; cursor:pointer; }
+  #side-view:hover, #side-view:focus-visible { border-color:var(--ink); }
+
+  #credit { bottom:16px; right:16px; font-size:11.5px; color:var(--muted);
+            text-align:right; max-width:300px; padding:7px 11px; }
+  #credit.open { max-width:360px; padding:14px 16px; }
+  #credit a { color:var(--muted); }
+  #cr-more { margin-left:6px; padding:0 5px; border:1px solid var(--hairline); border-radius:4px;
+             background:none; color:var(--muted); font-family:inherit; font-size:11px;
+             cursor:pointer; white-space:nowrap; }
+  #cr-more:hover, #cr-more:focus-visible { color:var(--ink); border-color:var(--muted); }
+  #err { color:var(--unobserved); font-size:12.5px; white-space:pre-wrap; }
+  @media (max-width:820px) {
+    #credit { display:none; }
+    body.playing #legend { display:none; }
+    #right { left:16px; width:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="panel" id="title">
+  <h1>Where the colonoscope never looked</h1>
+  <p id="subtitle">loading…</p>
+  <div id="picker" role="group" aria-label="Colon segment"></div>
+  <p class="hint">Drag to spin · scroll to zoom.<br>
+  <b>Flythrough</b> runs the scope down the colon, lights what it sees, and shows you
+  the frame it is looking at.</p>
+  <button id="reset" type="button">Reset view <kbd>R</kbd></button>
+</div>
+
+<div id="right">
+<div class="panel" id="stats" hidden>
+  <div class="lg-head"><button id="st-hide" type="button" aria-controls="stats">Hide <kbd>N</kbd></button></div>
+  <div id="hero">—<small>of the surface was seen</small></div>
+  <hr>
+  <div class="row"><span>seen clearly · ≥10 px/mm</span> <b id="s-clear">—</b></div>
+  <div class="row"><span>seen, by triangle count</span> <b id="s-faces">—</b></div>
+  <div class="row"><span>wall area</span>            <b id="s-area">—</b></div>
+  <div class="row"><span>triangles</span>            <b id="s-tri">—</b></div>
+  <div class="row"><span>frames</span>               <b id="s-frames">—</b></div>
+  <div class="row"><span>unresolved</span>           <b id="s-unr">—</b></div>
+</div>
+<button class="panel" id="st-show" type="button" hidden aria-controls="stats">Numbers <kbd>N</kbd></button>
+
+<aside class="panel" id="frame" hidden>
+  <h2>What the scope sees<small id="fr-cap">—</small></h2>
+  <div id="fr-view"><img id="fr-img" alt=""></div>
+  <p class="note" id="fr-note"></p>
+</aside>
+</div>
+
+<button class="panel" id="lg-show" type="button" hidden aria-controls="legend">Legend <kbd>L</kbd></button>
+<div class="panel" id="legend">
+  <div class="lg-head"><button id="lg-hide" type="button" aria-controls="legend">Hide <kbd>L</kbd></button></div>
+  <div id="modes" role="group" aria-label="Colour by">
+    <button type="button" data-mode="clarity" aria-pressed="true">Clarity</button>
+    <button type="button" data-mode="seen" aria-pressed="false">Seen or not</button>
+    <button type="button" data-mode="beam" aria-pressed="false">Flythrough</button>
+  </div>
+  <div id="lg-clarity">
+    <div class="bar" style="background:linear-gradient(90deg, var(--blurry), var(--observed))"></div>
+    <div class="ticks"><span>blurry · 2 px/mm</span><span>sharp · 20+ px/mm</span></div>
+    <div class="swatch"><i class="chip" style="background:var(--unobserved)"></i>never seen</div>
+    <div class="swatch"><i class="chip" style="background:var(--unresolved)"></i>unresolved — no value in the source, or cut off from the camera in this scan</div>
+    <p class="note">Clarity = how many pixels covered 1&nbsp;mm of wall in the clearest frame of that
+    spot. Close and head-on is sharp; far away or at an angle is blurry.
+    <b>Thresholds are provisional</b> — where "clear enough" sits is a clinical call.</p>
+  </div>
+  <div id="lg-seen" hidden>
+    <div class="bar" style="background:linear-gradient(90deg, var(--unobserved), var(--observed))"></div>
+    <div class="ticks"><span>0.0 never observed</span><span>observed 1.0</span></div>
+    <div class="swatch"><i class="chip" style="background:var(--unresolved)"></i>unresolved — no value in the source, or cut off from the camera in this scan</div>
+    <p class="note">C3VD's own flag: in view at least once, however briefly or blurrily. Stored as a
+    float in [0,1] so a calibrated per-region uncertainty drops in unchanged.</p>
+  </div>
+  <div id="lg-beam" hidden>
+    <div class="swatch"><i class="chip" style="background:var(--beam)"></i>in view <b>right now</b></div>
+    <div class="swatch"><i class="chip" style="background:var(--observed)"></i>already passed — seen in an earlier frame</div>
+    <div class="swatch"><i class="chip" style="background:var(--unobserved)"></i>not seen yet</div>
+    <div class="swatch"><i class="chip" style="background:var(--unresolved)"></i>unresolved — no value in the source, or cut off from the camera in this scan</div>
+    <label class="swatch" style="cursor:pointer">
+      <input type="checkbox" id="cone-on" checked style="margin:0">
+      <i class="chip" style="background:#5a5643"></i>light cone — <b id="cone-deg">—</b> across
+    </label>
+    <p class="note">The same ray cast that produced the coverage number, kept frame by frame instead of
+    summed. Red left behind the scope is wall it has already gone past without ever seeing —
+    that is the miss the headline percentage counts.<br>
+    The cone is the widest ray any pixel of this lens casts, drawn 30&nbsp;mm out. Past 90&deg; it
+    opens <b>backwards</b>: the corners of the frame look behind the tip. That is why so much of a
+    short segment lights at once — and why a pinhole camera cannot stand in for this lens.</p>
+  </div>
+  <div id="zone-row" hidden>
+    <label class="swatch" style="cursor:pointer">
+      <input type="checkbox" id="zone-on" checked style="margin:0">
+      <i class="chip" style="background:var(--zone)"></i><span id="zone-label"></span>
+    </label>
+    <p class="note" id="zone-note"></p>
+  </div>
+  <div id="polyp-row" hidden>
+    <label class="swatch" style="cursor:pointer">
+      <input type="checkbox" id="polyp-on" checked style="margin:0">
+      <i class="chip" style="background:var(--polyp)"></i><span id="polyp-label"></span>
+    </label>
+    <p class="note" id="polyp-note"></p>
+  </div>
+  <p class="note" id="err" hidden></p>
+</div>
+
+<div class="panel" id="play" hidden>
+  <div class="pl-row">
+    <button id="play-toggle" type="button" aria-label="Play">&#9654;</button>
+    <input id="play-slider" type="range" min="0" max="0" value="0" step="1" aria-label="Frame">
+    <span id="play-label">—</span>
+  </div>
+  <div class="pl-foot">
+    <span class="note">Space to play or pause · <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to step a frame</span>
+    <button id="side-view" type="button">Side view</button>
+  </div>
+</div>
+
+<div class="panel" id="credit">
+  <span id="cr-text"></span>
+  <button id="cr-more" type="button" aria-controls="cr-text" aria-expanded="false">more</button>
+</div>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+
+import * as THREE from 'three';
+import { GLTFLoader }        from 'three/addons/loaders/GLTFLoader.js';
+import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
+
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('en-US');
+
+// ---------------------------------------------------------------- palette ---
+// Validated with the dataviz six-checks against surface #1a1a19, all-pairs:
+//   unobserved vs observed  deltaE 23.7 (deuteranopia) / 30.0 (normal vision)
+// The ramp is MONOTONE in OKLab lightness (0.575 -> 0.812), so the coverage
+// boundary survives full achromatopsia as a light/dark step, not colour alone.
+const RAMP_LO    = [0xd0, 0x3b, 0x3b];   // coverage 0.0
+const RAMP_HI    = [0xc3, 0xc2, 0xb7];   // coverage 1.0
+const UNRESOLVED = [0x39, 0x87, 0xe5];   // out of band -- deliberately not on the ramp
+
+// Clarity is a SEPARATE encoding, not a stretch of the ramp above. A single
+// red->grey ramp cannot keep "never seen" apart from "seen but blurry": at the
+// halfway point the pair measures deltaE 13.3 normal vision (floor 15). So never
+// seen keeps the reserved red, and clarity runs one warm grey, dark -> light:
+//   never #d03b3b vs blurry #7a766f   deltaE 8.5 deuteranopia / 18.0 normal  PASS
+// The flythrough is a THIRD encoding, and the one that has to survive being watched
+// rather than studied. Its three wall states are monotone in OKLab lightness --
+// not seen 0.575 < already passed 0.812 < lit now 0.936 -- so under full
+// achromatopsia the beam is still the brightest thing on screen and the misses
+// still the darkest. No hue carries meaning that lightness does not also carry.
+// The CT slices a lesion was reported on, as a band across the mesh. Mesh positions
+// are the scan's own patient millimetres, so a slice number maps straight across --
+// but the slice NUMBERING was pinned on patient 0233 alone (InstanceNumber counts
+// from the head, so index = n_slices - slice). On the other colons the band's position
+// is therefore a hypothesis, which is what its note says.
+const ZONE = [0xe8, 0xb4, 0x00];
+
+const BEAM = [0xff, 0xe9, 0xa8];
+
+const BLURRY = [0x7a, 0x76, 0x6f];
+const CLARITY_LO = 2, CLARITY_HI = 20;          // px across 1 mm; PROVISIONAL thresholds
+function clarityColour(c, cov, out) {
+  if (cov < 0 || c < 0) return out.setRGB(UNRESOLVED[0]/255, UNRESOLVED[1]/255, UNRESOLVED[2]/255);
+  if (c <= 0) return out.setRGB(RAMP_LO[0]/255, RAMP_LO[1]/255, RAMP_LO[2]/255);   // never seen
+  const u = (Math.log(c) - Math.log(CLARITY_LO)) / (Math.log(CLARITY_HI) - Math.log(CLARITY_LO));
+  const t = u < 0 ? 0 : u > 1 ? 1 : u;        // log scale: halving the distance doubles px/mm
+  return out.setRGB((BLURRY[0] + (RAMP_HI[0]-BLURRY[0])*t) / 255,
+                    (BLURRY[1] + (RAMP_HI[1]-BLURRY[1])*t) / 255,
+                    (BLURRY[2] + (RAMP_HI[2]-BLURRY[2])*t) / 255);
+}
+
+function ramp(v, out) {
+  if (v < 0) return out.setRGB(UNRESOLVED[0]/255, UNRESOLVED[1]/255, UNRESOLVED[2]/255);
+  const t = v > 1 ? 1 : v;
+  return out.setRGB((RAMP_LO[0] + (RAMP_HI[0]-RAMP_LO[0])*t) / 255,
+                    (RAMP_LO[1] + (RAMP_HI[1]-RAMP_LO[1])*t) / 255,
+                    (RAMP_LO[2] + (RAMP_HI[2]-RAMP_LO[2])*t) / 255);
+}
+
+// ------------------------------------------------------------------ scene ---
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+document.body.appendChild(renderer.domElement);
+
+const scene  = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1a19);
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 10000);
+
+// TrackballControls, not OrbitControls. Orbit is a turntable: it keeps a fixed
+// "up" and clamps the camera between the poles (three r160 OrbitControls.js:242),
+// so the colon can never be tumbled over the top. Trackball rotates about any
+// axis without limit, and a flick keeps it spinning for a moment.
+function makeControls() {
+  const c = new TrackballControls(camera, renderer.domElement);
+  c.rotateSpeed = 3.0;
+  c.zoomSpeed = 1.2;
+  c.panSpeed = 0.8;
+  c.staticMoving = false;          // keep a little momentum after release
+  c.dynamicDampingFactor = 0.15;
+  return c;
+}
+let controls = makeControls();
+
+// An endoscope lights the wall from its own tip. Ambient light would flatten the
+// haustral folds into nothing, and the folds are what make the shadows legible.
+camera.add(new THREE.PointLight(0xffffff, 1.35, 0, 0.0));
+scene.add(camera);
+scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+
+// The scope's own path, and where it has got to. Only shown in flythrough mode:
+// on the static views it is a line through the middle of everything you are
+// trying to look at.
+const flythrough = new THREE.Group();
+flythrough.visible = false;
+scene.add(flythrough);
+let scope = null, travelled = null, lightCone = null;
+
+function clearGroup(g) {
+  g.traverse(o => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
+  });
+  g.clear();
+}
+
+// A colonoscope is a tube that points where it is going, so the marker is a cone
+// along the pose's +z. Drawn depth-test-free: the scope is INSIDE the colon, and
+// the whole point is to watch it from outside the wall it is lighting.
+function buildFlythrough(poses, size, coneAngle) {
+  clearGroup(flythrough);
+  const pts = poses.map(m => new THREE.Vector3(m[0][3], m[1][3], m[2][3]));
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  flythrough.add(new THREE.Line(geo, new THREE.LineBasicMaterial({
+    color: 0x55544f, depthTest: false })));
+
+  const tgeo = new THREE.BufferGeometry().setFromPoints(pts);
+  travelled = new THREE.Line(tgeo, new THREE.LineBasicMaterial({
+    color: 0xffe9a8, depthTest: false }));
+  travelled.renderOrder = 2;
+  flythrough.add(travelled);
+
+  // Two cones, not a cone and a ball: the outline is the SAME shape drawn inside out
+  // and slightly larger, so it reads as a dark edge however the colon is turned.
+  // depthTest is off on both, so only renderOrder decides which wins -- three.js sorts
+  // opaque meshes by distance otherwise, and the outline would swallow the marker.
+  scope = new THREE.Group();
+  const coneGeo = new THREE.ConeGeometry(size * 1.7, size * 5.5, 18);
+  const outline = new THREE.Mesh(coneGeo, new THREE.MeshBasicMaterial({
+    color: 0x14140f, side: THREE.BackSide, depthTest: false }));
+  outline.scale.setScalar(1.3);
+  outline.renderOrder = 3;
+  const cone = new THREE.Mesh(coneGeo, new THREE.MeshBasicMaterial({
+    color: 0xffe9a8, depthTest: false }));
+  cone.renderOrder = 4;
+  for (const m of [outline, cone]) {
+    m.position.y = size * 2.75;               // ConeGeometry is centred; put the base at the origin
+    scope.add(m);
+  }
+
+  // The lens's field, as a spherical sector rather than a cone: at 195 degrees the
+  // half-angle is past 90, and a cone cannot open backwards. SphereGeometry's theta is
+  // measured from +y, which is the axis the marker already points along, so it rides in
+  // the same group and needs no orientation of its own. depthTest off, like the marker:
+  // the scope is inside the colon and we are looking at it from outside the wall.
+  lightCone = new THREE.Mesh(
+    new THREE.SphereGeometry(CONE_MM, 48, 28, 0, Math.PI * 2, 0, coneAngle),
+    new THREE.MeshBasicMaterial({ color: 0xffe9a8, transparent: true, opacity: 0.16,
+                                  side: THREE.DoubleSide, depthTest: false, depthWrite: false }));
+  lightCone.visible = $('cone-on').checked;
+  scope.add(lightCone);
+
+  flythrough.add(scope);
+}
+
+// The widest ray any pixel of this lens casts, in radians from the view axis. Run
+// forward through c3vd_camera.pixel_rays: undo the stretch, evaluate the radial
+// polynomial, take the angle off +z. Past 90 degrees the polynomial's z goes NEGATIVE
+// -- this lens genuinely looks backwards, which is the whole reason the project ray
+// casts. All four corners are tried because the optical centre is not the image
+// centre: on C3VD it sits ~4 px down and right, so the far corner is the top-left one.
+function lensMaxAngle(cam) {
+  const K = cam.intrinsics, M = cam.stretch;
+  const det = M[0][0]*M[1][1] - M[0][1]*M[1][0];
+  const inv = [[M[1][1]/det, -M[0][1]/det], [-M[1][0]/det, M[0][0]/det]];
+  let worst = 0;
+  for (const [ix, iy] of [[0,0], [cam.width-1,0], [0,cam.height-1], [cam.width-1,cam.height-1]]) {
+    const u = ix - K.cx, v = iy - K.cy;
+    const a = inv[0][0]*u + inv[0][1]*v, b = inv[1][0]*u + inv[1][1]*v;
+    const rho = Math.hypot(a, b);
+    const z = K.a0 + K.a2*rho*rho + K.a3*rho*rho*rho + K.a4*rho*rho*rho*rho;
+    worst = Math.max(worst, Math.atan2(rho, z));
+  }
+  return worst;
+}
+
+const CONE_MM = 30;                          // how far out the cone is drawn; the lumen's own scale
+const FWD = new THREE.Vector3(0, 1, 0);       // ConeGeometry's apex axis
+function updateScope(n) {
+  if (!S || !scope) return;
+  const m = S.cam.poses[n];
+  scope.position.set(m[0][3], m[1][3], m[2][3]);
+  // camera-space +z is forward, so the third COLUMN of the rotation is where it looks
+  scope.quaternion.setFromUnitVectors(FWD, new THREE.Vector3(m[0][2], m[1][2], m[2][2]).normalize());
+  if (travelled) travelled.geometry.setDrawRange(0, n + 1);
+}
+
+// ----------------------------------------------------------------- loaders --
+// Kept pluggable on purpose: a 3D Gaussian-splat surface (handoff SS10 q2) would
+// register here as another entry rather than reshaping the viewer around itself.
+const LOADERS = [
+  // match on the path only: asset URLs carry a ?v=<build> fingerprint
+  { name:'gltf', test: u => /\.(glb|gltf)$/i.test(u.split('?')[0]), load: loadGLTF },
+];
+function loadSurface(url) {
+  const h = LOADERS.find(l => l.test(url));
+  if (!h) return Promise.reject(new Error(`no loader registered for ${url}`));
+  return h.load(url);
+}
+function loadGLTF(url) {
+  return new Promise((res, rej) => new GLTFLoader().load(url, gltf => {
+    let mesh = null;
+    gltf.scene.traverse(o => { if (o.isMesh && !mesh) mesh = o; });
+    if (!mesh) return rej(new Error('glTF contains no mesh'));
+    // three.js lowercases unknown glTF attributes and keeps the underscore,
+    // so _COVERAGE arrives as _coverage.
+    const cov = mesh.geometry.attributes._coverage;
+    if (!cov) return rej(new Error(
+      'no _coverage attribute — the coverage channel was stripped.\n' +
+      'found: ' + Object.keys(mesh.geometry.attributes).join(', ')));
+    res({ root: gltf.scene, mesh, coverage: cov,
+          clarity: mesh.geometry.attributes._clarity || null });
+  }, undefined, rej));
+}
+async function loadJSON(url, init) {
+  const r = await fetch(url, init);
+  if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  return r.json();
+}
+// Each sequence carries its own provenance and licence. They are different
+// datasets by different authors under different terms -- the CT colon is not
+// C3VD's and must not be credited to it, nor shared under C3VD's non-commercial
+// licence. The page keeps the markup; the manifest only names which one.
+const CREDITS = {
+  c3vd: {
+    short: 'C3VD',
+    line: `C3VD &mdash; Bobrow et al. 2023 &middot;
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>`,
+    html: `C3VD &mdash; Bobrow et al., <i>Medical Image Analysis</i> 2023.<br>
+      Sculpted silicone phantom imaged with a clinical colonoscope. Mesh, coverage, frames
+      and poses are dataset ground truth; which frames saw each spot is computed here by
+      ray casting those poses.<br>
+      Data <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.`
+  },
+  realsyncol: {
+    short: 'CT patient',
+    line: `RealSynCol, from ACRIN 6664 on TCIA &middot;
+      <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>`,
+    html: `Colon segmented from CT colonography &mdash; RealSynCol (Lena et al.), built from
+      the National CT Colonography Trial <b>ACRIN 6664</b> on TCIA.<br>
+      A real patient's anatomy. The camera path is a centreline generated here, not the
+      dataset's trajectory; frames are ray-cast from the mesh under a headlight, so they show
+      shape only &mdash; CT records no mucosa. Coverage is computed through the real
+      colonoscope lens.<br>
+      Data <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.`
+  },
+  hqcolon: {
+    short: 'CT patient',
+    line: `HQColon masks over ACRIN 6664 on TCIA \u00b7
+      <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>`,
+    html: `Colon segmented from CT colonography. Mask: <b>HQColon</b> &mdash; Finocchiaro et al.,
+      <i>Scientific Data</i> 2026,
+      <a href="https://doi.org/10.1038/s41597-025-06518-z">doi:10.1038/s41597-025-06518-z</a>;
+      435 colons, accuracy checked by an expert abdominal radiologist on 50 of them.
+      Scans: National CT Colonography Trial (ACRIN 6664) &mdash; Johnson et al., <i>NEJM</i> 2008,
+      from TCIA,
+      <a href="https://doi.org/10.7937/K9/TCIA.2015.NWTESAY1">doi:10.7937/K9/TCIA.2015.NWTESAY1</a>.<br>
+      A real patient's anatomy. The camera path is a centreline generated here; frames are ray-cast
+      from the mesh under a headlight, so they show shape only &mdash; CT records no mucosa.
+      Coverage is simulated, through the real colonoscope lens.<br>
+      Masks <a href="https://osf.io/8tkpm/">CC BY 4.0</a>, scans
+      <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.`
+  },
+  acrin: {
+    short: 'CT patient',
+    line: `ACRIN 6664 on TCIA &middot; HQColon mask &middot;
+      <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>`,
+    html: `National CT Colonography Trial (ACRIN 6664) &mdash; Johnson et al.,
+      <i>NEJM</i> 2008; images from TCIA,
+      <a href="https://doi.org/10.7937/K9/TCIA.2015.NWTESAY1">doi:10.7937/K9/TCIA.2015.NWTESAY1</a>.<br>
+      A real patient's CT (second supine scan). Colon mask: HQColon, checked by an expert
+      abdominal radiologist (Finocchiaro et al., Sci Data 2026; masks CC BY 4.0); our TotalSegmentator-based mask agrees
+      at Dice 0.958. Purple = polyp candidate found by surface shape, not yet read by a
+      radiologist. Blue = colon cut off from the camera, left out of every percentage. The camera path is a centreline
+      generated here; frames are ray-cast under a headlight, so they show shape only &mdash;
+      CT records no mucosa. Coverage is simulated, through the real colonoscope lens.<br>
+      Data <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.`
+  }
+};
+const creditFor = e => CREDITS[(e && e.source_id) || 'c3vd'] || CREDITS.c3vd;
+
+// Every dataset here requires attribution, so the credit cannot simply be hidden --
+// but the full notice was taking a quarter of the window. One line with the source and
+// the licence stays up; the rest is a click away. Collapsed is remembered, expanded is
+// not: the licence line is always there either way.
+let creditOpen = false;
+function setCredit(entry) {
+  const c = creditFor(entry || (S && S.entry));
+  $('cr-text').innerHTML = creditOpen ? c.html : (c.line || c.html);
+  $('cr-more').textContent = creditOpen ? 'less' : 'more';
+  $('cr-more').setAttribute('aria-expanded', String(creditOpen));
+  $('credit').classList.toggle('open', creditOpen);
+}
+
+const NO_FRAME = 65535;
+
+// beam.bin (build_beam.py): gzip of  u32 magic 'BEAM', u32 format, u32 frames,
+// u32 vertices, u32 faces, u32 stride (bytes per frame), then frames*stride bytes
+// of vertex bits -- vertex v of frame n is bit (7 - (v & 7)) of byte n*stride +
+// (v >> 3), which is the MSB-first order numpy's packbits writes.
+//
+// The file is gzipped but named .bin: a static host that sees .gz may add
+// Content-Encoding itself, and the browser would then unwrap it before this code
+// gets to. Decompressing it here works the same wherever the site is served from.
+const BEAM_MAGIC = 0x4D414542, BEAM_FORMAT = 1;
+async function loadBeam(url, V) {
+  if (typeof DecompressionStream === 'undefined') return null;   // before Chrome 80 / Safari 16.4
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  const buf = await new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+  if (buf.byteLength < 24) throw new Error(`${url}: truncated`);
+  const h = new Uint32Array(buf, 0, 6);
+  if (h[0] !== BEAM_MAGIC) throw new Error(`${url}: not a beam file`);
+  if (h[1] !== BEAM_FORMAT) throw new Error(`${url}: format ${h[1]}, expected ${BEAM_FORMAT} — rebuild with build_beam.py`);
+  const N = h[2], stride = h[5];
+  if (N >= NO_FRAME) throw new Error(`${url}: ${N} frames does not fit the frame-id width`);
+  if (h[3] !== V) throw new Error(`${url}: ${h[3]} vertices, the mesh has ${V}`);
+  if (buf.byteLength < 24 + N * stride) throw new Error(`${url}: ${buf.byteLength - 24} bytes of frames, expected ${N * stride}`);
+  const masks = new Uint8Array(buf, 24, N * stride);
+
+  // The wall has to keep what the scope has already gone past, so each vertex needs
+  // the FIRST frame that lit it. Scanned here rather than stored: one pass over the
+  // buffer costs a fraction of the download it would add.
+  const firstSeen = new Uint16Array(V).fill(NO_FRAME);
+  const acc = new Uint8Array(stride);
+  for (let n = 0; n < N; n++) {
+    const off = n * stride;
+    for (let b = 0; b < stride; b++) {
+      const fresh = masks[off + b] & ~acc[b];
+      if (!fresh) continue;
+      acc[b] |= masks[off + b];
+      for (let k = 0; k < 8; k++) if ((fresh >> (7 - k)) & 1) firstSeen[(b << 3) + k] = n;
+    }
+  }
+  return { N, V, stride, masks, firstSeen };
+}
+
+// ------------------------------------------------------------------ state --
+let S = null;                      // everything about the sequence on screen
+let mode = 'clarity';              // 'clarity' | 'seen' | 'beam'
+let beamFrame = 0;                 // which frame the flythrough is parked on
+let playing = false, lastTick = 0;
+const PLAY_FPS = 12;               // slow enough to watch the wall convert, fast enough to feel like travel
+
+const POLYP = [0xb4, 0x4f, 0xd6];
+// Playback repaints on every frame, so this skips everything paint() does that
+// cannot change while the scope moves: no polyp test, no Color object, and
+// the coverage attribute read straight off its array rather than through getX().
+function paintBeam(n) {
+  const V = S.coverage.count, out = S.colours, cov = S.coverage.array;
+  const masks = S.beam.masks, first = S.beam.firstSeen, off = n * S.beam.stride;
+  // The polyp overrides all three states, because "did the scope ever light this
+  // candidate, and on which frame" is the question the flythrough is best at. The
+  // position array is read directly and the test hoisted out: this runs every frame
+  // of playback, where paint()'s per-vertex Color object would not keep up.
+  const pp = S.entry.polyp, polypOn = pp && $('polyp-on').checked;
+  const zz = S.entry.zone, zoneOn = zz && $('zone-on').checked;
+  const pos = (polypOn || zoneOn) ? S.mesh.geometry.attributes.position.array : null;
+  const r2 = polypOn ? pp.r * pp.r : 0;
+  for (let i = 0; i < V; i++) {
+    let c;
+    if (polypOn && (pos[i*3] - pp.x)**2 + (pos[i*3+1] - pp.y)**2 + (pos[i*3+2] - pp.z)**2 <= r2)
+                                                           c = POLYP;
+    else if (zoneOn && pos[i*3+2] >= zz.z_min && pos[i*3+2] <= zz.z_max)
+                                                           c = ZONE;
+    else if (cov[i] < 0)                                   c = UNRESOLVED;
+    else if ((masks[off + (i >> 3)] >> (7 - (i & 7))) & 1)  c = BEAM;
+    else if (first[i] <= n)                                c = RAMP_HI;
+    else                                                   c = RAMP_LO;
+    out[i*3] = c[0]/255; out[i*3+1] = c[1]/255; out[i*3+2] = c[2]/255;
+  }
+  S.mesh.geometry.attributes.color.needsUpdate = true;
+}
+
+function paint() {
+  if (!S) return;
+  if (mode === 'beam' && S.beam) return paintBeam(beamFrame);
+  const useClarity = mode === 'clarity' && S.clarity;
+  const n = S.coverage.count, out = S.colours, c = new THREE.Color();
+  const pos = S.mesh.geometry.attributes.position;
+  const z = S.entry.zone, zoneOn = z && $('zone-on').checked;
+  const pp = S.entry.polyp, polypOn = pp && $('polyp-on').checked, r2 = pp ? pp.r * pp.r : 0;
+  for (let i = 0; i < n; i++) {
+    const v = S.coverage.getX(i);
+    const dx = pp ? pos.getX(i) - pp.x : 0, dy = pp ? pos.getY(i) - pp.y : 0, dz = pp ? pos.getZ(i) - pp.z : 0;
+    if (polypOn && dx*dx + dy*dy + dz*dz <= r2) c.setRGB(POLYP[0]/255, POLYP[1]/255, POLYP[2]/255);
+    else if (zoneOn && pos.getZ(i) >= z.z_min && pos.getZ(i) <= z.z_max) c.setRGB(ZONE[0]/255, ZONE[1]/255, ZONE[2]/255);
+    else if (useClarity) clarityColour(S.clarity.getX(i), v, c); else ramp(v, c);
+    out[i*3] = c.r; out[i*3+1] = c.g; out[i*3+2] = c.b;
+  }
+  S.mesh.geometry.attributes.color.needsUpdate = true;
+}
+
+function setFrame(n) {
+  if (!S || !S.beam) return;
+  const N = S.beam.N;
+  beamFrame = n < 0 ? 0 : n >= N ? N - 1 : n | 0;
+  $('play-slider').value = String(beamFrame);
+  // The frame's own id, zero-based, because that is what names the file on disk and
+  // what poses.txt line it is -- counting from one here would put the panel one frame
+  // off every file name anyone goes looking for.
+  $('play-label').textContent = `frame ${beamFrame} of ${N}`;
+  updateScope(beamFrame);
+  if (mode === 'beam') paintBeam(beamFrame);
+
+  // The frame the scope is looking at, beside the wall it is lighting. Assigning the
+  // same src twice would restart the fetch, and at twelve frames a second that is the
+  // difference between smooth playback and a stutter.
+  const img = $('fr-img'), src = S.cam.frames[beamFrame] ? asset(S.entry, S.cam.frames[beamFrame]) : '';
+  if (img.getAttribute('src') !== src) {
+    img.setAttribute('src', src);
+    img.alt = `Colonoscope frame ${beamFrame} of ${S.entry.label}`;
+  }
+  $('fr-cap').textContent = `frame ${beamFrame} of ${N}`;
+}
+
+// The numbers panel collapses to a button so the frame view can take the column.
+// Remembered per viewer, a convenience only: without storage it simply starts open.
+// Collapsed by default: the flythrough and the frame view are what the window is for,
+// and the headline percentage is one keystroke (N) away when it is wanted.
+let statsReady = false, statsShown = false;
+function syncStats() {
+  $('stats').hidden = !statsReady || !statsShown;
+  $('st-show').hidden = !statsReady || statsShown;
+}
+function setStats(show) {
+  statsShown = show;
+  syncStats();
+  try { localStorage.setItem('statsHidden', show ? '0' : '1'); } catch (e) {}
+}
+
+function setPlaying(on) {
+  playing = on && !!(S && S.beam);
+  $('play-toggle').innerHTML = playing ? '&#10073;&#10073;' : '&#9654;';
+  $('play-toggle').setAttribute('aria-label', playing ? 'Pause' : 'Play');
+  lastTick = performance.now();
+}
+
+// ------------------------------------------------------------ load one seq --
+function disposeCurrent() {
+  if (!S) return;
+  setPlaying(false);
+  clearGroup(flythrough);
+  scope = travelled = lightCone = null;
+  scene.remove(S.root);
+  S.root.traverse(o => {
+    if (o.isMesh) { o.geometry.dispose(); (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose()); }
+  });
+  S = null;
+}
+
+// One segment failing must never take the others down: the buttons always come
+// back, the failed one is marked, and whatever was on screen stays on screen.
+async function loadSequence(entry) {
+  const buttons = [...$('picker').children];
+  const mine = buttons.find(b => b.dataset.name === entry.name);
+  buttons.forEach(b => b.disabled = true);
+  try {
+    await loadSequenceUnguarded(entry);
+    $('err').hidden = true;
+    if (mine) { delete mine.dataset.failed; mine.title = `${entry.label} — ${entry.frames} frames`; }
+  } catch (e) {
+    if (mine) { mine.dataset.failed = '1'; mine.title = `Could not load: ${e.message}`; }
+    throw e;
+  } finally {
+    for (const b of buttons) {
+      b.disabled = false;
+      b.setAttribute('aria-pressed', String(S?.entry.name === b.dataset.name));
+    }
+    if (S) $('subtitle').textContent = `${creditFor(S.entry).short} · ${S.entry.label} · ${fmt(S.entry.frames)} frames`;
+  }
+}
+
+// every asset URL carries the build fingerprint, so a republish is never mixed
+// with files a browser cached from the previous build
+const asset = (entry, file) => `${entry.dir}/${file}${entry.build ? `?v=${entry.build}` : ''}`;
+
+async function loadSequenceUnguarded(entry) {
+  $('subtitle').textContent = `${creditFor(entry).short} · ${entry.label} · loading…`;
+  setCredit(entry);
+
+  const [{ root, mesh, coverage, clarity }, cam] = await Promise.all([
+    loadSurface(asset(entry, 'coverage.glb')),
+    loadJSON(asset(entry, 'camera.json'))]);
+
+  // Loaded before anything is torn down, and never fatal: the flythrough is an
+  // extra view of the same measurement, and a sequence that has no beam.bin (or a
+  // browser with no DecompressionStream) must still show everything else.
+  let beam = null;
+  if (entry.beam) {
+    try { beam = await loadBeam(asset(entry, 'beam.bin'), coverage.count); }
+    catch (e) { console.warn(`[${entry.name}] flythrough unavailable: ${e.message}`); }
+  }
+
+  disposeCurrent();
+  const g = mesh.geometry, idx = g.index.array, nTri = idx.length / 3;
+
+  const col = new Float32Array(coverage.count * 3);          // filled by paint()
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  mesh.material = new THREE.MeshStandardMaterial({
+    vertexColors:true, roughness:0.85, metalness:0.0, side:THREE.DoubleSide });
+
+  // The model and the beam are separate downloads and have to describe the same mesh.
+  // visibility.bin used to prove that by face order; beam.bin proves it better, because
+  // the union of its frames IS the coverage baked into the model. They legitimately
+  // differ on sub-pixel specks and, for C3VD, on wall seen only through the video's
+  // black corners -- a fraction of a percent. A mismatched pair would be ~50%.
+  let unresolved = 0, disagree = 0, resolved = 0;
+  for (let i = 0; i < coverage.count; i++) {
+    const v = coverage.getX(i);
+    if (v < 0) { unresolved++; continue; }
+    resolved++;
+    if (beam && (v >= 0.5) !== (beam.firstSeen[i] !== NO_FRAME)) disagree++;
+  }
+  if (beam) {
+    console.info(`[${entry.name}] model vs beam: ${disagree} of ${fmt(resolved)} resolved vertices ` +
+                 `differ (${(100*disagree/Math.max(resolved,1)).toFixed(2)}%; a mismatched pair would be ~50%)`);
+    if (disagree > 0.25 * resolved)
+      throw new Error(`beam.bin does not describe this model (${(100*disagree/resolved).toFixed(0)}% of vertices disagree)`);
+  }
+
+  // stats: AREA is the headline -- how much wall was seen, not how many triangles
+  $('hero').innerHTML = (100*entry.observed).toFixed(2) + '%<small>of the wall area was seen</small>';
+  $('s-clear').textContent  = entry.clear != null ? (100*entry.clear).toFixed(2) + '%' : '—';
+  $('s-faces').textContent  = (100*entry.observed_faces).toFixed(2) + '%';
+  $('s-area').textContent   = fmt(Math.round(entry.area_mm2)) + ' mm²';
+  $('s-tri').textContent    = entry.decimated
+    ? `${fmt(nTri)} (from ${fmt(entry.source_triangles)})` : fmt(nTri);
+  $('s-frames').textContent = fmt(entry.frames);
+  $('s-unr').textContent    = fmt(unresolved);
+  statsReady = true;
+  syncStats();
+  $('subtitle').textContent = `${creditFor(entry).short} · ${entry.label} · ${fmt(entry.frames)} frames`;
+
+  // A colon segment is long and thin. Two things follow: lay its long axis
+  // ACROSS the screen rather than up it, and fit the bounding box projected onto
+  // the view plane -- fitting the bounding sphere would waste most of the frame.
+  g.computeBoundingBox();
+  const bb = g.boundingBox, ctr = bb.getCenter(new THREE.Vector3());
+  const ext = new THREE.Vector3().subVectors(bb.max, bb.min);
+  const e = [ext.x, ext.y, ext.z];
+  const li = e.indexOf(Math.max(...e));
+  const longAxis = new THREE.Vector3(+(li===0), +(li===1), +(li===2));
+  let p1 = new THREE.Vector3(1, 0, 0);
+  if (Math.abs(p1.dot(longAxis)) > 0.9) p1.set(0, 1, 0);
+  p1.crossVectors(longAxis, p1).normalize();
+  const p2 = new THREE.Vector3().crossVectors(longAxis, p1).normalize();
+  const dir = p1.clone().multiplyScalar(0.86).addScaledVector(p2, 0.38)
+                .addScaledVector(longAxis, 0.16).normalize();
+  camera.up.copy(new THREE.Vector3().crossVectors(dir, longAxis).normalize());
+  const right = new THREE.Vector3().crossVectors(camera.up, dir).normalize();
+  const halfW = 0.5*(Math.abs(ext.x*right.x) + Math.abs(ext.y*right.y) + Math.abs(ext.z*right.z));
+  const halfH = 0.5*(Math.abs(ext.x*camera.up.x) + Math.abs(ext.y*camera.up.y) + Math.abs(ext.z*camera.up.z));
+  const tan = Math.tan(THREE.MathUtils.degToRad(camera.fov)/2);
+  const dist = Math.max(halfH/tan, halfW/(tan*camera.aspect)) * 1.16;
+  camera.position.copy(ctr).addScaledVector(dir, dist);
+  camera.near = dist/200; camera.far = dist*20; camera.updateProjectionMatrix();
+
+  // Rebuild the controls now that the view is framed. TrackballControls
+  // snapshots position, target and up when constructed, and reset() returns
+  // to that snapshot -- so "Reset view" means this framed view.
+  controls.dispose();
+  controls = makeControls();
+  controls.target.copy(ctr);
+  controls.target0.copy(ctr);
+  controls.update();
+
+  const coneAngle = lensMaxAngle(cam);
+  buildFlythrough(cam.poses, ext.length() * 0.005, coneAngle);
+  $('cone-deg').textContent = (2 * coneAngle * 180 / Math.PI).toFixed(0) + '°';
+
+  scene.add(root);
+  S = { entry, root, mesh, coverage, clarity, colours: col, idx, nTri, cam, beam, loadSequence };
+
+  // C3VD ships 1350x1080 video; the CT colons are square ray-cast renders
+  $('fr-view').style.aspectRatio = `${cam.width}/${cam.height}`;
+  $('fr-note').textContent = cam.rendered
+    ? 'Ray-cast from the mesh under a headlight at the scope tip. Shape only — a CT scan '
+      + 'records no mucosa, so there is no colour or vasculature to show.'
+    : 'The real colonoscope video, at the pose this frame was recorded at.';
+
+  setPlaying(false);
+  $('play-slider').max = String(Math.max(0, (beam ? beam.N : cam.poses.length) - 1));
+  beamFrame = 0;
+  setFrame(0);
+  $('zone-row').hidden = !entry.zone;
+  if (entry.zone) { $('zone-label').textContent = entry.zone.label; $('zone-note').textContent = entry.zone.note || ''; }
+  $('polyp-row').hidden = !entry.polyp;
+  if (entry.polyp) { $('polyp-label').textContent = entry.polyp.label; $('polyp-note').textContent = entry.polyp.note || ''; }
+  $('modes').querySelector('[data-mode="clarity"]').disabled = !clarity;
+  const beamBtn = $('modes').querySelector('[data-mode="beam"]');
+  beamBtn.disabled = !beam;
+  beamBtn.title = beam ? `Run the scope through all ${beam.N} frames`
+                       : 'No per-frame data published for this sequence';
+  if (!beam && mode === 'beam') mode = 'seen';
+  if (!clarity && mode === 'clarity') mode = 'seen';
+  setMode(mode);
+
+  window.__viewer = S;
+}
+
+// -------------------------------------------------------------------- main --
+function fail(e) {
+  const el = $('err');
+  el.hidden = false; el.textContent = String(e && e.message || e);
+  if (!S) $('subtitle').textContent = 'failed to load';   // keep the label of what IS on screen
+}
+
+try {
+  // the manifest is tiny and is what names each build, so never take it from cache
+  const manifest = await loadJSON('manifest.json', { cache: 'no-store' });
+  $('picker').replaceChildren(...manifest.sequences.map(entry => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = entry.segment;
+    b.title = `${entry.label} — ${entry.frames} frames`;
+    b.dataset.name = entry.name;
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => { if (S?.entry.name !== entry.name) loadSequence(entry).catch(fail); });
+    return b;
+  }));
+  window.__manifest = manifest;
+  // start on the first segment that actually loads, rather than stopping at the first failure
+  let firstError = null;
+  for (const entry of manifest.sequences) {
+    try { await loadSequence(entry); firstError = null; break; }
+    catch (e) { console.warn(`[${entry.name}] could not load: ${e.message}`); firstError ??= e; }
+  }
+  if (firstError) throw firstError;
+} catch (e) {
+  console.error(e);
+  fail(e);
+}
+
+function setMode(m) {
+  mode = m;
+  for (const b of $('modes').children) b.setAttribute('aria-pressed', String(b.dataset.mode === m));
+  $('lg-clarity').hidden = m !== 'clarity';
+  $('lg-seen').hidden = m !== 'seen';
+  const live = m === 'beam' && !!(S && S.beam);
+  $('lg-beam').hidden = m !== 'beam';
+  $('play').hidden = !live;
+  $('frame').hidden = !live;
+  flythrough.visible = live;
+  document.body.classList.toggle('playing', m === 'beam');
+  if (m !== 'beam') setPlaying(false);
+  paint();
+}
+for (const b of $('modes').children) b.addEventListener('click', () => setMode(b.dataset.mode));
+$('zone-on').addEventListener('change', paint);
+$('polyp-on').addEventListener('change', paint);
+
+$('cr-more').addEventListener('click', () => { creditOpen = !creditOpen; setCredit(); });
+
+$('st-hide').addEventListener('click', () => setStats(false));
+$('st-show').addEventListener('click', () => setStats(true));
+addEventListener('keydown', ev => {
+  if ((ev.key === 'n' || ev.key === 'N') && !ev.metaKey && !ev.ctrlKey && !ev.altKey) setStats(!statsShown);
+});
+
+$('play-toggle').addEventListener('click', () => setPlaying(!playing));
+$('play-slider').addEventListener('input', ev => { setPlaying(false); setFrame(+ev.target.value); });
+// Space and the arrows are the transport, but only when the keystroke is not already
+// doing something: space activates a focused button, and the arrows move the slider.
+addEventListener('keydown', ev => {
+  if (mode !== 'beam' || !S || !S.beam) return;
+  if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+  const t = ev.target, typing = t && (t.tagName === 'INPUT' || t.tagName === 'BUTTON' || t.isContentEditable);
+  if (ev.key === ' ' && !typing) { ev.preventDefault(); setPlaying(!playing); }
+  else if (ev.key === 'ArrowRight' && !typing) { setPlaying(false); setFrame(beamFrame + 1); }
+  else if (ev.key === 'ArrowLeft'  && !typing) { setPlaying(false); setFrame(beamFrame - 1); }
+});
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  controls.handleResize();         // Trackball caches the canvas size
+});
+
+// Look at the scope side-on: eye perpendicular to where it is pointing, and the view's
+// own up set so the scope's axis lies ACROSS the screen. That is the one angle where the
+// cone's spread is a shape you can read rather than a disc pointing at you. Reset view
+// still returns to the framed overview -- TrackballControls restores the up it was built
+// with, so this deliberately does not rebuild them.
+function sideView() {
+  if (!S || !S.beam) return;
+  const m = S.cam.poses[beamFrame];
+  const at = new THREE.Vector3(m[0][3], m[1][3], m[2][3]);
+  const fwd = new THREE.Vector3(m[0][2], m[1][2], m[2][2]).normalize();
+  let side = new THREE.Vector3(0, 1, 0).cross(fwd);
+  if (side.lengthSq() < 1e-8) side.set(1, 0, 0);        // scope pointing straight up
+  side.normalize();
+  camera.up.copy(side.clone().cross(fwd).normalize());
+  camera.position.copy(at).addScaledVector(side, CONE_MM * 6);   // far enough to keep the wall around it in frame
+  controls.target.copy(at);
+  controls.update();
+}
+$('side-view').addEventListener('click', sideView);
+$('cone-on').addEventListener('change', () => { if (lightCone) lightCone.visible = $('cone-on').checked; });
+
+// free spinning makes it easy to end up upside down -- always offer a way home
+function resetView() { controls.reset(); }
+$('reset').addEventListener('click', resetView);
+addEventListener('keydown', ev => { if (ev.key === 'r' || ev.key === 'R') resetView(); });
+
+// The legend can be hidden to leave the colon unobstructed. Remembered per viewer
+// (a convenience only: without storage it simply starts shown).
+function setLegend(show) {
+  $('legend').hidden = !show;
+  $('lg-show').hidden = show;
+  try { localStorage.setItem('legendHidden', show ? '0' : '1'); } catch (e) {}
+}
+$('lg-hide').addEventListener('click', () => setLegend(false));
+$('lg-show').addEventListener('click', () => setLegend(true));
+addEventListener('keydown', ev => {
+  if ((ev.key === 'l' || ev.key === 'L') && !ev.metaKey && !ev.ctrlKey && !ev.altKey) setLegend($('legend').hidden);
+});
+try { if (localStorage.getItem('legendHidden') === '1') setLegend(false); } catch (e) {}
+try { if (localStorage.getItem('statsHidden') === '0') setStats(true); } catch (e) {}
+
+renderer.setAnimationLoop(() => {
+  // Playback is paced off the clock, not the display: the transport should run at the
+  // same speed on a 120 Hz laptop as on a 60 Hz monitor. It loops rather than stopping
+  // at the end, so a flythrough left running reads as a loop of the whole withdrawal.
+  if (playing && S && S.beam) {
+    const now = performance.now();
+    if (now - lastTick >= 1000 / PLAY_FPS) {
+      lastTick = now;
+      setFrame(beamFrame + 1 >= S.beam.N ? 0 : beamFrame + 1);
+    }
+  }
+  controls.update();
+  renderer.render(scene, camera);
+});
+</script>
+</body>
+</html>

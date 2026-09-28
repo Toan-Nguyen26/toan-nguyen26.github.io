@@ -1,0 +1,479 @@
+{
+ "sequences": [
+  {
+   "name": "cecum_t1_a",
+   "segment": "Cecum",
+   "label": "Cecum \u00b7 t1 a",
+   "dir": "seq/cecum_t1_a",
+   "build": "08b0ec266df1",
+   "frames": 276,
+   "observed": 0.8398,
+   "observed_faces": 0.838,
+   "area_mm2": 20776.2,
+   "source_triangles": 745537,
+   "decimated": true,
+   "clear": 0.7803,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0085,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0
+    ],
+    [
+     2.0,
+     5.0,
+     0.0001
+    ],
+    [
+     5.0,
+     10.0,
+     0.0509
+    ],
+    [
+     10.0,
+     20.0,
+     0.6617
+    ],
+    [
+     20.0,
+     null,
+     0.1186
+    ]
+   ],
+   "glb_mb": 9.6,
+   "source_id": "c3vd",
+   "beam": true
+  },
+  {
+   "name": "trans_t1_a",
+   "segment": "Transverse colon",
+   "label": "Transverse colon \u00b7 t1 a",
+   "dir": "seq/trans_t1_a",
+   "build": "e382f950702a",
+   "frames": 61,
+   "observed": 0.4625,
+   "observed_faces": 0.4744,
+   "area_mm2": 22845.6,
+   "source_triangles": 231410,
+   "decimated": false,
+   "clear": 0.2683,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0025,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0003
+    ],
+    [
+     2.0,
+     5.0,
+     0.0553
+    ],
+    [
+     5.0,
+     10.0,
+     0.1362
+    ],
+    [
+     10.0,
+     20.0,
+     0.1165
+    ],
+    [
+     20.0,
+     null,
+     0.1518
+    ]
+   ],
+   "glb_mb": 6.59,
+   "source_id": "c3vd",
+   "beam": true
+  },
+  {
+   "name": "desc_t4_a",
+   "segment": "Descending colon",
+   "label": "Descending colon \u00b7 t4 a",
+   "dir": "seq/desc_t4_a",
+   "build": "c207fb36107c",
+   "frames": 148,
+   "observed": 0.2083,
+   "observed_faces": 0.2051,
+   "area_mm2": 33588.4,
+   "source_triangles": 465032,
+   "decimated": true,
+   "clear": 0.1515,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0035,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0
+    ],
+    [
+     2.0,
+     5.0,
+     0.003
+    ],
+    [
+     5.0,
+     10.0,
+     0.0502
+    ],
+    [
+     10.0,
+     20.0,
+     0.0741
+    ],
+    [
+     20.0,
+     null,
+     0.0774
+    ]
+   ],
+   "glb_mb": 9.6,
+   "source_id": "c3vd",
+   "beam": true
+  },
+  {
+   "name": "sigmoid_t3_b",
+   "segment": "Sigmoid colon",
+   "label": "Sigmoid colon \u00b7 t3 b",
+   "dir": "seq/sigmoid_t3_b",
+   "build": "be51153626b2",
+   "frames": 536,
+   "observed": 0.3577,
+   "observed_faces": 0.3345,
+   "area_mm2": 19385.0,
+   "source_triangles": 260850,
+   "decimated": false,
+   "clear": 0.2811,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0077,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0
+    ],
+    [
+     2.0,
+     5.0,
+     0.0054
+    ],
+    [
+     5.0,
+     10.0,
+     0.0634
+    ],
+    [
+     10.0,
+     20.0,
+     0.127
+    ],
+    [
+     20.0,
+     null,
+     0.1541
+    ]
+   ],
+   "glb_mb": 7.39,
+   "source_id": "c3vd",
+   "beam": true
+  },
+  {
+   "name": "acrin_0233_supine",
+   "segment": "ACRIN patient 0233",
+   "dir": "seq/acrin_0233_supine",
+   "label": "Whole colon \u00b7 patient 0233 (series 4)",
+   "build": "ce0fd1249483",
+   "frames": 171,
+   "observed": 0.788,
+   "observed_faces": 0.7596,
+   "area_mm2": 181898.7,
+   "source_triangles": 299998,
+   "decimated": false,
+   "clear": 0.7492,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0024
+    ],
+    [
+     2.0,
+     5.0,
+     0.0081
+    ],
+    [
+     5.0,
+     10.0,
+     0.0283
+    ],
+    [
+     10.0,
+     20.0,
+     0.3599
+    ],
+    [
+     20.0,
+     null,
+     0.3894
+    ]
+   ],
+   "glb_mb": 8.72,
+   "evaluable": 1.0,
+   "source": "TCIA CT COLONOGRAPHY (ACRIN 6664), second supine scan; colon mask from HQColon (radiologist-checked)",
+   "source_id": "acrin",
+   "path": "generated centreline",
+   "beam": true,
+   "zone": {
+    "z_min": -319.59999999999843,
+    "z_max": -303.5999999999982,
+    "label": "ACRIN record \u00b7 slice 353 \u00b110",
+    "note": "ACRIN records a 18 mm polyp at supine slice 353. Yellow: every wall within \u00b110 slices (\u00b18 mm). The slice numbering was checked against this patient's own CT, so the band sits where ACRIN says."
+   },
+   "polyp": {
+    "x": 50.5,
+    "y": -188.8,
+    "z": -307.9,
+    "r": 12.0,
+    "label": "polyp candidate \u00b7 slice #348, 16\u201317 mm",
+    "note": "Found blind by surface shape (cap), in both supine scans at the same spot, inside ACRIN's slice band; soft-tissue density (~70 HU), no tagging, no gas bubbles; ~16\u201317 mm by volume vs 18 mm recorded. Not yet confirmed by a radiologist."
+   }
+  },
+  {
+   "name": "hq_0516",
+   "segment": "0516 supine",
+   "dir": "seq/hq_0516",
+   "label": "Whole colon \u00b7 patient 0516 \u00b7 polyp 20 mm recorded",
+   "build": "53e2cfac8cb7",
+   "frames": 212,
+   "observed": 0.8086,
+   "observed_faces": 0.7856,
+   "area_mm2": 267402.6,
+   "source_triangles": 299998,
+   "decimated": false,
+   "clear": 0.7148,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0038
+    ],
+    [
+     2.0,
+     5.0,
+     0.0131
+    ],
+    [
+     5.0,
+     10.0,
+     0.0769
+    ],
+    [
+     10.0,
+     20.0,
+     0.4676
+    ],
+    [
+     20.0,
+     null,
+     0.2472
+    ]
+   ],
+   "glb_mb": 8.7,
+   "evaluable": 1.0,
+   "source": "HQColon (Finocchiaro et al., Sci Data 2026) masks over TCIA CT COLONOGRAPHY (ACRIN 6664)",
+   "source_id": "hqcolon",
+   "path": "generated centreline",
+   "beam": true,
+   "zone": {
+    "z_min": -603.7,
+    "z_max": -587.7,
+    "label": "ACRIN record \u00b7 supine slice 240 \u00b110",
+    "note": "ACRIN records a 20 mm polyp at supine slice 240. Yellow: every wall within \u00b110 slices (\u00b18 mm). \u26a0 The slice numbering was pinned on patient 0233 only and this colon was built from the mask alone, with no InstanceNumber array to check it against. Treat the band's position as a hypothesis."
+   }
+  },
+  {
+   "name": "hq_0639",
+   "segment": "0639 supine",
+   "dir": "seq/hq_0639",
+   "label": "Whole colon \u00b7 patient 0639 \u00b7 polyp 20 mm recorded",
+   "build": "d243f9634f20",
+   "frames": 180,
+   "observed": 0.6955,
+   "observed_faces": 0.6876,
+   "area_mm2": 243647.3,
+   "source_triangles": 299999,
+   "decimated": false,
+   "clear": 0.6323,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0043
+    ],
+    [
+     2.0,
+     5.0,
+     0.0199
+    ],
+    [
+     5.0,
+     10.0,
+     0.039
+    ],
+    [
+     10.0,
+     20.0,
+     0.3249
+    ],
+    [
+     20.0,
+     null,
+     0.3074
+    ]
+   ],
+   "glb_mb": 8.81,
+   "evaluable": 1.0,
+   "source": "HQColon (Finocchiaro et al., Sci Data 2026) masks over TCIA CT COLONOGRAPHY (ACRIN 6664)",
+   "source_id": "hqcolon",
+   "path": "generated centreline",
+   "beam": true,
+   "zone": {
+    "z_min": -362.9,
+    "z_max": -346.9,
+    "label": "ACRIN record \u00b7 supine slice 284 \u00b110",
+    "note": "ACRIN records a 20 mm polyp at supine slice 284. Yellow: every wall within \u00b110 slices (\u00b18 mm). \u26a0 The slice numbering was pinned on patient 0233 only and this colon was built from the mask alone, with no InstanceNumber array to check it against. Treat the band's position as a hypothesis."
+   }
+  },
+  {
+   "name": "hq_0516_prone",
+   "segment": "0516 prone",
+   "dir": "seq/hq_0516_prone",
+   "label": "Whole colon \u00b7 patient 0516, prone \u00b7 polyp 20 mm recorded",
+   "build": "a6ac58272e8d",
+   "frames": 210,
+   "observed": 0.7982,
+   "observed_faces": 0.7814,
+   "area_mm2": 267226.0,
+   "source_triangles": 300000,
+   "decimated": false,
+   "clear": 0.7076,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0052
+    ],
+    [
+     2.0,
+     5.0,
+     0.0145
+    ],
+    [
+     5.0,
+     10.0,
+     0.071
+    ],
+    [
+     10.0,
+     20.0,
+     0.4635
+    ],
+    [
+     20.0,
+     null,
+     0.244
+    ]
+   ],
+   "glb_mb": 8.75,
+   "evaluable": 1.0,
+   "source": "HQColon (Finocchiaro et al., Sci Data 2026) masks over TCIA CT COLONOGRAPHY (ACRIN 6664)",
+   "source_id": "hqcolon",
+   "path": "generated centreline",
+   "beam": true,
+   "zone": {
+    "z_min": -694.8,
+    "z_max": -678.8,
+    "label": "ACRIN record \u00b7 prone slice 257 \u00b110",
+    "note": "ACRIN records a 20 mm polyp at prone slice 257. Yellow: every wall within \u00b110 slices (\u00b18 mm). \u26a0 The slice numbering was pinned on patient 0233 only and this colon was built from the mask alone, with no InstanceNumber array to check it against. Treat the band's position as a hypothesis."
+   },
+   "polyp": {
+    "x": -78.1,
+    "y": 168.7,
+    "z": -686.8,
+    "r": 12.0,
+    "label": "cap candidate \u00b7 slice #257, 19.7 mm",
+    "note": "Top-ranked of 7 cap-shaped clusters found by a BLIND scan of the whole colon \u2014 no hint from ACRIN's record. It lands on slice 257, exactly the prone slice ACRIN gives for a 20 mm polyp, and measures 19.7 mm across. \u26a0 Shape only: without the patient's CT there is no density check, so stool cannot be excluded. Not confirmed by a radiologist. The same patient's supine scan has no candidate anywhere near this band."
+   }
+  },
+  {
+   "name": "hq_0639_prone",
+   "segment": "0639 prone",
+   "dir": "seq/hq_0639_prone",
+   "label": "Whole colon \u00b7 patient 0639, prone \u00b7 polyp 20 mm recorded",
+   "build": "98374ce070f1",
+   "frames": 198,
+   "observed": 0.7867,
+   "observed_faces": 0.7607,
+   "area_mm2": 236952.4,
+   "source_triangles": 299998,
+   "decimated": false,
+   "clear": 0.7388,
+   "clear_px_per_mm": 10.0,
+   "corner_only": 0.0,
+   "clarity_bands": [
+    [
+     0.0,
+     2.0,
+     0.0034
+    ],
+    [
+     2.0,
+     5.0,
+     0.0104
+    ],
+    [
+     5.0,
+     10.0,
+     0.0342
+    ],
+    [
+     10.0,
+     20.0,
+     0.4051
+    ],
+    [
+     20.0,
+     null,
+     0.3337
+    ]
+   ],
+   "glb_mb": 8.75,
+   "evaluable": 0.9907,
+   "source": "HQColon (Finocchiaro et al., Sci Data 2026) masks over TCIA CT COLONOGRAPHY (ACRIN 6664)",
+   "source_id": "hqcolon",
+   "path": "generated centreline",
+   "beam": true,
+   "zone": {
+    "z_min": -270.0,
+    "z_max": -254.0,
+    "label": "ACRIN record \u00b7 prone slice 256 \u00b110",
+    "note": "ACRIN records a 20 mm polyp at prone slice 256. Yellow: every wall within \u00b110 slices (\u00b18 mm). \u26a0 The slice numbering was pinned on patient 0233 only and this colon was built from the mask alone, with no InstanceNumber array to check it against. Treat the band's position as a hypothesis."
+   }
+  }
+ ]
+}
