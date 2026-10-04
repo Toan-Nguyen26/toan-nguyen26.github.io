@@ -146,8 +146,10 @@
                         <div class="stat"><b class="hot">34 %</b><span>với u tuyến dẹt</span></div>
                         <div class="stat"><b>0,177</b><span>sai số khi bác sĩ ước lượng độ phủ<br>(thuật toán: 0,075)</span></div>
                     </div>
-                    <p class="mini-note">Zhao và cs., Gastroenterology 2019 · Freedman và cs., IEEE TMI 2020</p>
-                    <aside class="notes">Hai nguyên nhân bỏ sót: nhìn thấy nhưng không nhận ra (AI phát hiện đang giải quyết), và chưa bao giờ lọt vào khung hình hoặc không đo được kích thước. Cái thứ hai cần biết camera ở đâu, đã nhìn thấy phần nào, tổn thương to bao nhiêu. Bác sĩ cũng không ước lượng được độ phủ, nên không thể dùng bác sĩ làm nhãn — phải có dữ liệu 3D chính xác.</aside>
+                    <p class="mini-note" style="line-height:1.5;">26 %, 34 %: Zhao và cs., <em>Gastroenterology</em> 2019;156:1661–74 (43 nghiên cứu, &gt;15.000 ca soi kép) ·
+                        0,177 / 0,075: Freedman và cs., <em>IEEE TMI</em> 2020;39:3451–62 (trên chuỗi tổng hợp có đáp án)<br>
+                        "Chưa lọt vào khung hình": East và cs., <em>Am J Gastroenterol</em> 2007;102:2529–35 · Freedman 2020</p>
+                    <aside class="notes">NGUỒN NẾU THẦY HỎI. (1) 26 % u tuyến, 34 % u tuyến dẹt: Zhao S và cs., "Magnitude, risk factors, and factors associated with adenoma miss rate of tandem colonoscopy", Gastroenterology 2019;156(6):1661–1674, doi 10.1053/j.gastro.2019.01.260 — 43 bài, hơn 15.000 ca soi kép (soi hai lần liên tiếp). Cùng bài: u tuyến tiến triển 9 %, polyp răng cưa 27 %. (2) "Chưa lọt vào khung hình": East JE và cs. 2007 viết trong tóm tắt rằng tỉ lệ bỏ sót "có lẽ vì một số tổn thương nằm ở vùng bề mặt không bao giờ vào trường nhìn"; Freedman 2020 viết "một số polyp nằm trong trường nhìn, số khác bị bỏ sót đơn giản vì độ phủ không đủ". Pooler & Pickhardt (Radiology 2016) có ca polyp lớn sau nếp gấp manh tràng bị bỏ sót dù CT đã chỉ chỗ; 71 % polyp bị sót nằm ở đại tràng phải. LƯU Ý: chưa nghiên cứu nào đo được bao nhiêu phần trăm ca bỏ sót là do chưa lọt khung hình — đó chính là thứ dữ liệu 3D cho phép đo. (3) 0,177 vs 0,075: Freedman D và cs., "Detecting deficient coverage in colonoscopies", IEEE TMI 2020;39(11):3451–3462 — sai số tuyệt đối trung bình khi ước lượng độ phủ, đo trên chuỗi tổng hợp có đáp án. Hai nguyên nhân bỏ sót: nhìn thấy nhưng không nhận ra (AI phát hiện đang giải quyết), và chưa bao giờ lọt vào khung hình hoặc không đo được kích thước. Cái thứ hai cần biết camera ở đâu, đã nhìn thấy phần nào, tổn thương to bao nhiêu. Bác sĩ cũng không ước lượng được độ phủ, nên không thể dùng bác sĩ làm nhãn — phải có dữ liệu 3D chính xác.</aside>
                 </section>
 
                 <section>
@@ -348,25 +350,32 @@
                     <h2>Bước 4 · Phủ màu</h2>
                     <div class="media-row">
                         <div>
-                            <img src="img/ct-colon/c3vd_frame.jpg" alt="Ảnh C3VD" style="height: 230px;">
-                            <p class="media-cap">ảnh C3VD</p>
+                            <img src="img/dataset/c3vd_desc.jpg" alt="Ảnh C3VD, đại tràng xuống" style="height: 205px;">
+                            <p class="media-cap">ảnh C3VD (mô hình đại tràng xuống)</p>
                         </div>
                         <span class="flow-arrow">→</span>
                         <div>
-                            <img src="img/dataset/texture_tile.jpg" alt="Tấm texture" style="height: 230px;">
+                            <img src="img/dataset/texture_tile.jpg" alt="Tấm texture" style="height: 205px;">
                             <p class="media-cap">cắt miếng, ghép thành tấm liền mạch</p>
                         </div>
                         <span class="flow-arrow">→</span>
                         <div>
-                            <img src="img/dataset/frame_0400.jpg" alt="Khung render" style="height: 230px;">
+                            <img src="img/dataset/frame_0400.jpg" alt="Khung render" style="height: 205px;">
                             <p class="media-cap">phủ lên mesh, mỗi 40 mm lặp lại</p>
                         </div>
                     </div>
-                    <div class="callout callout--draft">
-                        <p>Texture mapping thông thường — <strong>không phải đóng góp nghiên cứu</strong>.
-                            Màu không liên quan giải phẫu.</p>
+                    <div class="two-col" style="margin-top: 12px;">
+                        <div class="neutral">
+                            <h4>Màu</h4>
+                            <ul><li>Texture mapping thông thường — <strong>không phải đóng góp</strong>; không liên quan giải phẫu</li></ul>
+                        </div>
+                        <div class="neutral">
+                            <h4>Độ bóng đến từ đâu</h4>
+                            <ul><li><strong>Không từ ảnh</strong>: điểm lóa trong ảnh C3VD đã bị xoá</li>
+                                <li>Do <strong>vật liệu Blender</strong>: lớp phủ trong suốt mô phỏng chất nhầy + đèn sát ống kính</li></ul>
+                        </div>
                     </div>
-                    <aside class="notes">Chọn ngẫu nhiên ô 288×288 px đủ sáng, ít lóa; 5 ảnh chỉ 2 ảnh đạt → 50 miếng. Xoá điểm lóa, làm phẳng độ sáng của đèn. Rải 700 lần lên ảnh 2048×2048, xoay, lật, mép mờ. Chiếu từ 6 hướng lên mesh. Thêm lớp bóng (chất nhầy), ánh sáng thấm nhẹ, bump map. Giấy phép C3VD là CC BY-NC-SA.</aside>
+                    <aside class="notes">ĐỘ BÓNG (nếu thầy hỏi): vật liệu Principled BSDF trong Blender. Clear-coat (Coat Weight 0,6, Coat Roughness 0,08) = lớp màng ướt mỏng, rất nhẵn → điểm sáng gắt, mô phỏng chất nhầy. Lớp dưới: Roughness 0,35 (mờ hơn), subsurface 0,25 với bán kính đỏ > lục > lam (ánh sáng thấm vào mô, đỏ đi sâu nhất). Bump map 0,4 cho độ sần. Đèn là một nguồn điểm 0,01 W (theo đơn vị cảnh), bán kính 2 mm, đặt cách ống kính 3 mm — giống nội soi thật, đèn ở sát ống kính nên vệt sáng hiện trên các mặt đối diện camera. Nền đen, chỉ 1 lần nảy sáng → lòng ruột xa tối. Mọi thông số chỉnh bằng mắt, chưa đo từ ảnh thật — đây là phần "mô phỏng" trong bảng thật/mô phỏng. Texture: ảnh nguồn từ C3VD desc_t4_a (đại tràng xuống, silicon); lưu ý ảnh nguồn có polyp, texture chưa loại trừ vùng đó.  đủ sáng, ít lóa; 5 ảnh chỉ 2 ảnh đạt → 50 miếng. Xoá điểm lóa, làm phẳng độ sáng của đèn. Rải 700 lần lên ảnh 2048×2048, xoay, lật, mép mờ. Chiếu từ 6 hướng lên mesh. Thêm lớp bóng (chất nhầy), ánh sáng thấm nhẹ, bump map. Giấy phép C3VD là CC BY-NC-SA.</aside>
                 </section>
 
                 <section>
