@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <title>Báo cáo tiến độ — Tạp chí, video, bác sĩ</title>
+    <link rel="stylesheet" href="revealjs/dist/reset.css" />
+    <link rel="stylesheet" href="revealjs/dist/reveal.css" />
+    <link rel="stylesheet" href="revealjs/dist/theme/white.css" />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <link rel="stylesheet" href="slide-style.css" />
+    <link rel="stylesheet" href="intro-style.css" />
+    <style>
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.46em; margin-top: 12px; }
+        .data-table th, .data-table td {
+            padding: 8px 11px; text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, .1); vertical-align: top;
+        }
+        .data-table th { font-weight: 600; color: var(--sl-muted, #667); font-size: .9em; letter-spacing: .02em; }
+        .data-table td.yes, .data-table td.no, .data-table td.plan { font-weight: 700; }
+        .data-table td.yes { color: #2e8b57; }
+        .data-table td.no { color: #c0392b; }
+        .data-table td.plan { color: var(--sl-orange, #c85a12); }
+        .data-table tr.highlight td { background: rgba(200, 90, 18, .08); }
+        .data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+        .data-table .ex { display: block; font-weight: 400; color: var(--sl-muted); font-size: .85em; }
+
+        .mini-note { font-size: 0.4em; color: var(--sl-muted, #778); text-align: center; margin-top: 8px; line-height: 1.5; }
+        .big-claim {
+            font-size: 0.8em; line-height: 1.45; font-weight: 600;
+            text-align: center; max-width: 92%; margin: 22px auto 14px;
+        }
+        .big-claim em { font-style: normal; color: var(--sl-orange, #c85a12); }
+
+        .tag {
+            display: inline-block; font-size: .5em; font-weight: 700;
+            border-radius: 5px; padding: 2px 9px; margin-left: 8px; vertical-align: 6px;
+        }
+        .tag.wait { background: rgba(192, 57, 43, .13); color: #c0392b; }
+        .tag.wip { background: rgba(200, 90, 18, .13); color: var(--sl-orange); }
+        .tag.done { background: rgba(46, 139, 87, .13); color: #2e8b57; }
+
+        .ask-box {
+            margin-top: 18px; padding: 15px 19px; border-radius: 12px;
+            border-left: 5px solid var(--sl-orange, #c85a12);
+            background: rgba(200, 90, 18, .09); font-size: 0.5em; line-height: 1.5; text-align: left;
+        }
+
+        .two-col { display: flex; gap: 18px; margin-top: 16px; font-size: 0.48em; text-align: left; }
+        .two-col > div { flex: 1; background: rgba(0, 0, 0, .035); border-radius: 10px; padding: 13px 16px; }
+        .two-col h4 { margin: 0 0 8px; font-size: 1.05em; }
+        .two-col ul { margin: 0; padding-left: 18px; }
+        .two-col li { margin-bottom: 6px; }
+        .have { border-left: 4px solid #2e8b57; }
+        .havenot { border-left: 4px solid #c0392b; }
+        .neutral { border-left: 4px solid #8a8a8a; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; font-size: 0.5em; margin-top: 18px; }
+        .stat b { display: block; font-size: 2.2em; line-height: 1.1; color: var(--sl-ink); }
+        .stat b.hot { color: var(--sl-orange); }
+        .stat span { color: var(--sl-muted); }
+
+        .qlist { font-size: 0.5em; text-align: left; margin-top: 12px; }
+        .qlist li { margin-bottom: 12px; line-height: 1.45; }
+        .qlist li strong { color: var(--sl-orange, #c85a12); }
+
+        .media-row { display: flex; gap: 22px; align-items: center; justify-content: center; margin-top: 10px; }
+        .media-row img {
+            border-radius: 10px; border: 1px solid var(--sl-line);
+            box-shadow: 0 8px 24px rgba(19, 15, 26, .1); background: #fff;
+        }
+        .media-cap { font-size: 0.4em; color: var(--sl-muted); text-align: center; margin-top: 6px; }
+        .side-list { font-size: 0.52em; text-align: left; }
+        .side-list li { margin-bottom: 10px; }
+        .reveal ol.steps { font-size: 0.5em; text-align: left; margin-top: 10px; counter-reset: s; list-style: none; padding: 0; margin-left: 0; }
+        .steps li { margin-bottom: 11px; padding-left: 2.1em; position: relative; line-height: 1.45; }
+        .steps li::before {
+            counter-increment: s; content: counter(s); position: absolute; left: 0; top: 0;
+            width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--sl-orange, #c85a12);
+            color: #fff; font-weight: 700; font-size: .85em; text-align: center; line-height: 1.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ═══════════ BÌA ═══════════ -->
+            <section class="title-slide">
+                <h1>Báo cáo tiến độ</h1>
+                <p class="title-sub">Nộp ở đâu · video giống thật · polyp và hố sau cắt · bác sĩ</p>
+                <p class="title-host">
+                    <strong>Nguyễn Hải Toàn</strong><br>
+                    <span class="text-light">Kính gửi: TS. Mai Thanh Thái &amp; PGS.TS. Hoàng Văn Xiêm</span>
+                </p>
+                <aside class="notes">Ba phần theo ba việc thầy giao lần trước: (1) tạp chí và bài cần có gì, (2) làm video giống thật — không dùng được YouTube, (3) kế hoạch với bác sĩ. Cuối buổi là các câu hỏi cần thầy giúp.</aside>
+            </section>
+
+            <!-- ═══════════ TÓM TẮT ═══════════ -->
+            <section>
+                <h2>Tóm tắt</h2>
+                <div class="two-col">
+                    <div class="have">
+                        <h4>✓ Tuần này</h4>
+                        <ul>
+                            <li><strong>Tạp chí:</strong> Scientific Data (Q1) — đã đọc quy định, biết bài cần những phần nào</li>
+                            <li><strong>Camera C3VD trong Blender:</strong> khớp độ sâu thật tới <strong>0,004 mm</strong></li>
+                            <li><strong>Đèn:</strong> đo từ chính video ống soi thật</li>
+                            <li><strong>Chuyển động camera:</strong> giống bác sĩ cầm (0,81 mm/khung)</li>
+                            <li><strong>Hố sau cắt:</strong> quy tắc theo kích thước polyp (ESGE 2024)</li>
+                            <li><strong>Kế hoạch với bác sĩ:</strong> tập trung vào <strong>tổn thương</strong>, độ thật so tương đối</li>
+                        </ul>
+                    </div>
+                    <div class="havenot">
+                        <h4>✗ Cần chú ý</h4>
+                        <ul>
+                            <li><strong>RealSynCol</strong> vừa đăng ở chính Scientific Data — cùng cách làm (CT ACRIN + Blender)</li>
+                            <li><strong>YouTube không dùng được</strong> (giấy phép)</li>
+                            <li>Màu niêm mạc vẫn lấy từ C3VD — <strong>đang thay</strong> bằng mạch máu tách từ REAL-Colon</li>
+                            <li><strong>103 ca</strong> ≈ ½–1 ngày/ca → cần quyết quy mô</li>
+                            <li>Cần <strong>bác sĩ X-quang, bác sĩ nội soi</strong> và <strong>hội đồng đạo đức</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- PHẦN 1                                          -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <section>
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 1</p>
+                    <h2>Nộp ở đâu, bài cần gì</h2>
+                </section>
+
+                <section>
+                    <h2>Scientific Data (Nature)</h2>
+                    <div class="stat-grid">
+                        <div class="stat"><b>Q1</b><span>loại bài "Data Descriptor"<br>— mô tả bộ dữ liệu</span></div>
+                        <div class="stat"><b class="hot">5–10 tháng</b><span>từ nộp tới nhận<br>(HQColon 4,5 · RealSynCol 6 · REAL-Colon 10)</span></div>
+                        <div class="stat"><b>~2.190 USD</b><span>phí đăng (bắt buộc, truy cập mở)</span></div>
+                    </div>
+                    <p class="big-claim" style="font-size: 0.6em;">Đã đăng bộ cùng loại: <em>RealSynCol</em>, <em>C3VDv2</em> (2026), EndoMapper, REAL-Colon, HyperKvasir</p>
+                    <aside class="notes">Mốc thời gian lấy từ ngày nhận/chấp nhận in trên bài: HQColon 01/08/2025 → 19/12/2025; RealSynCol 23/12/2025 → 01/07/2026; REAL-Colon 04/07/2023 → 10/05/2024. Phí ~2.190 USD là con số tham khảo — cần xem trang chính thức. Ưu đãi giảm phí cho Việt Nam của Springer Nature không áp dụng cho Scientific Data.</aside>
+                </section>
+
+                <section>
+                    <h2>Bài phải có gì</h2>
+                    <div class="two-col">
+                        <div class="neutral">
+                            <h4>Các phần bắt buộc</h4>
+                            <ul>
+                                <li>Background &amp; Summary</li>
+                                <li>Methods</li>
+                                <li>Data Records — dữ liệu có gì, định dạng</li>
+                                <li>Technical Validation — chứng minh dữ liệu đúng</li>
+                                <li>Usage Notes</li>
+                                <li><strong>Code Availability</strong> (bắt buộc)</li>
+                            </ul>
+                        </div>
+                        <div class="neutral">
+                            <h4>Quy định</h4>
+                            <ul>
+                                <li>Tóm tắt ≤ 170 từ, <strong>không</strong> khẳng định kết quả mới</li>
+                                <li>Dữ liệu ở kho công khai có DOI, giấy phép <strong>CC BY / CC0</strong></li>
+                                <li>Code công khai (GitHub + Zenodo)</li>
+                                <li>Dùng AI hỗ trợ code/viết: được, nhưng <strong>phải khai báo</strong> và tự kiểm</li>
+                                <li>Phần bác sĩ: cần <strong>giấy phép đạo đức</strong> (hoặc miễn)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">Benchmark và ablation vẫn được đặt trong Technical Validation — RealSynCol và DRENDS (cả hai Scientific Data 2026) đều làm vậy. Dữ liệu chỉ cần link tải ẩn danh ở vòng 1, kho chính thức ở vòng 2. Giấy phép CC BY/CC0 là lý do texture C3VD (CC BY-NC-SA) và YouTube không dùng được. Chính sách AI của Springer Nature: được dùng để sửa câu chữ và hỗ trợ code nếu người kiểm lại và khai báo; không được ghi AI là tác giả, không bịa dữ liệu hay trích dẫn.</aside>
+                </section>
+
+                <section>
+                    <h2>Đối thủ trực tiếp: RealSynCol <span class="tag wait">SCI DATA 2026</span></h2>
+                    <table class="data-table" style="font-size: 0.48em;">
+                        <tr><th style="width: 30%;"></th><th>RealSynCol</th><th>Của mình</th></tr>
+                        <tr><td>Nguồn</td><td colspan="2" style="text-align:center; color: var(--sl-muted);">giống nhau: CT ACRIN → 3D Slicer → Blender</td></tr>
+                        <tr><td>Số ruột</td><td class="num" style="text-align:left;">10</td><td class="yes">20–30 kiểm kỹ <span class="ex">(tới 103 nếu đủ người)</span></td></tr>
+                        <tr><td>Camera</td><td>lỗ kim 80°, tự đặt</td><td class="yes">khớp ống soi thật (0,004 mm)</td></tr>
+                        <tr><td>Đèn</td><td>tự đặt</td><td class="yes">đo từ video ống soi thật</td></tr>
+                        <tr><td>Tổn thương</td><td class="no">không có</td><td class="yes">polyp đúng vị trí ACRIN · trước/sau cắt</td></tr>
+                        <tr><td>Nhãn độ phủ</td><td class="no">không có</td><td class="yes">có</td></tr>
+                        <tr><td>Bác sĩ chấm độ thật</td><td class="no">không có</td><td class="plan">có (kế hoạch)</td></tr>
+                    </table>
+                    <p class="big-claim" style="font-size: 0.6em;">Cùng cách làm — mình khác ở <em>những phần khó</em></p>
+                    <aside class="notes">Lena và cs., "A high-fidelity synthetic colon dataset for 3D reconstruction applications", Scientific Data 2026 (nhận 23/12/2025, chấp nhận 01/07/2026). Politecnico di Milano + Leeds + Vanderbilt + Humanitas (có bác sĩ Hassan, Spadaccini là đồng tác giả nhưng không có bước bác sĩ chấm độ thật). 28.130 khung, 1024×1024. Họ dùng silicone phantom + ống soi Olympus + cảm biến điện từ CHỈ để đo cách bác sĩ di chuyển ống soi, không dùng để tạo ảnh. Camera lỗ kim: fx = 0,596 × chiều rộng → ~80°, lấy từ code họ công bố. GitHub chỉ có code huấn luyện, không có code tạo video. C3VDv2 cũng đăng Scientific Data 03/06/2026: phantom silicon, polyp đặt tay, không có bác sĩ chấm độ thật.</aside>
+                </section>
+
+                <section>
+                    <h2>Chia thành hai bài</h2>
+                    <div class="two-col" style="margin-top: 22px;">
+                        <div class="have">
+                            <h4>Bài 1 · Scientific Data</h4>
+                            <ul>
+                                <li>Bộ dữ liệu: cách dựng, định dạng</li>
+                                <li>Kiểm chứng: camera, đèn, hình học, bác sĩ</li>
+                                <li>Hai thí nghiệm ngắn: <strong>depth</strong> (train dữ liệu mình, test ảnh thật C3VD) · <strong>đo kích thước polyp</strong> (có đáp án từ CT)</li>
+                            </ul>
+                        </div>
+                        <div class="neutral">
+                            <h4>Bài 2 · MICCAI 2027 hoặc tạp chí phương pháp</h4>
+                            <ul>
+                                <li>Benchmark đầy đủ: depth, SLAM (anh Mạnh), đo hố sau cắt</li>
+                                <li>Phân tích độ phủ, vùng mù</li>
+                                <li>MedIA · IEEE TMI · JBHI</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">Scientific Data không nhận phần "kết quả mới / thảo luận" — nên phần phân tích để bài riêng. Cần hỏi biên tập Scientific Data xem dùng dữ liệu trước trong bài hội nghị có sao không.</aside>
+                </section>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- PHẦN 2                                          -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <section>
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 2</p>
+                    <h2>Làm video giống thật</h2>
+                </section>
+
+                <section>
+                    <h2>Bốn thứ quyết định "giống thật"</h2>
+                    <table class="data-table" style="font-size: 0.5em;">
+                        <tr><th style="width: 24%;">Thành phần</th><th>Làm thế nào</th><th style="width: 30%;">Trạng thái</th></tr>
+                        <tr><td><strong>Camera</strong></td><td>khớp ống kính Olympus của C3VD</td><td class="yes">✓ kiểm trong Blender</td></tr>
+                        <tr><td><strong>Đèn</strong></td><td>đo từ 256 khung video ống soi thật</td><td class="yes">✓ kiểm trong Blender</td></tr>
+                        <tr><td><strong>Chuyển động</strong></td><td>khớp số đo khi bác sĩ cầm ống soi</td><td class="plan">✓ số liệu · chưa render</td></tr>
+                        <tr><td><strong>Màu niêm mạc</strong></td><td>tách mạch máu tự động từ REAL-Colon (thay ảnh C3VD)</td><td class="plan">… đang làm</td></tr>
+                    </table>
+                    <p class="big-claim" style="font-size: 0.6em;">Ba phần đầu <em>đo từ dữ liệu thật</em>, không chỉnh bằng mắt</p>
+                </section>
+
+                <section>
+                    <h2>Vì sao không dùng YouTube</h2>
+                    <div class="two-col" style="margin-top: 22px;">
+                        <div class="havenot">
+                            <h4>✗ Không được</h4>
+                            <ul>
+                                <li><strong>YouTube:</strong> không có quyền phân phối lại — tạp chí bắt buộc CC BY / CC0</li>
+                                <li><strong>Video bệnh viện:</strong> cần giấy phép đạo đức riêng và ẩn danh</li>
+                                <li><strong>Ảnh C3VD</strong> (đang dùng): giấy phép <em>phi thương mại</em> — không hợp</li>
+                            </ul>
+                        </div>
+                        <div class="have">
+                            <h4>✓ Thay bằng</h4>
+                            <ul>
+                                <li><strong>REAL-Colon, HyperKvasir</strong> (CC BY 4.0) — video thật, được dùng</li>
+                                <li><strong>Tách mạch máu tự động</strong> từ khung REAL-Colon (RealSynCol vẽ tay)</li>
+                                <li><strong>Rải ngẫu nhiên</strong> lên ruột, dày–thưa từng vùng, mờ dưới niêm mạc · không có trên polyp</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">RealSynCol tạo texture từ ảnh SUN database (vẽ tay mạch máu, ghép mảnh, 3 lớp mạch làm mờ 3/3/1, cuối cùng làm mờ 5). SUN cũng không phân phối lại tự do được. Mình làm tự động từ nguồn CC BY: kênh xanh lá → bỏ ánh sáng → bộ lọc Frangi (tìm ống tối mảnh) → bỏ mép nếp gấp → giữ ô sắc nét, tránh hộp polyp của REAL-Colon. Mạch máu của RealSynCol phủ đều khắp thành ruột, cùng độ đậm gần xa — trông như lưới dán lên; mình rải theo vùng, độ rộng tính bằng mm. Thêm một thí nghiệm "ablation": phẳng / thủ tục / thủ tục + mảnh ảnh — để chứng minh texture có ích (RealSynCol: thêm texture mạch máu, sai số depth trên ảnh thật giảm rõ).</aside>
+                </section>
+
+                <section>
+                    <h2>Đèn: đo từ chính video ống soi</h2>
+                    <div class="media-row">
+                        <img src="img/progress3/light_compare.png" alt="Ảnh thật, đèn đo được, đèn cũ" style="width: 92%;">
+                    </div>
+                    <p class="media-cap">trái: video thật C3VD · giữa: đèn đo được · phải: đèn cũ (chỉ so độ sáng)</p>
+                    <div class="stat-grid">
+                        <div class="stat"><b>4 mm</b><span>đèn nằm dưới ống kính</span></div>
+                        <div class="stat"><b class="hot">0,23</b><span>sai số độ sáng<br>(đèn cũ: 0,41)</span></div>
+                        <div class="stat"><b>256</b><span>khung video thật dùng để đo</span></div>
+                    </div>
+                    <aside class="notes">C3VD có cả video thật lẫn độ sâu chính xác từng pixel, nên tách được phần độ sáng do đèn, do khoảng cách, do góc chiếu. Mô hình: độ sáng = hệ số × màu × F(góc) × cos(góc tới)^m / khoảng cách^k, khớp trên 2,2 triệu pixel. Kết quả: đèn lệch (−1, +4) mm; độ sáng ở 30° còn 74 %, 50° còn 48 %, 70° còn 9 %; đường cong tone của ống soi ~ gamma 1,16. Kiểm trên chuỗi không dùng để khớp: sai số 0,18–0,32 so với 0,40–0,61 của đèn cũ. Sai số = độ lệch chuẩn của log độ sáng; riêng hoa văn sơn trên phantom đã chiếm ~0,15–0,2. Ảnh C3VD: CC BY-NC-SA, chỉ dùng nội bộ.</aside>
+                </section>
+
+                <section>
+                    <h2>Chuyển động: như bác sĩ cầm</h2>
+                    <div class="media-row">
+                        <img src="img/progress3/motion_compare.png" alt="So sánh chuyển động" style="height: 400px;">
+                        <table class="data-table" style="font-size: 0.42em; width: 44%;">
+                            <tr><th>Cách di chuyển</th><th>mm / khung<br>trung vị (IQR)</th></tr>
+                            <tr><td>Bác sĩ cầm ống soi thật<span class="ex">số đo của RealSynCol</span></td><td class="num">0,81 (1,30)</td></tr>
+                            <tr><td>Cũ: đi đều theo đường tâm</td><td class="num">2,00 (0,00)</td></tr>
+                            <tr><td>Cách của RealSynCol</td><td class="num">0,77 (0,00)</td></tr>
+                            <tr class="highlight"><td><strong>Của mình</strong><span class="ex">rút ống, lệch tâm, nhìn quanh, dừng soi thành</span></td><td class="num">0,81 (0,89)</td></tr>
+                        </table>
+                    </div>
+                    <aside class="notes">Hình: cam = cách RealSynCol, xanh = của mình. Hàng 1: vị trí dọc đại tràng; hàng 2: lệch khỏi tâm (tỉ lệ với khoảng trống); hàng 3: góc nhìn so với trục ruột; hàng 4: tốc độ. RealSynCol giữ camera đúng trên đường tâm, chỉ rung hướng nhìn ±0,5 mm. Của mình: rút từ manh tràng ra hậu môn (đúng pha bác sĩ soi kỹ), tốc độ thay đổi mượt, có lúc dừng / đẩy-kéo, lệch tâm tới 55 % khoảng trống (cách thành ≥ 4 mm), thỉnh thoảng quay 35–65° soi thành, xoay ống chậm, rung tay nhẹ. Cả hai cách đều có trong code — làm được so sánh ba chiều trong bài. Chưa render trong Blender.</aside>
+                </section>
+
+                <section>
+                    <h2>Camera nào? <span class="tag wip">XIN THẦY GÓP Ý</span></h2>
+                    <div class="media-row">
+                        <img src="img/progress3/camera_fov_top.png" alt="Ống kính thật và lỗ kim" style="height: 270px;">
+                    </div>
+                    <div class="two-col" style="margin-top: 8px;">
+                        <div class="neutral">
+                            <h4>Lỗ kim (như RealSynCol)</h4>
+                            <ul>
+                                <li>Dễ: SLAM / depth dùng được ngay</li>
+                                <li>Nhưng chỉ thấy <strong>53 %</strong> so với ống soi thật</li>
+                            </ul>
+                        </div>
+                        <div class="neutral">
+                            <h4>Ống kính thật (~147°)</h4>
+                            <ul>
+                                <li>Giống video bệnh viện</li>
+                                <li>Thấy thành ruột cạnh đầu ống và <strong>sau nếp gấp</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">Không gấp — dữ liệu render được bằng cả hai, mặc định hiện là lỗ kim có cùng độ phóng với ống soi ở tâm ảnh (fx = 768 px, ~83 × 70°), giống video thật sau khi "khử méo". Vì sao mọi người hay dùng lỗ kim: công thức đơn giản (một ma trận 3×3), các phần mềm SLAM / NeRF / depth tự giám sát đều viết cho lỗ kim, mạng huấn luyện sẵn học từ ảnh thường, Unity chỉ có lỗ kim, và phải có hiệu chuẩn ống soi thật (C3VD công bố nên mình mới làm được). Bất lợi: mất phần rìa — chính là vùng cần cho bài toán độ phủ / vùng mù (xem phụ lục). Ảnh trên: khung thật C3VD (CC BY-NC-SA, nội bộ); dưới: sơ đồ minh hoạ.</aside>
+                </section>
+
+
+                <section>
+                    <h2>Kiểm chứng camera</h2>
+                    <div class="media-row">
+                        <img src="img/progress3/depth_error.jpg" alt="Bản đồ sai số độ sâu" style="height: 330px;">
+                        <table class="data-table" style="font-size: 0.42em; width: 46%;">
+                            <tr><th>Cách đọc</th><th>Sai số độ sâu<br>trung vị</th></tr>
+                            <tr class="highlight"><td><strong>Của mình</strong></td><td class="num yes">0,004 mm</td></tr>
+                            <tr><td>Lật ảnh trên–dưới</td><td class="num no">3,8 mm</td></tr>
+                            <tr><td>Lật ảnh trái–phải</td><td class="num no">3,1 mm</td></tr>
+                            <tr><td>Hiểu sai kiểu độ sâu</td><td class="num no">4,7 mm</td></tr>
+                        </table>
+                    </div>
+                    <p class="mini-note">Đặt mesh và pose thật của C3VD vào Blender, render độ sâu, so từng pixel với độ sâu C3VD công bố (khung 15 và 45, không dùng khi khớp).<br>
+                        Cách sai phải sai rõ — nếu không thì phép thử vô nghĩa.</p>
+                    <aside class="notes">Khung 15: 0,0046 mm, p95 0,024 mm; khung 45: 0,0037 mm, p95 0,031 mm; 100 % pixel. Vệt đỏ trên bản đồ chỉ ở mép nếp gấp, nơi độ sâu nhảy giữa hai pixel cạnh nhau — bình thường. C3VDv2 không kiểm renderer kiểu này. Camera lỗ kim có phép thử tương tự (check_pinhole_cam.py), đang chờ chạy.</aside>
+                </section>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- PHẦN 3                                          -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <section>
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 3</p>
+                    <h2>Polyp và hố sau cắt</h2>
+                </section>
+
+                <section>
+                    <h2>Mỗi polyp = 3 thông tin</h2>
+                    <div class="card-grid card-grid--3" style="margin-top: 18px;">
+                        <div class="card c-purple">
+                            <h4>Hình dạng</h4>
+                            <p>Từ <strong>CT</strong>: có cuống · nhô · hơi nhô<br>(polyp phẳng hẳn: CT không thấy → bỏ)</p>
+                        </div>
+                        <div class="card c-orange">
+                            <h4>Kích thước</h4>
+                            <p>Theo <strong>ACRIN</strong> (đo khi nội soi) — CT chỉ để kiểm đúng polyp</p>
+                        </div>
+                        <div class="card c-teal">
+                            <h4>Vị trí</h4>
+                            <p>Đoạn đại tràng <strong>ACRIN</strong> ghi → bác sĩ X-quang xác nhận trên CT</p>
+                        </div>
+                    </div>
+                    <div class="callout">
+                        <p>Không chia theo loại mô (tăng sản, u tuyến…) — CT không thấy được · ghi là <strong>giới hạn</strong> trong bài</p>
+                    </div>
+                    <aside class="notes">Ví dụ ca 0233: ACRIN ghi 18 mm, mình đo trên CT 16–17 mm — khớp. Vấn đề còn mở: ACRIN ghi đoạn đại tràng bằng mã 1–6 mà không có bảng giải mã (file dict.xlsx chỉ có thông tin bệnh nhân). Ca 0233 mã 2, nhưng polyp tìm được ở đại tràng xuống — hoặc thứ tự mã khác mình đoán, hoặc mình tìm nhầm polyp. Bác sĩ X-quang xác nhận ca 0233 là giải được, và có lẽ giải luôn cả bảng mã. Cột 1.5 có vẻ là mã mô bệnh học (10, 12, 13, 14, 16, 17, 88) — chưa dùng.</aside>
+                </section>
+
+                <section>
+                    <h2>Cắt thế nào — theo kích thước</h2>
+                    <table class="data-table" style="font-size: 0.48em;">
+                        <tr><th style="width: 18%;">Polyp</th><th style="width: 34%;">Bác sĩ cắt bằng</th><th>Hố để lại</th></tr>
+                        <tr><td><strong>&lt; 10 mm</strong></td><td>thòng lọng lạnh, rìa 1–2 mm mô lành</td><td>nhỏ, tròn, nhạt · nông ~0,5 mm</td></tr>
+                        <tr><td><strong>10–19 mm</strong></td><td>thòng lọng nóng (± tiêm nâng)</td><td>bầu dục, đáy xanh nếu tiêm, viền cháy · ~1 mm</td></tr>
+                        <tr><td><strong>≥ 20 mm</strong></td><td>EMR, thường cắt nhiều mảnh, đốt mép</td><td>lớn, mép vỏ sò · <strong>clip</strong> nếu ở đại tràng phải</td></tr>
+                        <tr><td><strong>Có cuống</strong></td><td>thòng lọng nóng ngang cuống</td><td>mỏm cuống ngắn · vòng thắt/clip nếu cuống ≥ 1 cm</td></tr>
+                    </table>
+                    <p class="mini-note">Theo hướng dẫn châu Âu ESGE 2024 (Ferlitsch và cs., <em>Endoscopy</em> 2024;56:516–545).
+                        Rìa ngoài 1–2 mm và độ sâu là <strong>mình chọn</strong> — bác sĩ chỉnh.</p>
+                    <aside class="notes">ESGE 2024: Rec 1 &amp; 3 (mạnh): thòng lọng lạnh, rìa 1–2 mm cho ≤ 5 mm và 6–9 mm. Rec 4 (mạnh): thòng lọng nóng cho 10–19 mm không cuống; tiêm nâng trước đó chỉ là "gợi ý" (yếu) → trong dữ liệu chọn ngẫu nhiên có/không tiêm. Rec 5 (mạnh): EMR cho ≥ 20 mm; Rec 8 (mạnh): đốt mép bằng đầu thòng lọng sau EMR nhiều mảnh; Rec 10 (mạnh): kẹp clip sau EMR ở đại tràng phải, không thường quy bên trái. Có cuống: thòng lọng nóng (mạnh); đầu ≥ 2 cm hoặc cuống ≥ 1 cm thì tiêm adrenaline và/hoặc vòng thắt/clip (yếu). Ung thư xâm lấn sâu: không cắt bằng thòng lọng (ESD / phẫu thuật) — không làm. Hố bình thường = Sydney type 0 (Burgess, Gut 2017): đáy xanh đều. 11–35 % hố cắt lạnh có sợi trắng ở giữa (Ortigão, UEG J 2021). Thành đại tràng khi căng ~0–2 mm (Wiesner) nên hố là cái đĩa nông.</aside>
+                </section>
+
+                <section>
+                    <h2>Hố sau cắt trông ra sao</h2>
+                    <div class="media-row">
+                        <img src="img/progress3/wound_types.png" alt="Bốn kiểu hố sau cắt" style="width: 94%;">
+                    </div>
+                    <p class="big-claim" style="font-size: 0.56em;">Kích thước + hình dạng → <em>tự chọn kiểu hố</em> · lưu hình học chính xác làm đáp án</p>
+                    <aside class="notes">Sơ đồ minh hoạ, không phải ảnh thật. Script làm hố trong mesh, 4 bước: (1) tách polyp khỏi mesh — phần nhô vào lòng ruột so với thành xung quanh; (2) lấp bằng mặt thành ruột "nằm bên dưới" (khớp mặt trơn với vòng thành lành quanh polyp); (3) ấn cái đĩa: viền = chân polyp + rìa, méo nhẹ, sâu 0,5–1 mm, đáy phẳng, mép dốc; (4) chia nhỏ tam giác quanh chỗ cắt cho mép sắc. Vật liệu theo kiểu: đáy nhạt/xanh, viền cháy, chấm máu, có thể vệt máu chảy xuống theo trọng lực (biết tư thế nằm ngửa), không có mạch máu trên đáy. Thêm ngẫu nhiên nhẹ (viền, rìa, chấm máu) để không hố nào giống hệt. Video trước/sau cắt dùng cùng một đường camera, có đoạn dừng nhìn chỗ cắt. Lưu: viền, đường kính, độ sâu, kiểu cắt, mặt nạ từng khung. Kiểm: thử trước trên polyp giả ở mặt phẳng (biết đáp án), so với ảnh/video đã công bố, bác sĩ chấm trong buổi đánh giá. Video tham khảo CC BY 4.0: Tao và cs., Endoscopy 2025, doi:10.1055/a-2556-6432.</aside>
+                </section>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- PHẦN 4                                          -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <section>
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 4</p>
+                    <h2>Đánh giá với bác sĩ</h2>
+                    <h3 style="text-align: center;">Trọng tâm: tổn thương · độ thật chỉ là phần phụ</h3>
+                </section>
+
+                <section>
+                    <h2>Đề xuất: bỏ Turing test <span class="tag wip">XIN THẦY GÓP Ý</span></h2>
+                    <div class="two-col" style="margin-top: 22px;">
+                        <div class="havenot">
+                            <h4>✗ Turing test ("thật hay tổng hợp?")</h4>
+                            <ul>
+                                <li>Video tổng hợp <strong>gần như luôn bị nhận ra</strong> — thua ngay từ thiết kế</li>
+                                <li>REAL-Colon là video bệnh nhân thật — không bộ tổng hợp nào "thắng" được</li>
+                                <li>Không chứng minh điều bài cần: dữ liệu <strong>dùng được</strong> và <strong>tổn thương đúng</strong></li>
+                            </ul>
+                        </div>
+                        <div class="have">
+                            <h4>✓ Thay bằng</h4>
+                            <ul>
+                                <li><strong>Phần chính:</strong> bác sĩ đánh giá <strong>polyp, hố sau cắt, túi thừa</strong> — thứ chỉ mình có</li>
+                                <li><strong>Phần phụ:</strong> độ thật <strong>so tương đối</strong> — mình vs RealSynCol, clip thật chỉ làm mốc</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="big-claim" style="font-size: 0.58em;">Không nói "thật như video thật" — nói <em>"gần thật hơn RealSynCol, và dùng được"</em></p>
+                    <aside class="notes">Thầy đề xuất Turing test lần trước — đây là đề xuất đổi, cần thầy đồng ý. Lý do: REAL-Colon là 60 ca soi thật trên bệnh nhân thật (6 trung tâm, 3 châu lục, ống soi Olympus và Fujifilm), không phải ảnh dựng — so độ thật với nó thì bộ tổng hợp nào cũng thua. Bộ tổng hợp tồn tại vì video thật không cho được depth, vị trí camera, độ phủ, kích thước chính xác. Vẫn giữ một phần độ thật vì phản biện chắc chắn sẽ hỏi; nhưng chỉ so tương đối với bài đã đăng (RealSynCol), có vài clip thật trộn vào làm mốc trần để con số có nghĩa.</aside>
+                </section>
+
+                <section>
+                    <h2>Phần chính · Tổn thương (~15 phút)</h2>
+                    <div class="card-grid card-grid--3" style="margin-top: 18px;">
+                        <div class="card c-purple">
+                            <h4>Polyp</h4>
+                            <p>Có giống polyp thật không?
+                                <strong>Ước lượng kích thước (mm)</strong> → so với kích thước thật ACRIN.</p>
+                        </div>
+                        <div class="card c-orange">
+                            <h4>Hố sau cắt</h4>
+                            <p>Có giống vị trí vừa cắt polyp không? Cắt hết hay còn sót?</p>
+                        </div>
+                        <div class="card c-teal">
+                            <h4>Túi thừa</h4>
+                            <p>Đây có phải túi thừa không? (song song: bác sĩ X-quang đọc trên CT)</p>
+                        </div>
+                    </div>
+                    <div class="callout">
+                        <p><strong>Chỉ dữ liệu của mình có đáp án kích thước thật</strong> → đo được bác sĩ ước lượng sai bao nhiêu mm ·
+                            lặp lại ~10 % clip để đo độ nhất quán</p>
+                    </div>
+                    <aside class="notes">Hố sau cắt: xem Phần 3. Thống kê: sai số tuyệt đối trung bình (mm) và Bland–Altman cho kích thước; ICC / Krippendorff alpha cho nhất quán giữa bác sĩ.</aside>
+                </section>
+
+                <section>
+                    <h2>Phần phụ · Độ thật (~10 phút)</h2>
+                    <div class="two-col" style="margin-top: 22px;">
+                        <div class="neutral">
+                            <h4>Bác sĩ</h4>
+                            <ul>
+                                <li><strong>Cặp đôi:</strong> clip của mình vs clip RealSynCol — "clip nào giống nội soi thật hơn?"</li>
+                                <li>Chấm 1–5 vài mục: niêm mạc, ánh sáng, nếp gấp, chuyển động</li>
+                                <li>5–6 clip thật trộn vào <strong>làm mốc</strong> (điểm trần)</li>
+                            </ul>
+                        </div>
+                        <div class="neutral">
+                            <h4>Tự động (không cần bác sĩ)</h4>
+                            <ul>
+                                <li><strong>FID / KID:</strong> khoảng cách tới REAL-Colon — mình vs RealSynCol</li>
+                                <li><strong>Dùng được trên dữ liệu thật:</strong> huấn luyện trên dữ liệu mình → kiểm trên video thật (depth trên C3VD, polyp trên REAL-Colon)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">Chỉ số tự động chỉ có nghĩa khi so thứ hạng: mình gần REAL-Colon hơn RealSynCol hay không. Phép thử "dùng được" trả lời câu "đủ thật chưa" tốt hơn mọi thang điểm. Cần kiểm giấy phép dữ liệu RealSynCol trên Zenodo trước khi cho bác sĩ xem và đưa vào hình (bài báo của họ là CC BY-NC-ND).</aside>
+                </section>
+
+                <section>
+                    <h2>Chuẩn bị clip, người chấm, đạo đức</h2>
+                    <ol class="steps">
+                        <li><strong>Ba nguồn clip, cùng định dạng</strong> (độ phân giải, tốc độ khung, nén, ~5 s, mặt nạ bát giác): của mình · RealSynCol · vài clip thật REAL-Colon (CC BY 4.0) làm mốc</li>
+                        <li><strong>Clip của mình lấy ngẫu nhiên,</strong> quy tắc viết trước — không chọn clip "đẹp nhất"</li>
+                        <li><strong>AI của thầy:</strong> lọc clip thật có dụng cụ, phân, bọt, máu, mờ nặng</li>
+                        <li><strong>4–6 bác sĩ nội soi</strong> (+ 2–3 nội trú) · trang web chấm điểm · thử trước với 1 người</li>
+                        <li><strong>Đạo đức:</strong> người tham gia là bác sĩ, video công khai đã ẩn danh → thường được miễn — <strong>hỏi hội đồng VinUni sớm</strong></li>
+                    </ol>
+                </section>
+            </section>
+
+            <!-- ═══════════ QUY MÔ ═══════════ -->
+            <section>
+                <h2>Bao nhiêu ca ruột? <span class="tag wip">XIN THẦY GÓP Ý</span></h2>
+                <div class="stat-grid">
+                    <div class="stat"><b>½–1 ngày</b><span>một ca làm sạch, kiểm, đặt polyp, hố cắt</span></div>
+                    <div class="stat"><b class="hot">2,5–5 tháng</b><span>103 ca, một người<br>làm toàn thời gian</span></div>
+                    <div class="stat"><b>10</b><span>số ca của RealSynCol</span></div>
+                </div>
+                <div class="two-col">
+                    <div class="have">
+                        <h4>Đề xuất: hai tầng</h4>
+                        <ul>
+                            <li><strong>Lõi 20–30 ca:</strong> kiểm kỹ, polyp bác sĩ xác nhận, cặp trước/sau cắt</li>
+                            <li><strong>Phần còn lại:</strong> dựng tự động, ghi "chỉ giải phẫu, chưa xác nhận"</li>
+                            <li>45 ca đã có mặt nạ ruột HQColon kiểm tay → làm trước, ít dọn</li>
+                        </ul>
+                    </div>
+                    <div class="neutral">
+                        <h4>Nếu cần đủ 103 ca</h4>
+                        <ul>
+                            <li>Cần <strong>thêm người</strong> (sinh viên làm phần dọn mesh)</li>
+                            <li>Bác sĩ X-quang: thời gian xác nhận <strong>từng polyp</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                <aside class="notes">Ước tính ½–1 ngày/ca từ ca 0233: dọn mesh trong 3D Slicer là phần lâu nhất (đoạn xẹp, đầy dịch, dính ruột non). Đường tâm, chuyển động, render, đáp án, mạch máu, hố cắt chạy tự động. Kiểm tự động (mesh kín, chiều dài, độ căng, rò sang ruột non) để chỉ ca hỏng mới phải xem tay. Đo thời gian thật trên 3–5 ca trước khi chốt con số. Tải CT: 103 ca, 223 chuỗi, 64 GB, ~30 giờ máy — không tốn người. Bác sĩ nội soi không cần xem từng ca, chỉ chấm mẫu ngẫu nhiên. Mặt nạ HQColon ca 0233 lệch mesh Slicer tay trung vị 0,22 mm — gần như giống hệt.</aside>
+            </section>
+
+            <!-- ═══════════ CẦN THẦY GIÚP ═══════════ -->
+            <section>
+                <h2>Câu hỏi cho thầy</h2>
+                <ol class="qlist">
+                    <li><strong>Scientific Data</strong> và chia hai bài — thầy đồng ý chưa ạ?</li>
+                    <li><strong>Bỏ Turing test,</strong> dồn buổi bác sĩ cho tổn thương — thầy thấy được không ạ?</li>
+                    <li><strong>Quy mô:</strong> lõi 20–30 ca kiểm kỹ có đủ không, hay cần 103 ca (thêm người)?</li>
+                    <li><strong>Bác sĩ X-quang</strong> đọc CT, xác nhận polyp và túi thừa — nhờ ai được ạ?</li>
+                    <li><strong>4–6 bác sĩ nội soi</strong> cho buổi đánh giá — qua VinUni / Vinmec được không ạ?</li>
+                    <li><strong>Hội đồng đạo đức</strong> VinUni — em liên hệ ai ạ?</li>
+                    <li><strong>Hố sau cắt:</strong> quy tắc theo kích thước — có bác sĩ nội soi xem giúp trước không ạ?</li>
+                    <li><strong>Camera:</strong> lỗ kim, ống kính thật, hay cả hai? (không gấp)</li>
+                </ol>
+            </section>
+
+            <!-- ═══════════ VIỆC TIẾP THEO ═══════════ -->
+            <section>
+                <h2>Việc tiếp theo</h2>
+                <div class="two-col" style="margin-top: 22px;">
+                    <div class="neutral">
+                        <h4>Tuần tới</h4>
+                        <ul>
+                            <li>Tải CT 103 ca (đang chạy) · REAL-Colon vài video</li>
+                            <li>Mạch máu tự động từ REAL-Colon → rải lên ruột</li>
+                            <li>Script hố sau cắt: thử polyp giả → ca 0233</li>
+                            <li>Đo rung tay từ REAL-Colon · render thử 60 khung</li>
+                            <li>Đo thời gian thật cho 3–5 ca</li>
+                        </ul>
+                    </div>
+                    <div class="neutral">
+                        <h4>Mốc lớn</h4>
+                        <ul>
+                            <li><strong>→ 01/2027:</strong> xong dữ liệu lõi (20–30 ca), cặp trước/sau cắt, buổi bác sĩ</li>
+                            <li><strong>02–03/2027:</strong> bài 2 (benchmark, độ phủ) → MICCAI 2027</li>
+                            <li><strong>Sau đó:</strong> nộp Scientific Data khi dữ liệu đã công khai</li>
+                            <li>Protocol buổi bác sĩ (dùng luôn cho hồ sơ đạo đức)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════ KẾT ═══════════ -->
+            <section class="title-slide">
+                <h1>Cảm ơn thầy</h1>
+                <p class="title-sub">Nguyễn Hải Toàn</p>
+            </section>
+
+            <!-- ═══════════ PHỤ LỤC ═══════════ -->
+            <section>
+                <h2>Phụ lục · Túi thừa: ai đã có?</h2>
+                <table class="data-table" style="font-size: 0.48em;">
+                    <tr><th>Bộ dữ liệu</th><th>Túi thừa</th><th>Loại</th></tr>
+                    <tr><td>GastroVision (2023)</td><td class="num" style="text-align:left;">6 ảnh</td><td>ảnh 2D</td></tr>
+                    <tr><td>ERS (Gdańsk)</td><td class="num" style="text-align:left;">135 + 325 ảnh</td><td>ảnh 2D, một phần có viền</td></tr>
+                    <tr><td>Các bộ có 3D (C3VD, RealSynCol, SimCol3D, …)</td><td class="no">không có</td><td>—</td></tr>
+                    <tr class="highlight"><td><strong>Của mình</strong></td><td class="plan">có (chờ bác sĩ)</td><td>3D + video, cùng nhãn trên CT</td></tr>
+                </table>
+                <p class="mini-note">Nói được: "chưa bộ nội soi nào <em>có 3D</em> gắn nhãn túi thừa" — không nói "chưa bộ nào có".
+                    Túi thừa là phần thêm, không phải đóng góp chính.</p>
+                <aside class="notes">Mô hình đã có: VGG16 phân loại 5 lớp (Jheng 2021, Surgical Endoscopy) 93,9 % chính xác cho túi thừa, dữ liệu riêng. CT: phân biệt viêm túi thừa và ung thư (Ziegelmayer, JAMA Network Open 2023), dữ liệu riêng. Trong CT nội soi ảo, túi thừa là nguyên nhân dương tính giả của máy dò polyp (Trilisky 2014, RadioGraphics) — lý do nên gắn nhãn.</aside>
+            </section>
+
+            <section>
+                <h2>Phụ lục · Vì sao phần rìa quan trọng</h2>
+                <div class="media-row">
+                    <img src="img/progress3/camera_fov_side.png" alt="Sơ đồ cắt dọc đại tràng" style="width: 88%;">
+                </div>
+                <p class="big-claim" style="font-size: 0.58em;">Phần chỉ ống kính rộng thấy (cam) là <em>vùng mù</em> — đúng chỗ polyp bị bỏ sót.<br>
+                    Cả hai camera đã làm xong · đề xuất <em>phát hành cả hai</em></p>
+                <aside class="notes">Sơ đồ minh hoạ 2D, không phải dữ liệu đo. Con số 53 % là đo thật: góc khối (solid angle) mà camera lỗ kim 80° phủ, chia cho góc khối trong ảnh bát giác của ống kính C3VD. Phát hành cả hai: video mắt cá làm bản chính, kèm bản lỗ kim cắt ở giữa có ma trận 3×3 cho các phương pháp cần lỗ kim (code của RealSynCol cũng khử méo C3VD về lỗ kim trước khi huấn luyện).</aside>
+            </section>
+
+            <div class="footer">
+                Nguyễn Hải Toàn · Báo cáo tiến độ · Tạp chí, video, bác sĩ
+            </div>
+        </div>
+    </div>
+
+    <script src="revealjs/dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script>
+        Reveal.initialize({
+            controlsLayout: "edges",
+            slideNumber: true,
+            hashOneBasedIndex: true,
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+    </script>
+</body>
+
+</html>
