@@ -120,7 +120,7 @@
                         <ul>
                             <li><strong>RealSynCol</strong> vừa đăng ở chính Scientific Data — cùng cách làm (CT ACRIN + Blender)</li>
                             <li><strong>YouTube không dùng được</strong> (giấy phép)</li>
-                            <li>Màu niêm mạc vẫn lấy từ C3VD — <strong>đang thay</strong> bằng mạch máu tách từ REAL-Colon</li>
+                            <li>Màu niêm mạc C3VD — <strong>đang thay</strong> bằng mạch máu mọc theo thuật toán, màu đo từ REAL-Colon</li>
                             <li><strong>103 ca</strong> ≈ ½–1 ngày/ca → cần quyết quy mô</li>
                             <li>Cần <strong>bác sĩ X-quang, bác sĩ nội soi</strong> và <strong>hội đồng đạo đức</strong></li>
                         </ul>
@@ -232,7 +232,7 @@
                         <tr><td><strong>Camera</strong></td><td>khớp ống kính Olympus của C3VD</td><td class="yes">✓ kiểm trong Blender</td></tr>
                         <tr><td><strong>Đèn</strong></td><td>đo từ 256 khung video ống soi thật</td><td class="yes">✓ kiểm trong Blender</td></tr>
                         <tr><td><strong>Chuyển động</strong></td><td>khớp số đo khi bác sĩ cầm ống soi</td><td class="plan">✓ số liệu · chưa render</td></tr>
-                        <tr><td><strong>Màu niêm mạc</strong></td><td>tách mạch máu tự động từ REAL-Colon (thay ảnh C3VD)</td><td class="plan">… đang làm</td></tr>
+                        <tr><td><strong>Màu niêm mạc</strong></td><td>mạch máu mọc theo thuật toán, màu đo từ REAL-Colon</td><td class="plan">✓ đã có · đang chỉnh trong Blender</td></tr>
                     </table>
                     <p class="big-claim" style="font-size: 0.6em;">Ba phần đầu <em>đo từ dữ liệu thật</em>, không chỉnh bằng mắt</p>
                 </section>
@@ -252,12 +252,22 @@
                             <h4>✓ Thay bằng</h4>
                             <ul>
                                 <li><strong>REAL-Colon, HyperKvasir</strong> (CC BY 4.0) — video thật, được dùng</li>
-                                <li><strong>Tách mạch máu tự động</strong> từ khung REAL-Colon (RealSynCol vẽ tay)</li>
-                                <li><strong>Rải ngẫu nhiên</strong> lên ruột, dày–thưa từng vùng, mờ dưới niêm mạc · không có trên polyp</li>
+                                <li><strong>Mạch máu mọc theo thuật toán:</strong> thân → nhánh → lưới (RealSynCol vẽ tay)</li>
+                                <li><strong>Màu đo từ REAL-Colon</strong> · dày–thưa từng vùng · không có trên polyp</li>
                             </ul>
                         </div>
                     </div>
-                    <aside class="notes">RealSynCol tạo texture từ ảnh SUN database (vẽ tay mạch máu, ghép mảnh, 3 lớp mạch làm mờ 3/3/1, cuối cùng làm mờ 5). SUN cũng không phân phối lại tự do được. Mình làm tự động từ nguồn CC BY: kênh xanh lá → bỏ ánh sáng → bộ lọc Frangi (tìm ống tối mảnh) → bỏ mép nếp gấp → giữ ô sắc nét, tránh hộp polyp của REAL-Colon. Mạch máu của RealSynCol phủ đều khắp thành ruột, cùng độ đậm gần xa — trông như lưới dán lên; mình rải theo vùng, độ rộng tính bằng mm. Thêm một thí nghiệm "ablation": phẳng / thủ tục / thủ tục + mảnh ảnh — để chứng minh texture có ích (RealSynCol: thêm texture mạch máu, sai số depth trên ảnh thật giảm rõ).</aside>
+                    <aside class="notes">RealSynCol tạo texture từ ảnh SUN database (vẽ tay mạch máu, ghép mảnh, 3 lớp mạch làm mờ 3/3/1, cuối cùng làm mờ 5). SUN cũng không phân phối lại tự do được. Thử 1: tách mạch máu từ khung REAL-Colon rồi dán thành mảnh — trông như miếng dán (mạch đứt ở mép mảnh). Thử 2 (đang dùng): mọc mạch máu bằng thuật toán space colonisation (Runions 2007), độ dày theo định luật Murray, có nối vòng giữa các cây — thành lưới liền; màu mạch/niêm mạc đo từ REAL-Colon. Mạch máu của RealSynCol phủ đều khắp, cùng độ đậm — trông như lưới dán lên. Thêm một thí nghiệm "ablation": phẳng / thủ tục / thủ tục + mảnh ảnh — để chứng minh texture có ích (RealSynCol: thêm texture mạch máu, sai số depth trên ảnh thật giảm rõ).</aside>
+                </section>
+
+                <section>
+                    <h2>Mạch máu: mọc, không dán</h2>
+                    <div class="media-row">
+                        <img src="img/progress3/vessels_grown.png" alt="Mạch máu mọc theo thuật toán và thành ruột thật" style="width: 86%;">
+                    </div>
+                    <p class="media-cap">trái: mạch máu mọc (phẳng, chưa có ánh sáng) · phải: thành ruột thật, REAL-Colon (CC BY 4.0)</p>
+                    <p class="big-claim" style="font-size: 0.56em;">Thân lớn → nhánh nhỏ → lưới có vòng · <em>liền mạch</em>, không lặp mép</p>
+                    <aside class="notes">Cách mọc: rải nhiều "điểm cần máu" (dày–thưa theo vùng), mạch máu mọc từng bước về phía các điểm đó; trước mọc vài thân dài, sau mọc nhánh từ thân; độ dày tính ngược từ ngọn theo định luật Murray (r³ cha = tổng r³ con); một số ngọn nối sang cây bên cạnh để thành lưới. Hai lớp: nông (mảnh, sắc) và sâu (to, mờ, ánh tím). Màu: mạch máu giữ gần hết kênh đỏ, mất nhiều kênh xanh lá — đo trên khung REAL-Colon. Kích thước mạch theo mm là ước lượng (video không có độ sâu) — bác sĩ kiểm. Đang chỉnh độ đậm trong Blender trên ca 0233.</aside>
                 </section>
 
                 <section>
@@ -528,8 +538,8 @@
                     <div class="neutral">
                         <h4>Tuần tới</h4>
                         <ul>
-                            <li>Tải CT 103 ca (đang chạy) · REAL-Colon vài video</li>
-                            <li>Mạch máu tự động từ REAL-Colon → rải lên ruột</li>
+                            <li>Tải CT: 18/20 ca đầu xong · REAL-Colon: video 001-008</li>
+                            <li>Chỉnh mạch máu trong Blender, so với REAL-Colon</li>
                             <li>Script hố sau cắt: thử polyp giả → ca 0233</li>
                             <li>Đo rung tay từ REAL-Colon · render thử 60 khung</li>
                             <li>Đo thời gian thật cho 3–5 ca</li>
