@@ -260,13 +260,13 @@
                             <h4>Đề xuất: chuyển động theo "hành vi"</h4>
                             <ul>
                                 <li>Ghép các đoạn: đi đều · dừng soi · chạm thành → lùi · về giữa</li>
-                                <li>Tần suất, độ dài mỗi đoạn <strong>đo từ REAL-Colon</strong> (tự động)</li>
-                                <li>Không thêm rung tay giả</li>
+                                <li>Xem REAL-Colon để <strong>lấy ý tưởng</strong> khi tạo (bao lâu chạm thành một lần…)</li>
+                                <li>Kiểm: tốc độ so với số đo cảm biến RealSynCol · bác sĩ chấm</li>
                             </ul>
                         </div>
                     </div>
                     <p class="mini-note">Tham khảo: <a href="https://www.youtube.com/watch?v=k8a5Phx2xSM&amp;list=PL9YA8ZNzukqAUVnEjgEGMbgnmfQQWi_IT">video nội soi trên YouTube</a> — chỉ xem để quan sát, không dùng làm dữ liệu</p>
-                    <aside class="notes">Cách đo tự động trên REAL-Colon (60 ca soi thật, CC BY 4.0): khung "chạm thành" dễ phát hiện (gần như toàn màu đỏ, mờ); tốc độ và lúc dừng ước lượng từ dịch chuyển ảnh giữa hai khung (optical flow). Ra thống kê: bao lâu chạm thành một lần, lùi bao xa, dừng bao lâu. Chuyển động tổng hợp lấy mẫu từ các thống kê này — so được với video thật bằng cùng phép đo. Cách cũ (rung + lệch tâm liên tục) vẫn chưa giống thật.</aside>
+                    <aside class="notes">REAL-Colon (60 ca soi thật, CC BY 4.0) chỉ dùng để tham khảo khi tạo chuyển động (khung "chạm thành" gần như toàn đỏ, mờ — đếm được bao lâu một lần), KHÔNG dùng làm bằng chứng: ước lượng chuyển động từ ảnh theo pixel phụ thuộc khoảng cách tới thành và từng ruột khác nhau. Kiểm chuyển động: so tốc độ (mm/khung, mình biết chính xác) với số đo cảm biến điện từ RealSynCol công bố (trung vị 0,81 mm/khung, IQR 1,30) + bác sĩ chấm. Không thêm rung tay giả. Cách cũ (rung + lệch tâm liên tục) vẫn chưa giống thật.</aside>
                 </section>
 
                 <section>
@@ -358,14 +358,14 @@
 
                 <section>
                     <h2>Đánh giá tự động</h2>
-                    <table class="data-table" style="font-size: 0.48em;">
-                        <tr><th style="width: 26%;">Hỏi gì</th><th>Đo thế nào</th></tr>
-                        <tr><td><strong>Giống ảnh thật?</strong></td><td>FID / KID: khoảng cách tới khung REAL-Colon — mình vs RealSynCol · so màu, độ tương phản mạch máu</td></tr>
-                        <tr><td><strong>Đáp án đúng?</strong></td><td>Độ sâu render khớp mesh · hai khung chiếu qua nhau bằng pose + độ sâu phải trùng · mặt nạ trùng polyp</td></tr>
-                        <tr><td><strong>Chuyển động giống?</strong></td><td>Cùng phép đo (tốc độ, lúc dừng, chạm thành) trên video mình và REAL-Colon</td></tr>
-                        <tr><td><strong>Đa dạng?</strong></td><td>Thống kê: kích thước, vị trí polyp, độ dài ruột, độ phủ thành ruột</td></tr>
+                    <table class="data-table" style="font-size: 0.5em;">
+                        <tr><th style="width: 22%;">Hỏi gì</th><th>Làm thế nào</th><th style="width: 20%;">Tốn bao lâu</th></tr>
+                        <tr><td><strong>Giống ảnh thật?</strong></td><td>Máy so "kiểu ảnh" của cả đống ảnh mình với ảnh nội soi thật (FID) — phải gần hơn RealSynCol</td><td>vài giờ, không huấn luyện</td></tr>
+                        <tr><td><strong>Đáp án đúng?</strong></td><td>Dựng lại khung B từ khung A bằng độ sâu + vị trí camera — phải trùng · so với renderer thứ hai</td><td>vài giờ</td></tr>
                     </table>
-                    <aside class="notes">Đây là các cách đánh giá tự động thầy nhắc — bổ sung cho bác sĩ và các bài toán thử. FID/KID chỉ có nghĩa khi so thứ hạng (mình gần REAL-Colon hơn RealSynCol hay không), không có ngưỡng tuyệt đối. Kiểm đáp án: lấy điểm ở khung A, dùng độ sâu + pose chiếu sang khung B, màu và độ sâu phải khớp — lỗi pose hay độ sâu sẽ lộ ngay.</aside>
+                    <p class="mini-note">Chuyển động: so tốc độ camera với số đo <strong>cảm biến</strong> RealSynCol đã công bố (0,81 mm/khung) + bác sĩ chấm — không ước lượng từ video</p>
+                    <p class="mini-note">Khác bài toán thử: tự động hỏi <em>"dữ liệu đúng và trông giống không"</em> · bài toán thử hỏi <em>"mô hình học từ nó có dùng được không"</em> (cần huấn luyện)</p>
+                    <aside class="notes">Giống ảnh thật: mỗi ảnh qua mạng có sẵn Inception-v3 (không huấn luyện) thành 2048 con số; FID đo khoảng cách giữa "đám mây" ảnh mình và ảnh thật. Không cần cùng bệnh nhân hay cùng đoạn ruột (so cả đống, không so từng cặp), nhưng phải công bằng: lọc ảnh thật (bỏ dụng cụ, phân, bọt, máu, mờ nặng), lấy rải đều cả ca soi từ nhiều video / bệnh nhân, cắt viền bát giác lấy phần giữa cùng góc nhìn, cùng kích thước, cùng số ảnh cho 3 nguồn. Chỉ đọc theo thứ hạng (mình vs RealSynCol, cùng bộ ảnh thật); mốc sàn = ảnh thật nửa A vs nửa B. Bớt phụ thuộc REAL-Colon: tính thêm với HyperKvasir (CC BY 4.0) — hai nguồn cùng thứ hạng thì chắc hơn. Đáp án đúng: điểm ảnh khung A + độ sâu → điểm 3D → chụp lại từ vị trí camera B → so với ảnh B thật (% điểm lệch &lt; 1 pixel); độ sâu Blender so với renderer Python độc lập (sai số mm); kích thước polyp trên mesh vs ACRIN; cố tình làm sai thì phải sai lớn. C3VDv2 kiểm theo kiểu này. Đây là điều kiện trước: đáp án sai thì bài toán thử vô nghĩa. Bỏ việc đo chuyển động trên REAL-Colon bằng optical flow: chỉ là ước lượng theo pixel, phụ thuộc khoảng cách tới thành và từng ruột khác nhau. RealSynCol đo bằng cảm biến điện từ trên phantom (vị trí thật, mm) — mình biết vị trí camera chính xác nên so thẳng bằng mm.</aside>
                 </section>
 
                 <section>
@@ -377,8 +377,8 @@
                         <tr><td><strong>3 · Kích thước polyp</strong></td><td>clip có polyp → kích thước (mm)</td><td>ACRIN + mesh CT</td><td>độ sâu + mặt nạ · so với bác sĩ ước lượng</td></tr>
                         <tr><td><strong>4 · Khoanh polyp &amp; hố cắt</strong></td><td>1 ảnh → mặt nạ</td><td>render mặt nạ</td><td>U-Net / nnU-Net</td></tr>
                     </table>
-                    <p class="mini-note">Các bài Scientific Data cùng loại chạy 1–3 mô hình mỗi bài toán · thêm: phát hiện túi thừa (phần phụ)</p>
-                    <aside class="notes">Bài 1 quan trọng nhất: huấn luyện trên dữ liệu mình → kiểm trên ảnh thật C3VD (có độ sâu thật) — chứng minh dữ liệu giúp được trên ảnh thật, so với huấn luyện trên RealSynCol. Bài 2: anh Mạnh làm SLAM. Bài 3: chỉ dữ liệu mình có kích thước thật — Pham 2018: bác sĩ ước lượng sai kích thước ~57 % polyp. Bài 4: mặt nạ polyp/hố cắt tự động có từ render.</aside>
+                    <p class="mini-note">Các bài Scientific Data cùng loại chạy 1–3 mô hình mỗi bài toán · ước tính <strong>5–7 tuần</strong> (1 người + 1 GPU, SLAM song song) · thêm: phát hiện túi thừa (phần phụ)</p>
+                    <aside class="notes">Bài 1 quan trọng nhất: huấn luyện trên dữ liệu mình → kiểm trên ảnh thật C3VD (có độ sâu thật) — chứng minh dữ liệu giúp được trên ảnh thật, so với huấn luyện trên RealSynCol. Bài 2: anh Mạnh làm SLAM. Bài 3: chỉ dữ liệu mình có kích thước thật — Pham 2018: bác sĩ ước lượng sai kích thước ~57 % polyp. Bài 4: mặt nạ polyp/hố cắt tự động có từ render. Thời gian ước tính: bài 1 ~1 tuần (chạy sẵn + huấn luyện thêm trên dữ liệu mình và trên RealSynCol, mỗi lần 1–2 ngày GPU); bài 2 ~1–2 tuần (không huấn luyện, chủ yếu cài đặt và chạy — anh Mạnh); bài 3 ~3–5 ngày (dùng lại độ sâu bài 1 + mặt nạ bài 4); bài 4 ~1–2 tuần (nnU-Net huấn luyện 1–2 ngày mỗi lần). Chuẩn bị code trên ca 0233 từ sớm, dữ liệu đủ thì chỉ việc chạy.</aside>
                 </section>
 
                 <section>
@@ -418,7 +418,7 @@
                             <h4>Phụ · Độ thật (~10 phút)</h4>
                             <ul>
                                 <li>Một bộ clip ngắn <strong>trộn 3 nguồn</strong>: mình · RealSynCol · thật</li>
-                                <li>Xáo trộn, giấu nguồn · chấm 1–5 "giống nội soi thật"</li>
+                                <li>Xáo trộn, giấu nguồn · chấm 1–5: hình ảnh, chuyển động</li>
                                 <li>Cùng định dạng, clip của mình lấy ngẫu nhiên</li>
                             </ul>
                         </div>
@@ -466,12 +466,12 @@
                     <h2>Thời gian (đề xuất)</h2>
                     <table class="data-table" style="font-size: 0.5em;">
                         <tr><th style="width: 22%;">Khi nào</th><th>Việc</th></tr>
-                        <tr><td><strong>10–11/2026</strong></td><td>Hoàn thiện trên ca 0233: chuyển động, màu niêm mạc, hố cắt · đo thời gian 3–5 ca</td></tr>
-                        <tr><td><strong>11–12/2026</strong></td><td>Lõi 20–30 ca · bác sĩ X-quang xác nhận polyp · render + đáp án</td></tr>
-                        <tr><td><strong>12/2026–01/2027</strong></td><td>Đánh giá tự động · 4 bài toán thử · buổi bác sĩ</td></tr>
-                        <tr><td><strong>02–03/2027</strong></td><td>Viết bài · đưa dữ liệu lên kho công khai · <strong>nộp Scientific Data</strong></td></tr>
+                        <tr><td><strong>10–11/2026</strong></td><td>Hoàn thiện trên ca 0233: chuyển động, màu niêm mạc, hố cắt · <strong>viết sẵn code bài toán thử</strong></td></tr>
+                        <tr><td><strong>11–12/2026</strong></td><td>Lõi 20–30 ca · bác sĩ X-quang xác nhận polyp · render + đáp án · đánh giá tự động</td></tr>
+                        <tr><td><strong>01–02/2027</strong></td><td>4 bài toán thử (5–7 tuần) · buổi bác sĩ</td></tr>
+                        <tr><td><strong>03–04/2027</strong></td><td>Viết bài · đưa dữ liệu lên kho công khai · <strong>nộp Scientific Data</strong></td></tr>
                     </table>
-                    <aside class="notes">Mốc phụ thuộc vào: có bác sĩ X-quang và bác sĩ nội soi, và hội đồng đạo đức. Nhận bài dự kiến 5–10 tháng sau khi nộp.</aside>
+                    <aside class="notes">Bài toán thử cần huấn luyện mô hình nên để riêng 5–7 tuần; viết code sớm trên ca 0233 để khi dữ liệu đủ chỉ cần chạy. Đánh giá tự động rẻ (vài giờ đến 1–2 ngày), chạy ngay khi có dữ liệu. Mốc phụ thuộc: GPU, bác sĩ X-quang, bác sĩ nội soi, hội đồng đạo đức. Nhận bài dự kiến 5–10 tháng sau khi nộp.</aside>
                 </section>
             </section>
 
@@ -484,6 +484,7 @@
                     <li><strong>Camera lỗ kim</strong> mặc định, ống kính thật để phụ — thầy đồng ý không ạ?</li>
                     <li><strong>Bác sĩ:</strong> X-quang (đọc CT) và 4–6 bác sĩ nội soi — nhờ ai được ạ?</li>
                     <li><strong>Hội đồng đạo đức</strong> VinUni — em liên hệ ai ạ?</li>
+                    <li><strong>GPU</strong> cho bài toán thử (~5–7 tuần) — dùng máy của lab được không ạ?</li>
                 </ol>
             </section>
 
