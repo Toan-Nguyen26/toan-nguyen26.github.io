@@ -82,6 +82,16 @@
             width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--sl-orange, #c85a12);
             color: #fff; font-weight: 700; font-size: .85em; text-align: center; line-height: 1.5em;
         }
+        .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: stretch; font-size: 0.46em; text-align: left; margin-top: 14px; }
+        .flow > div.box { background: rgba(0, 0, 0, .035); border-radius: 10px; padding: 12px 14px; border-top: 4px solid var(--fc, #8a8a8a); }
+        .flow > div.box h4 { margin: 0 0 6px; font-size: 1.02em; color: var(--fc, #555); letter-spacing: .02em; }
+        .flow > div.box p { margin: 0; line-height: 1.45; }
+        .flow .arrow { align-self: center; font-size: 1.6em; color: var(--sl-muted, #889); }
+        .flow .in { --fc: var(--sl-purple, #6b4fa0); }
+        .flow .how { --fc: var(--sl-orange, #c85a12); }
+        .flow .out { --fc: var(--sl-teal, #1f8a8a); }
+        .read-row { display: flex; gap: 18px; align-items: flex-start; margin-top: 14px; font-size: 0.46em; text-align: left; }
+        .read-row > * { min-width: 0; }
         .reveal .mini-note a { color: var(--sl-orange, #c85a12); }
     </style>
 </head>
@@ -261,7 +271,7 @@
                             <ul>
                                 <li>Ghép các đoạn: đi đều · dừng soi · chạm thành → lùi · về giữa</li>
                                 <li>Xem REAL-Colon để <strong>lấy ý tưởng</strong> khi tạo (bao lâu chạm thành một lần…)</li>
-                                <li>Kiểm: tốc độ so với số đo cảm biến RealSynCol · bác sĩ chấm</li>
+                                <li>Kiểm: <strong>bác sĩ chấm</strong> chuyển động trong buổi đánh giá</li>
                             </ul>
                         </div>
                     </div>
@@ -363,10 +373,72 @@
                         <tr><td><strong>Giống ảnh thật?</strong></td><td>Máy so "kiểu ảnh" của cả đống ảnh mình với ảnh nội soi thật (FID) — phải gần hơn RealSynCol</td><td>vài giờ, không huấn luyện</td></tr>
                         <tr><td><strong>Đáp án đúng?</strong></td><td>Dựng lại khung B từ khung A bằng độ sâu + vị trí camera — phải trùng · so với renderer thứ hai</td><td>vài giờ</td></tr>
                     </table>
-                    <p class="mini-note">Chuyển động: so tốc độ camera với số đo <strong>cảm biến</strong> RealSynCol đã công bố (0,81 mm/khung) + bác sĩ chấm — không ước lượng từ video</p>
                     <p class="mini-note">Khác bài toán thử: tự động hỏi <em>"dữ liệu đúng và trông giống không"</em> · bài toán thử hỏi <em>"mô hình học từ nó có dùng được không"</em> (cần huấn luyện)</p>
                     <aside class="notes">Giống ảnh thật: mỗi ảnh qua mạng có sẵn Inception-v3 (không huấn luyện) thành 2048 con số; FID đo khoảng cách giữa "đám mây" ảnh mình và ảnh thật. Không cần cùng bệnh nhân hay cùng đoạn ruột (so cả đống, không so từng cặp), nhưng phải công bằng: lọc ảnh thật (bỏ dụng cụ, phân, bọt, máu, mờ nặng), lấy rải đều cả ca soi từ nhiều video / bệnh nhân, cắt viền bát giác lấy phần giữa cùng góc nhìn, cùng kích thước, cùng số ảnh cho 3 nguồn. Chỉ đọc theo thứ hạng (mình vs RealSynCol, cùng bộ ảnh thật); mốc sàn = ảnh thật nửa A vs nửa B. Bớt phụ thuộc REAL-Colon: tính thêm với HyperKvasir (CC BY 4.0) — hai nguồn cùng thứ hạng thì chắc hơn. Đáp án đúng: điểm ảnh khung A + độ sâu → điểm 3D → chụp lại từ vị trí camera B → so với ảnh B thật (% điểm lệch &lt; 1 pixel); độ sâu Blender so với renderer Python độc lập (sai số mm); kích thước polyp trên mesh vs ACRIN; cố tình làm sai thì phải sai lớn. C3VDv2 kiểm theo kiểu này. Đây là điều kiện trước: đáp án sai thì bài toán thử vô nghĩa. Bỏ việc đo chuyển động trên REAL-Colon bằng optical flow: chỉ là ước lượng theo pixel, phụ thuộc khoảng cách tới thành và từng ruột khác nhau. RealSynCol đo bằng cảm biến điện từ trên phantom (vị trí thật, mm) — mình biết vị trí camera chính xác nên so thẳng bằng mm.</aside>
                 </section>
+
+                <section>
+                    <h2>Tự động 1 · Giống ảnh thật? (FID)</h2>
+                    <div class="flow">
+                        <div class="box in"><h4>Đầu vào</h4><p>~5.000 khung mỗi nguồn: <strong>của mình</strong> · <strong>RealSynCol</strong> · <strong>ảnh thật</strong> (REAL-Colon, thêm HyperKvasir) đã lọc</p></div>
+                        <div class="arrow">→</div>
+                        <div class="box how"><h4>Cách làm</h4><p>Mạng có sẵn (Inception-v3, <strong>không huấn luyện</strong>) biến mỗi ảnh thành 2048 con số → so "đám mây" của hai đống ảnh</p></div>
+                        <div class="arrow">→</div>
+                        <div class="box out"><h4>Đầu ra</h4><p><strong>1 con số</strong> cho mỗi nguồn — càng nhỏ càng giống ảnh thật</p></div>
+                    </div>
+                    <div class="read-row">
+                        <table class="data-table" style="font-size: 1em; width: 48%; margin-top: 0;">
+                            <tr><th>So với ảnh thật</th><th class="num">FID</th></tr>
+                            <tr><td>Ảnh thật nửa A vs nửa B <span class="ex">mốc sàn</span></td><td class="num">thấp nhất</td></tr>
+                            <tr class="highlight"><td><strong>Của mình</strong></td><td class="num">?</td></tr>
+                            <tr><td>RealSynCol</td><td class="num">?</td></tr>
+                        </table>
+                        <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                            <li>Cần chứng minh: <strong>mình &lt; RealSynCol</strong> (chỉ so thứ hạng)</li>
+                            <li><strong>Không cần</strong> cùng bệnh nhân, cùng đoạn ruột — so cả đống, không so từng cặp</li>
+                            <li>Nhưng chọn ảnh <strong>công bằng</strong>: bỏ dụng cụ, phân, mờ · rải đều nhiều ca · cùng khung, cùng số ảnh</li>
+                        </ul>
+                    </div>
+                    <aside class="notes">Giống như so hai rổ trái cây bằng cân và bảng màu — không nhận từng quả, chỉ xem hai rổ có cùng kiểu không. Mạng Inception-v3 đã học trên ImageNet; chỉ dùng làm "thước đo", không huấn luyện gì. KID tương tự nhưng ổn định hơn khi ít ảnh. Cắt viền bát giác của ảnh thật, lấy phần giữa cùng góc nhìn với camera lỗ kim. Bật/tắt từng phần (mạch máu, chuyển động) rồi đo lại để thấy phần nào giúp. Tính với cả HyperKvasir để bớt phụ thuộc REAL-Colon. RealSynCol và C3VDv2 không dùng FID — đây là phần mình thêm; bằng chứng mạnh hơn vẫn là bài toán thử 1 (huấn luyện trên dữ liệu mình, thử trên ảnh thật C3VD). Công cụ: clean-fid / torchmetrics, vài giờ.</aside>
+                </section>
+
+                <section>
+                    <h2>Tự động 2 · Đáp án có đúng không?</h2>
+                    <div class="callout" style="margin-top: 8px;"><p><strong>Vì sao cần:</strong> người dùng <strong>huấn luyện và chấm điểm</strong> mô hình bằng đáp án của mình (độ sâu, vị trí camera). Đáp án sai thì mọi kết quả trên bộ dữ liệu đều sai — mà ảnh vẫn trông bình thường, <strong>không ai phát hiện</strong>.</p></div>
+                    <div class="flow" style="margin-top: 10px;">
+                        <div class="box in"><h4>Đầu vào</h4><p>Chỉ <strong>các file mình phát hành</strong>: ảnh A, độ sâu A, vị trí camera A và B, ảnh B</p></div>
+                        <div class="arrow">→</div>
+                        <div class="box how"><h4>Cách làm</h4><p>Script nhỏ, <strong>không render lại</strong>: tính ảnh A "nhìn từ chỗ B" bằng độ sâu + vị trí camera</p></div>
+                        <div class="arrow">→</div>
+                        <div class="box out"><h4>Đầu ra</h4><p>So với ảnh B đã phát hành: <strong>lệch bao nhiêu pixel</strong> · ~100 cặp khung mỗi ruột, vài phút</p></div>
+                    </div>
+                    <div class="read-row" style="margin-top: 10px;">
+                        <svg viewBox="0 0 360 170" style="width: 38%; height: auto;" role="img" aria-label="Hai camera nhìn cùng một điểm trên thành ruột">
+                            <path d="M10 30 Q180 0 350 30" fill="none" stroke="#c98b84" stroke-width="5"/>
+                            <circle cx="190" cy="16" r="6" fill="#c85a12"/>
+                            <text x="200" y="42" font-size="13" fill="#444">điểm trên thành ruột</text>
+                            <rect x="70" y="135" width="34" height="22" rx="4" fill="#6b4fa0"/>
+                            <text x="62" y="167" font-size="13" fill="#444">camera A</text>
+                            <rect x="250" y="135" width="34" height="22" rx="4" fill="#1f8a8a"/>
+                            <text x="242" y="167" font-size="13" fill="#444">camera B</text>
+                            <line x1="87" y1="135" x2="190" y2="16" stroke="#6b4fa0" stroke-width="2"/>
+                            <line x1="267" y1="135" x2="190" y2="16" stroke="#1f8a8a" stroke-width="2" stroke-dasharray="5 4"/>
+                            <text x="34" y="90" font-size="13" fill="#6b4fa0">độ sâu A</text>
+                            <text x="232" y="90" font-size="13" fill="#1f8a8a">tính từ vị trí B</text>
+                        </svg>
+                        <div style="flex: 1;">
+                            <p style="margin: 0 0 4px;"><strong>Lỗi hay gặp — nhìn ảnh không thấy:</strong></p>
+                            <ul style="margin: 0; padding-left: 18px; line-height: 1.45;">
+                                <li>Lật trục ảnh (Blender ↔ OpenCV) → lệch 3–4 mm</li>
+                                <li>Hiểu sai kiểu độ sâu → lệch 4,7 mm <span style="color: var(--sl-muted);">(em đã gặp khi làm camera)</span></li>
+                                <li>Ảnh và vị trí camera lệch nhau một khung</li>
+                            </ul>
+                            <p style="margin: 6px 0 0; color: var(--sl-muted);">Thêm cách dễ hiểu: chiếu <strong>tâm polyp</strong> (từ CT) vào ảnh — phải rơi đúng chỗ polyp · C3VDv2 làm kiểu này với điểm mốc</p>
+                        </div>
+                    </div>
+                    <aside class="notes">Vì sao cần: bộ dữ liệu tổng hợp "bán" đáp án — độ sâu, vị trí camera, mặt nạ, kích thước. Người dùng huấn luyện mô hình độ sâu / SLAM bằng đáp án này và chấm điểm mô hình bằng nó. Blender tự tính nên dễ nghĩ là luôn đúng, nhưng lỗi nằm ở bước đổi quy ước và ghi file: trục y lên/xuống giữa Blender và OpenCV, độ sâu theo tia hay theo trục, đơn vị m/mm, tâm ảnh lệch nửa pixel, ghi vị trí camera lệch một khung. Những lỗi này làm ảnh vẫn đẹp nhưng đáp án sai vài mm — người dùng không biết. Khi dựng camera em đã gặp đúng các lỗi này (lật ảnh lệch 3,1–3,8 mm, hiểu sai kiểu độ sâu lệch 4,7 mm; đúng thì 0,004 mm). Scientific Data bắt buộc mục Technical Validation chính để chứng minh điều này. Cách làm cụ thể: Blender render mỗi khung MỘT lần, ra ảnh + độ sâu, và mình ghi vị trí camera ra file — đó là thứ phát hành. Phép kiểm KHÔNG render lại: một script Python chỉ đọc các file phát hành (như người dùng sẽ đọc), lấy từng điểm ảnh của A, dùng độ sâu A để biết điểm đó nằm đâu trong 3D, dùng vị trí camera B để tính nó hiện ở đâu trong ảnh B, rồi so màu với ảnh B đã phát hành. File đúng thì khớp; sai quy ước thì lệch. Vùng khuất ở B thì bỏ. Không cần mọi khung: lấy ngẫu nhiên ~100 cặp khung gần nhau (cách 2–5 khung) mỗi ruột, báo trung vị lệch pixel và % điểm lệch dưới 1 pixel. C3VDv2 (video thật nên không làm được cách này) kiểm bằng: chấm tay độ khớp 1–3, so cạnh ảnh với cạnh độ sâu (Dice, Chamfer), và chiếu 388 điểm mốc 3D (polyp, góc nếp gấp) vào 5 khung/video × 9 video — lệch trung vị 5,4–8,2 px. Mình làm được cách tương tự: chiếu tâm polyp từ CT vào ảnh. Ghi chú riêng (chưa công bố, chỉ là thử của mình): khi ghép độ sâu + vị trí camera RealSynCol công bố với mesh của họ (ruột 6) thì không khớp (đám điểm rộng 346 mm, mesh 283 mm) — có thể do quy ước/đơn vị, đúng loại lỗi phép kiểm này bắt được. Cách kiểm giống như biết khoảng cách tới từng đồ vật trong phòng và biết mình đứng ở đâu thì vẽ lại được tấm ảnh chụp từ chỗ khác. Vùng bị che (thấy ở A nhưng khuất ở B) bỏ qua. Thêm: kích thước polyp đo trên mesh khớp số ACRIN; mặt nạ polyp trùng polyp chiếu từ mesh. Đây là điều kiện trước của mọi thứ: đáp án sai thì bài toán thử vô nghĩa. Camera ống kính thật đã kiểm kiểu này: đúng lệch 0,004 mm, sai lệch 3–5 mm. Vài giờ chạy, không huấn luyện.</aside>
+                </section>
+
 
                 <section>
                     <h2>4 bài toán thử</h2>
