@@ -581,3 +581,52 @@ a:hover {
 		font-size: 1.4rem;
 	}
 }
+
+/* ---- Slides section: grouped by week ---- */
+.section-lede {
+	margin: -8px 0 24px;
+	color: var(--muted);
+	font-size: 0.95rem;
+	line-height: 1.6;
+}
+
+.slide-week {
+	margin-bottom: 34px;
+}
+
+.slide-week-title {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin: 0 0 16px;
+	font-size: 0.86rem;
+	font-weight: 800;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--muted);
+	font-family: var(--font-sans);
+}
+
+.slide-week-title::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: var(--line);
+}
+
+.course-date {
+	display: block;
+	margin: -4px 0 6px;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--card-accent, var(--muted));
+	font-family: var(--font-sans);
+}
+
+@media (max-width: 720px) {
+	.slide-week {
+		margin-bottom: 26px;
+	}
+}
