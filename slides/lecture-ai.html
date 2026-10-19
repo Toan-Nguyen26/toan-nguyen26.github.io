@@ -1,0 +1,1196 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <title>AI nói cho dễ hiểu</title>
+    <link rel="stylesheet" href="revealjs/dist/reset.css" />
+    <link rel="stylesheet" href="revealjs/dist/reveal.css" />
+    <link rel="stylesheet" href="revealjs/dist/theme/white.css" />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <link rel="stylesheet" href="slide-style.css" />
+    <style>
+        /* ─── Deck-specific helpers (chung với slide-style.css của repo) ─── */
+
+        .reveal .callout {
+            background: #f7efe6;
+            border-left: 4px solid #b15a2b;
+            padding: 0.5em 0.9em;
+            margin-top: 0.6em;
+            font-size: 0.75em;
+            text-align: left;
+        }
+
+        .reveal .discuss,
+        .reveal .discuss h2 {
+            text-align: center;
+        }
+
+        .reveal .discuss .big-question {
+            font-size: 1.6em;
+            font-weight: 600;
+            margin: 0.6em 0;
+        }
+
+        .reveal .portrait-row {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2em;
+            margin-top: 0.6em;
+        }
+
+        .reveal .portrait-row figure {
+            margin: 0;
+            width: 240px;
+        }
+
+        .reveal .portrait-row img {
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .reveal .portrait-row figcaption {
+            font-size: 0.55em;
+            margin-top: 0.4em;
+            color: #555;
+            text-align: center;
+        }
+
+        /* Chặn mọi ảnh/svg tràn khỏi khung slide */
+        .reveal section img,
+        .reveal section svg {
+            max-width: 100%;
+            max-height: 420px;
+            width: auto;
+            height: auto;
+        }
+
+        .reveal .icon-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.2em 2em;
+            margin: 0.6em 0;
+        }
+
+        .reveal .icon-row figure {
+            margin: 0;
+            text-align: center;
+            width: 150px;
+        }
+
+        .reveal .icon-row svg {
+            max-height: 140px;
+        }
+
+        .reveal .icon-row .real-logo {
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .reveal .icon-row .badge-fallback {
+            display: none;
+        }
+
+        /* Biến thể khổ lớn cho ảnh ví dụ sinh ra (Midjourney / DALL·E),
+           khác với các huy hiệu logo vuông nhỏ. */
+        .reveal .icon-row figure.showcase {
+            width: 300px;
+        }
+
+        .reveal .icon-row figure.showcase .real-logo {
+            width: 100%;
+            height: 240px;
+            max-width: 300px;
+            max-height: 280px;
+            object-fit: contain;
+        }
+
+        .reveal .icon-row figcaption {
+            font-size: 0.8em;
+            color: #555;
+            margin-top: 0.4em;
+        }
+
+        /* Cỡ chữ cố định theo pixel cho các slide dễ tràn — bỏ qua hoàn toàn
+           việc nhân dồn em lồng nhau. */
+        .reveal section.mini h2 {
+            font-size: 30px !important;
+            margin: 0 0 10px !important;
+        }
+
+        .reveal section.mini p,
+        .reveal section.mini li {
+            font-size: 16px !important;
+            line-height: 1.28 !important;
+            margin: 4px 0 !important;
+        }
+
+        .reveal section.mini ul {
+            margin: 6px 0 !important;
+        }
+
+        .reveal section.mini .portrait-row {
+            margin-top: 6px !important;
+        }
+
+        .reveal section.mini .portrait-row img {
+            width: 220px !important;
+            height: 220px !important;
+        }
+
+        .reveal section.mini .portrait-row figcaption {
+            font-size: 14px !important;
+            margin-top: 4px !important;
+        }
+
+        .reveal section.mini .diagram-wrap {
+            margin-top: 6px !important;
+            max-width: 800px !important;
+        }
+
+        .reveal section.mini .diagram-wrap svg,
+        .reveal section.mini .diagram-wrap img {
+            max-height: 380px !important;
+        }
+
+        .reveal section.mini .callout {
+            font-size: 13px !important;
+            padding: 6px 10px !important;
+            margin-top: 6px !important;
+        }
+
+        .reveal blockquote.citation {
+            font-size: 0.7em;
+            font-style: italic;
+            border-left: 4px solid #ccc;
+            padding-left: 0.8em;
+            box-shadow: none;
+        }
+
+        /* Bố cục hai cột ảnh + chữ, và dòng ghi nguồn ảnh */
+        .reveal .split {
+            display: flex;
+            gap: 1.1em;
+            align-items: center;
+            margin-top: 0.3em;
+        }
+
+        .reveal .split .split-img {
+            flex: 0 0 34%;
+        }
+
+        .reveal .split .split-img img {
+            width: 100%;
+            height: auto;
+            max-height: 330px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .reveal .split .split-text {
+            flex: 1;
+        }
+
+        .reveal .credit,
+        .reveal section.mini .credit {
+            font-size: 11px !important;
+            color: #aaa !important;
+            margin-top: 6px !important;
+            line-height: 1.3 !important;
+        }
+
+        .reveal .diagram-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 0.4em auto 0;
+            max-width: 820px;
+        }
+
+        .reveal .diagram-wrap svg,
+        .reveal .diagram-wrap img {
+            max-width: 100%;
+            max-height: 420px;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ─── Bìa ─── -->
+            <section>
+                <section>
+                    <h1>AI nói cho dễ hiểu</h1>
+                    <h3>“AI” thực ra nghĩa là gì, và vì sao điều đó quan trọng</h3>
+                    <p>The Melon Benchmark</p>
+                </section>
+
+                <section>
+                    <h2>Nội dung</h2>
+                    <ol>
+                        <li>AI thực ra là gì?</li>
+                        <li>Tất cả bắt đầu từ đâu?</li>
+                        <li>AI ngày nay hoạt động thế nào?</li>
+                        <li>Những thành tựu của AI</li>
+                        <li>AI có tiếp tục giỏi lên được không?</li>
+                        <li>Những rủi ro thật sự của AI</li>
+                        <li>Hỏi &amp; Đáp</li>
+                    </ol>
+                </section>
+            </section>
+
+            <!-- ─── 1. AI là gì ─── -->
+            <section>
+                <section>
+                    <h1>
+                        <span class="text-light">1.</span><br />
+                        AI thực ra là gì?
+                    </h1>
+                </section>
+
+                <section class="discuss">
+                    <h2>Trước khi bắt đầu…</h2>
+                    <p class="big-question">AI là gì?</p>
+                    <p><em>(Cứ trả lời theo cảm nhận đầu tiên — chưa có câu nào sai cả.)</em></p>
+                    <aside class="notes">
+                        Chỉ là câu hỏi khởi động. Để 2–3 người trả lời, chưa cần đính chính hay định hướng. ~1 phút.
+                    </aside>
+                </section>
+
+                <section style="font-size: .8em;">
+                    <h2>Ba thuật ngữ, ba phạm vi</h2>
+                    <ul>
+                        <li><strong>Trí tuệ nhân tạo (<span class="keyword">AI</span>):</strong> mục tiêu bao quát —
+                            làm cho máy thực hiện được những việc vốn đòi hỏi trí tuệ con người.</li>
+                        <li><strong>Học máy (<span class="keyword">ML</span>):</strong> một cách để đạt mục tiêu đó —
+                            thay vì lập trình sẵn từng quy tắc, hệ thống tự học quy luật từ dữ liệu.</li>
+                        <li><strong>Học sâu (<span class="keyword">DL</span>):</strong> một cách làm ML, dùng mạng
+                            nơ-ron nhiều lớp. Đây là hướng mạnh nhất và phổ biến nhất hiện nay.</li>
+                    </ul>
+                    <div class="callout">
+                        Thứ mà phần lớn mọi người gọi là <strong>“AI”</strong> ngày nay thực chất chỉ là Học sâu mà
+                        thôi.
+                    </div>
+                    <aside class="notes">
+                        Đi chậm ở đây — đây là cái neo khái niệm cho cả buổi. Phải chắc rằng ý “AI là cái ô lớn, ML là
+                        một chiến lược, DL là một kỹ thuật cụ thể” đã thấm trước khi sang hình minh họa.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Ghép lại với nhau</h2>
+                    <div class="diagram-wrap">
+                        <svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="260" cy="180" r="150" fill="#dbeeff" stroke="#5b9bd5" stroke-width="2" />
+                            <circle cx="260" cy="200" r="105" fill="#a9d3f5" stroke="#2f75b5" stroke-width="2" />
+                            <circle cx="260" cy="220" r="60" fill="#4f8fd1" stroke="#1f4e79" stroke-width="2" />
+                            <text x="260" y="60" text-anchor="middle" font-size="22" fill="#1f4e79"
+                                font-weight="600">Trí tuệ nhân tạo</text>
+                            <text x="260" y="120" text-anchor="middle" font-size="18" fill="#1f4e79"
+                                font-weight="600">Học máy</text>
+                            <text x="260" y="185" text-anchor="middle" font-size="15" fill="#ffffff"
+                                font-weight="600">Học</text>
+                            <text x="260" y="205" text-anchor="middle" font-size="15" fill="#ffffff"
+                                font-weight="600">sâu</text>
+                        </svg>
+                    </div>
+                    <p style="font-size: .6em;">Mỗi vòng nằm trọn trong vòng trước — DL là tập con của ML, ML là tập
+                        con của AI.</p>
+                </section>
+
+                <section class="mini">
+                    <h2>Học máy trong thực tế</h2>
+                    <p>Ví dụ đơn giản nhất có thể: <strong>hồi quy tuyến tính</strong> — vẽ một đường qua dữ liệu, rồi
+                        dùng nó để dự đoán.</p>
+                    <div class="diagram-wrap">
+                        <svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+                            <line x1="40" y1="20" x2="40" y2="210" stroke="#333" stroke-width="1.5" />
+                            <line x1="40" y1="210" x2="380" y2="210" stroke="#333" stroke-width="1.5" />
+                            <text x="210" y="232" text-anchor="middle" font-size="12" fill="#555">đầu vào (x)</text>
+                            <text x="18" y="115" text-anchor="middle" font-size="12" fill="#555"
+                                transform="rotate(-90 18 115)">đầu ra (y)</text>
+                            <g fill="#2f75b5">
+                                <circle cx="70" cy="190" r="4.5" /><circle cx="100" cy="175" r="4.5" /><circle
+                                    cx="130" cy="150" r="4.5" /><circle cx="160" cy="160" r="4.5" /><circle cx="190"
+                                    cy="120" r="4.5" /><circle cx="220" cy="110" r="4.5" /><circle cx="250" cy="90"
+                                    r="4.5" /><circle cx="280" cy="95" r="4.5" /><circle cx="310" cy="60"
+                                    r="4.5" /><circle cx="340" cy="50" r="4.5" />
+                            </g>
+                            <line x1="60" y1="200" x2="350" y2="45" stroke="#c0392b" stroke-width="2.5" />
+                        </svg>
+                    </div>
+                    <p style="color: #666;">Các chấm là ví dụ đã có trong quá khứ; đường đỏ là thứ mô hình học được.
+                        Đầu vào mới → dóng lên đường → ra dự đoán.</p>
+                </section>
+
+                <section class="mini">
+                    <h2>Học sâu — Mạng nơ-ron</h2>
+                    <p>Rất nhiều đơn vị đơn giản (“nơ-ron”), xếp thành từng lớp, lớp này đưa tín hiệu vào lớp kia.</p>
+                    <div class="diagram-wrap">
+                        <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+                            <text x="70" y="15" text-anchor="middle" font-size="11" fill="#1f4e79"
+                                font-weight="600">Đầu vào</text>
+                            <text x="210" y="15" text-anchor="middle" font-size="11" fill="#1f4e79"
+                                font-weight="600">Lớp ẩn</text>
+                            <text x="345" y="15" text-anchor="middle" font-size="11" fill="#1f4e79"
+                                font-weight="600">Đầu ra</text>
+                            <g stroke="#c7d9ea" stroke-width="0.8">
+                                <line x1="70" y1="35" x2="210" y2="25" /><line x1="70" y1="35" x2="210"
+                                    y2="80" /><line x1="70" y1="35" x2="210" y2="135" /><line x1="70" y1="35"
+                                    x2="210" y2="190" /><line x1="70" y1="35" x2="210" y2="245" />
+                                <line x1="70" y1="95" x2="210" y2="25" /><line x1="70" y1="95" x2="210"
+                                    y2="80" /><line x1="70" y1="95" x2="210" y2="135" /><line x1="70" y1="95"
+                                    x2="210" y2="190" /><line x1="70" y1="95" x2="210" y2="245" />
+                                <line x1="70" y1="155" x2="210" y2="25" /><line x1="70" y1="155" x2="210"
+                                    y2="80" /><line x1="70" y1="155" x2="210" y2="135" /><line x1="70" y1="155"
+                                    x2="210" y2="190" /><line x1="70" y1="155" x2="210" y2="245" />
+                                <line x1="70" y1="215" x2="210" y2="25" /><line x1="70" y1="215" x2="210"
+                                    y2="80" /><line x1="70" y1="215" x2="210" y2="135" /><line x1="70" y1="215"
+                                    x2="210" y2="190" /><line x1="70" y1="215" x2="210" y2="245" />
+                            </g>
+                            <g stroke="#c7d9ea" stroke-width="0.8">
+                                <line x1="210" y1="25" x2="345" y2="90" /><line x1="210" y1="25" x2="345" y2="180" />
+                                <line x1="210" y1="80" x2="345" y2="90" /><line x1="210" y1="80" x2="345" y2="180" />
+                                <line x1="210" y1="135" x2="345" y2="90" /><line x1="210" y1="135" x2="345"
+                                    y2="180" />
+                                <line x1="210" y1="190" x2="345" y2="90" /><line x1="210" y1="190" x2="345"
+                                    y2="180" />
+                                <line x1="210" y1="245" x2="345" y2="90" /><line x1="210" y1="245" x2="345"
+                                    y2="180" />
+                            </g>
+                            <g fill="#dbeeff" stroke="#5b9bd5" stroke-width="1.5">
+                                <circle cx="70" cy="35" r="10" /><circle cx="70" cy="95" r="10" /><circle cx="70"
+                                    cy="155" r="10" />
+                                <circle cx="70" cy="215" r="10" />
+                            </g>
+                            <g fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5">
+                                <circle cx="210" cy="25" r="10" /><circle cx="210" cy="80" r="10" /><circle cx="210"
+                                    cy="135" r="10" /><circle cx="210" cy="190" r="10" /><circle cx="210" cy="245"
+                                    r="10" />
+                            </g>
+                            <g fill="#1f4e79" stroke="#0d2b47" stroke-width="1.5">
+                                <circle cx="345" cy="90" r="10" /><circle cx="345" cy="180" r="10" />
+                            </g>
+                        </svg>
+                    </div>
+                    <p style="font-size: .65em; color: #666;">“Sâu” đơn giản là có nhiều lớp ẩn xếp chồng giữa đầu vào
+                        và đầu ra.</p>
+                </section>
+
+                <section class="mini">
+                    <h2>Transformer — kiến trúc thật sự đằng sau</h2>
+                    <p>Từ bài báo gốc năm 2017 “Attention Is All You Need” — kiến trúc đứng sau ChatGPT và hầu hết các
+                        mô hình ngôn ngữ hiện đại.</p>
+                    <div class="diagram-wrap" style="max-width: 480px;">
+                        <img src="img/ai-lecture/transformer.png"
+                            alt="Kiến trúc encoder-decoder của Transformer trong bài báo Attention Is All You Need"
+                            style="width: auto; height: auto; max-height: 420px; max-width: 100%; display: block; margin: 0 auto;"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                        <svg viewBox="0 0 380 320" xmlns="http://www.w3.org/2000/svg" style="display:none;"
+                            class="badge-fallback">
+                            <rect x="40" y="10" width="300" height="36" rx="8" fill="#eef3f8" stroke="#2f75b5"
+                                stroke-width="2" />
+                            <text x="190" y="33" text-anchor="middle" font-size="13" fill="#1f4e79">Token đầu vào:
+                                “The cat sat down”</text>
+
+                            <line x1="190" y1="46" x2="190" y2="68" stroke="#555" stroke-width="2"
+                                marker-end="url(#tarrow)" />
+
+                            <rect x="20" y="70" width="340" height="90" rx="8" fill="#4f8fd1" stroke="#1f4e79"
+                                stroke-width="2" />
+                            <text x="190" y="90" text-anchor="middle" font-size="12" fill="#fff"
+                                font-weight="600">Self-Attention</text>
+                            <g>
+                                <circle cx="80" cy="130" r="6" fill="#fff" /><circle cx="150" cy="130" r="6"
+                                    fill="#fff" /><circle cx="230" cy="130" r="6" fill="#fff" /><circle cx="300"
+                                    cy="130" r="6" fill="#fff" />
+                                <g stroke="#dbeeff" stroke-width="1" opacity="0.9">
+                                    <line x1="80" y1="130" x2="150" y2="130" /><line x1="80" y1="130" x2="230"
+                                        y2="130" /><line x1="80" y1="130" x2="300" y2="130" />
+                                    <line x1="150" y1="130" x2="230" y2="130" /><line x1="150" y1="130" x2="300"
+                                        y2="130" />
+                                    <line x1="230" y1="130" x2="300" y2="130" />
+                                </g>
+                            </g>
+                            <text x="190" y="152" text-anchor="middle" font-size="10" fill="#dbeeff">mỗi từ đều nhìn
+                                vào mọi từ còn lại</text>
+
+                            <line x1="190" y1="160" x2="190" y2="182" stroke="#555" stroke-width="2"
+                                marker-end="url(#tarrow)" />
+
+                            <rect x="90" y="184" width="200" height="36" rx="8" fill="#a9d3f5" stroke="#2f75b5"
+                                stroke-width="2" />
+                            <text x="190" y="207" text-anchor="middle" font-size="12" fill="#1f4e79"
+                                font-weight="600">Feed Forward</text>
+
+                            <line x1="190" y1="220" x2="190" y2="242" stroke="#555" stroke-width="2"
+                                marker-end="url(#tarrow)" />
+
+                            <rect x="60" y="244" width="260" height="36" rx="8" fill="#eef3f8" stroke="#2f75b5"
+                                stroke-width="2" />
+                            <text x="190" y="267" text-anchor="middle" font-size="12" fill="#1f4e79">Đầu ra: xác suất
+                                của từ kế tiếp</text>
+
+                            <text x="190" y="305" text-anchor="middle" font-size="10" fill="#888">cả khối này lặp lại
+                                rất nhiều lần (“lớp”)</text>
+
+                            <defs>
+                                <marker id="tarrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L6,3 L0,6 Z" fill="#555" />
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ─── 2. Lịch sử ─── -->
+            <section>
+                <section>
+                    <h1>
+                        <span class="text-light">2.</span><br />
+                        Tất cả bắt đầu từ đâu?
+                    </h1>
+                </section>
+
+                <section style="font-size: .85em;">
+                    <h2>Giải Nobel Vật lý… cho AI?</h2>
+                    <p><strong>Giải Nobel Vật lý 2024</strong> — trao cho John Hopfield và Geoffrey Hinton.</p>
+                    <blockquote class="citation">
+                        “cho những khám phá và phát minh nền tảng giúp máy học được bằng mạng nơ-ron nhân tạo”
+                    </blockquote>
+                    <p>Lần đầu tiên giải Vật lý ghi nhận loại công trình này.</p>
+                    <aside class="notes">
+                        Chỉ là điểm mở đầu, đừng sa đà. Nó dẫn vào ý “những ý tưởng đằng sau AI ngày nay bước ra từ vật
+                        lý”.
+                    </aside>
+                </section>
+
+                <section class="mini">
+                    <h2 style="font-size: 24px !important; margin: 0 0 6px !important;">Hai nhà vật lý, hai ý tưởng
+                        cốt lõi</h2>
+                    <div class="portrait-row" style="gap: 16px !important; margin-top: 4px !important;">
+                        <figure style="width: 420px !important;">
+                            <img src="img/ai-lecture/hopfield.jpg" alt="John Hopfield"
+                                style="width: 400px !important; height: 400px !important;"
+                                onerror="this.closest('figure').style.display='none'" />
+                            <figcaption>Hopfield — Princeton<br />Mạng Hopfield</figcaption>
+                        </figure>
+                        <figure style="width: 420px !important;">
+                            <img src="img/ai-lecture/hinton.jpg" alt="Geoffrey Hinton"
+                                style="width: 400px !important; height: 400px !important;"
+                                onerror="this.closest('figure').style.display='none'" />
+                            <figcaption>Hinton — ĐH Toronto<br />Máy Boltzmann / RBM</figcaption>
+                        </figure>
+                    </div>
+                    <aside class="notes">
+                        Giữ slide này thật ngắn — chỉ là giới thiệu hai nhân vật. Phần giải thích nằm ở các slide sau.
+                    </aside>
+                </section>
+
+                <section style="font-size: .82em;">
+                    <h2>Lý thuyết Spin Glass, nói cho dễ hiểu</h2>
+                    <ul>
+                        <li>Vốn là một ý tưởng vật lý về vật liệu từ: những nam châm tí hon (“spin”) liên kết với các
+                            hàng xóm, có cặp kéo nhau về cùng chiều, có cặp đẩy nhau ngược chiều.</li>
+                        <li>Không tồn tại một trật tự gọn gàng duy nhất — hệ sẽ ổn định ở <em>một trong rất nhiều</em>
+                            cấu hình năng lượng thấp, tùy vào điểm xuất phát.</li>
+                    </ul>
+                    <aside class="notes">
+                        Dựng ý bằng lời trước — hình minh họa nằm ở slide kế tiếp.
+                    </aside>
+                </section>
+
+                <section class="mini">
+                    <h2>Spin Glass trông như thế nào</h2>
+                    <div class="diagram-wrap" style="max-width: 400px;">
+                        <img src="img/ai-lecture/spin_glass.svg"
+                            alt="Sơ đồ spin glass: một lưới các spin nguyên tử hướng lên hoặc xuống"
+                            style="max-height: 460px; width: auto;" />
+                    </div>
+                    <p>Mỗi mũi tên là một nam châm tí hon (“spin”) có thể hướng lên hoặc hướng xuống. Tương tác với
+                        hàng xóm kéo một số cặp về cùng chiều và đẩy số khác ngược chiều — cả lưới ổn định ở một trong
+                        rất nhiều sắp xếp khả dĩ. Phát hiện của Hopfield: hãy coi mỗi sắp xếp như một
+                        <strong>ký ức</strong> được lưu lại.</p>
+                </section>
+
+                <section style="font-size: .82em;">
+                    <h2>RBM, nói cho dễ hiểu</h2>
+                    <ul>
+                        <li><strong>Máy Boltzmann:</strong> giống mạng Hopfield, nhưng có thêm yếu tố ngẫu nhiên, và
+                            có hai loại đơn vị — <em>hiện</em> (đầu vào) và <em>ẩn</em> (đặc trưng mà máy tự học).</li>
+                        <li><strong>“Restricted” (hạn chế)</strong> = đơn vị ẩn chỉ nối với đơn vị hiện, không bao giờ
+                            nối với nhau. Chỉ một quy tắc đó thôi đã khiến việc huấn luyện trở nên khả thi.</li>
+                    </ul>
+                    <aside class="notes">
+                        Ở đây chỉ nêu định nghĩa — hình so sánh nằm ở slide kế tiếp.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2 style="font-size: 22px; margin: 0 0 4px;">Cùng một họ, khác cách đi dây</h2>
+                    <div class="diagram-wrap" style="max-width: 500px !important; margin-top: 0 !important;">
+                        <svg viewBox="0 0 460 570" xmlns="http://www.w3.org/2000/svg"
+                            style="max-height: 610px !important; width: auto;">
+                            <!-- Trên: đồ thị hai phía kiểu Boltzmann / RBM -->
+                            <text x="230" y="15" text-anchor="middle" font-size="13" fill="#1f4e79"
+                                font-weight="600">Ẩn</text>
+                            <circle cx="170" cy="40" r="12" fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5" />
+                            <circle cx="230" cy="40" r="12" fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5" />
+                            <circle cx="290" cy="40" r="12" fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5" />
+
+                            <g stroke="#c7d9ea" stroke-width="1.2">
+                                <line x1="170" y1="40" x2="140" y2="135" />
+                                <line x1="170" y1="40" x2="200" y2="135" />
+                                <line x1="170" y1="40" x2="260" y2="135" />
+                                <line x1="170" y1="40" x2="320" y2="135" />
+                                <line x1="230" y1="40" x2="140" y2="135" />
+                                <line x1="230" y1="40" x2="200" y2="135" />
+                                <line x1="230" y1="40" x2="260" y2="135" />
+                                <line x1="230" y1="40" x2="320" y2="135" />
+                                <line x1="290" y1="40" x2="140" y2="135" />
+                                <line x1="290" y1="40" x2="200" y2="135" />
+                                <line x1="290" y1="40" x2="260" y2="135" />
+                                <line x1="290" y1="40" x2="320" y2="135" />
+                            </g>
+
+                            <circle cx="140" cy="135" r="12" fill="#eef3f8" stroke="#2f75b5" stroke-width="1.5" />
+                            <circle cx="200" cy="135" r="12" fill="#eef3f8" stroke="#2f75b5" stroke-width="1.5" />
+                            <circle cx="260" cy="135" r="12" fill="#eef3f8" stroke="#2f75b5" stroke-width="1.5" />
+                            <circle cx="320" cy="135" r="12" fill="#eef3f8" stroke="#2f75b5" stroke-width="1.5" />
+                            <text x="230" y="168" text-anchor="middle" font-size="13" fill="#1f4e79"
+                                font-weight="600">Hiện (đầu vào)</text>
+                            <text x="230" y="200" text-anchor="middle" font-size="16" fill="#333"
+                                font-weight="600">Máy Boltzmann</text>
+
+                            <!-- Mũi tên hai chiều, hướng xuống -->
+                            <line x1="230" y1="220" x2="230" y2="300" stroke="#8b2e2e" stroke-width="7" />
+                            <polygon points="230,220 216,238 244,238" fill="#8b2e2e" />
+                            <polygon points="230,300 216,282 244,282" fill="#8b2e2e" />
+
+                            <!-- Dưới: đồ thị Hopfield nối đầy đủ -->
+                            <g stroke="#333" stroke-width="1.4" opacity="0.55">
+                                <line x1="230" y1="325" x2="295" y2="363" />
+                                <line x1="230" y1="325" x2="295" y2="438" />
+                                <line x1="230" y1="325" x2="230" y2="475" />
+                                <line x1="230" y1="325" x2="165" y2="438" />
+                                <line x1="230" y1="325" x2="165" y2="363" />
+                                <line x1="295" y1="363" x2="295" y2="438" />
+                                <line x1="295" y1="363" x2="230" y2="475" />
+                                <line x1="295" y1="363" x2="165" y2="438" />
+                                <line x1="295" y1="363" x2="165" y2="363" />
+                                <line x1="295" y1="438" x2="230" y2="475" />
+                                <line x1="295" y1="438" x2="165" y2="438" />
+                                <line x1="295" y1="438" x2="165" y2="363" />
+                                <line x1="230" y1="475" x2="165" y2="438" />
+                                <line x1="230" y1="475" x2="165" y2="363" />
+                                <line x1="165" y1="438" x2="165" y2="363" />
+                            </g>
+                            <circle cx="230" cy="325" r="12" fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5" />
+                            <circle cx="295" cy="363" r="12" fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5" />
+                            <circle cx="295" cy="438" r="12" fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5" />
+                            <circle cx="230" cy="475" r="12" fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5" />
+                            <circle cx="165" cy="438" r="12" fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5" />
+                            <circle cx="165" cy="363" r="12" fill="#4f8fd1" stroke="#1f4e79" stroke-width="1.5" />
+                            <text x="230" y="510" text-anchor="middle" font-size="16" fill="#333"
+                                font-weight="600">Mạng Hopfield</text>
+
+                            <text x="230" y="545" text-anchor="middle" font-size="13" fill="#666">Nhìn thì khác, nhưng
+                                cùng một nền toán —</text>
+                            <text x="230" y="562" text-anchor="middle" font-size="13" fill="#666">Hinton xây cái này
+                                dựa trên cái kia.</text>
+                        </svg>
+                    </div>
+                </section>
+
+                <section style="font-size: .82em;">
+                    <h2>Vì sao điều đó quan trọng</h2>
+                    <p>Nó tự tìm ra các quy luật ẩn trong dữ liệu — ví dụ tự học được “cạnh” hay “hình khối” trong ảnh
+                        mà không ai phải chỉ. Năm 2006, Hinton xếp chồng các RBM để tiền huấn luyện mạng sâu — một
+                        bước ngoặt góp phần châm ngòi cho làn sóng học sâu.</p>
+                    <div class="callout">
+                        Các mô hình ngày nay (ChatGPT, v.v.) dùng một kiến trúc khác — Transformer. Phần này nói về
+                        nơi các <em>ý tưởng</em> ra đời, không phải thứ đang thực sự chạy bên dưới hiện giờ.
+                    </div>
+                </section>
+            </section>
+
+            <!-- ─── 3. AI hoạt động thế nào ─── -->
+            <section>
+                <section>
+                    <h1>
+                        <span class="text-light">3.</span><br />
+                        AI ngày nay hoạt động thế nào?
+                    </h1>
+                </section>
+
+                <section class="discuss">
+                    <h2>Thử đoán nhanh</h2>
+                    <p class="big-question">Bạn nghĩ những mô hình này thực sự hoạt động ra sao?</p>
+                    <aside class="notes">
+                        Để vài câu đoán được nói ra trước khi tiết lộ. ~1–2 phút.
+                    </aside>
+                </section>
+
+                <section style="font-size: .8em;">
+                    <h2>Tất cả là xác suất, từ đầu đến cuối</h2>
+                    <ul>
+                        <li>Được huấn luyện trên một lượng văn bản khổng lồ.</li>
+                        <li>Về cốt lõi, nó đang dự đoán <strong>“từ nào đến tiếp theo”</strong> — lặp đi lặp lại.</li>
+                    </ul>
+                    <div class="diagram-wrap">
+                        <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="70" width="140" height="60" rx="8" fill="#eef3f8" stroke="#2f75b5"
+                                stroke-width="2" />
+                            <text x="80" y="105" text-anchor="middle" font-size="13" fill="#1f4e79">“The cat sat on
+                                the…”</text>
+
+                            <path d="M155 100 L205 100" stroke="#555" stroke-width="2" marker-end="url(#arrow)" />
+
+                            <rect x="210" y="60" width="110" height="80" rx="8" fill="#4f8fd1" stroke="#1f4e79"
+                                stroke-width="2" />
+                            <text x="265" y="105" text-anchor="middle" font-size="14" fill="#fff"
+                                font-weight="600">Mô hình</text>
+
+                            <path d="M325 100 L375 100" stroke="#555" stroke-width="2" marker-end="url(#arrow)" />
+
+                            <rect x="380" y="40" width="170" height="120" rx="8" fill="#eef3f8" stroke="#2f75b5"
+                                stroke-width="2" />
+                            <text x="465" y="60" text-anchor="middle" font-size="11" fill="#1f4e79"
+                                font-weight="600">Xác suất</text>
+                            <text x="465" y="80" text-anchor="middle" font-size="11" fill="#333">mat — 0.42</text>
+                            <text x="465" y="98" text-anchor="middle" font-size="11" fill="#333">roof — 0.11</text>
+                            <text x="465" y="116" text-anchor="middle" font-size="11" fill="#333">floor — 0.08</text>
+                            <text x="465" y="134" text-anchor="middle" font-size="11" fill="#333">…</text>
+
+                            <path d="M555 100 L600 100" stroke="#555" stroke-width="2" marker-end="url(#arrow)" />
+                            <text x="620" y="95" text-anchor="middle" font-size="12" fill="#1f4e79"
+                                font-weight="600">“mat”</text>
+
+                            <path d="M620 130 C 620 175, 300 175, 80 140" stroke="#999" stroke-width="1.5" fill="none"
+                                stroke-dasharray="4,3" marker-end="url(#arrow2)" />
+                            <text x="350" y="188" text-anchor="middle" font-size="10" fill="#888">lặp lại, mỗi lần một
+                                từ</text>
+
+                            <defs>
+                                <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L6,3 L0,6 Z" fill="#555" />
+                                </marker>
+                                <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L6,3 L0,6 Z" fill="#999" />
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+                    <aside class="notes">
+                        Một điểm tinh tế cần nói rõ thành lời: mô hình không gắn “sự hiểu” vào từ ngữ theo cách con
+                        người làm — đó là một cách đơn giản hóa hữu ích, nhưng vẫn đang được giới nghiên cứu tranh
+                        luận thật sự (lập luận “con vẹt ngẫu nhiên” có người phản bác ở cả hai phía). Đừng trình bày
+                        nó như một kết luận đã ngã ngũ.
+                    </aside>
+                </section>
+
+                <section class="mini">
+                    <h2>Sinh ảnh hoạt động thế nào</h2>
+                    <p>Lấy <strong>Stable Diffusion</strong> làm ví dụ: mô hình bắt đầu từ nhiễu ngẫu nhiên (nhiễu
+                        Gauss), rồi dựa vào câu lệnh của bạn để khử dần nhiễu đó, từng bước một, cho đến khi một bức
+                        ảnh hiện ra.</p>
+                    <div class="diagram-wrap" style="max-width: 700px;">
+                        <svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="noisePattern" width="10" height="10" patternUnits="userSpaceOnUse">
+                                    <rect width="10" height="10" fill="#dbeeff" />
+                                    <rect x="0" y="0" width="5" height="5" fill="#4f8fd1" />
+                                    <rect x="5" y="5" width="5" height="5" fill="#2f75b5" />
+                                    <rect x="5" y="0" width="5" height="5" fill="#f4b400" />
+                                    <rect x="0" y="5" width="5" height="5" fill="#c0392b" />
+                                </pattern>
+                                <radialGradient id="blobGrad" cx="50%" cy="50%" r="55%">
+                                    <stop offset="0%" stop-color="#4f8fd1" />
+                                    <stop offset="70%" stop-color="#a9d3f5" />
+                                    <stop offset="100%" stop-color="#dbeeff" />
+                                </radialGradient>
+                                <marker id="uparrow" markerWidth="8" markerHeight="8" refX="3" refY="0" orient="auto">
+                                    <path d="M0,6 L3,0 L6,6 Z" fill="#8b2e2e" />
+                                </marker>
+                                <marker id="rightarrow" markerWidth="8" markerHeight="8" refX="6" refY="3"
+                                    orient="auto">
+                                    <path d="M0,0 L6,3 L0,6 Z" fill="#555" />
+                                </marker>
+                            </defs>
+
+                            <rect x="10" y="20" width="140" height="120" rx="8" fill="url(#noisePattern)"
+                                stroke="#1f4e79" stroke-width="2" />
+                            <text x="80" y="158" text-anchor="middle" font-size="12" fill="#333">Nhiễu ngẫu
+                                nhiên</text>
+
+                            <line x1="155" y1="80" x2="215" y2="80" stroke="#555" stroke-width="2"
+                                marker-end="url(#rightarrow)" />
+
+                            <rect x="220" y="20" width="140" height="120" rx="8" fill="#eef3f8" stroke="#1f4e79"
+                                stroke-width="2" />
+                            <ellipse cx="290" cy="80" rx="45" ry="40" fill="url(#blobGrad)" opacity="0.85" />
+                            <text x="290" y="158" text-anchor="middle" font-size="12" fill="#333">Khử nhiễu một
+                                phần</text>
+
+                            <line x1="365" y1="80" x2="425" y2="80" stroke="#555" stroke-width="2"
+                                marker-end="url(#rightarrow)" />
+
+                            <rect x="430" y="20" width="140" height="120" rx="8" fill="#eef3f8" stroke="#1f4e79"
+                                stroke-width="2" />
+                            <path d="M450,120 L480,75 L505,100 L525,65 L550,120 Z" fill="#4f8fd1" />
+                            <circle cx="475" cy="55" r="8" fill="#f4b400" />
+                            <text x="500" y="158" text-anchor="middle" font-size="12" fill="#333">Ảnh hoàn
+                                chỉnh</text>
+
+                            <rect x="130" y="205" width="360" height="40" rx="8" fill="#fff8e1" stroke="#f4b400"
+                                stroke-width="2" />
+                            <text x="310" y="230" text-anchor="middle" font-size="13" fill="#333">Câu lệnh: “một căn
+                                nhà gỗ ấm cúng giữa tuyết”</text>
+
+                            <line x1="200" y1="205" x2="120" y2="150" stroke="#8b2e2e" stroke-width="2"
+                                marker-end="url(#uparrow)" />
+                            <line x1="310" y1="205" x2="300" y2="150" stroke="#8b2e2e" stroke-width="2"
+                                marker-end="url(#uparrow)" />
+                            <line x1="420" y1="205" x2="500" y2="150" stroke="#8b2e2e" stroke-width="2"
+                                marker-end="url(#uparrow)" />
+                        </svg>
+                    </div>
+                    <p style="font-size: 12px; color: #888;">Câu lệnh dẫn hướng từng bước khử nhiễu, chứ không chỉ tác
+                        động vào kết quả cuối.</p>
+                </section>
+            </section>
+
+            <!-- ─── 4. Thành tựu ─── -->
+            <section>
+                <section>
+                    <h1>
+                        <span class="text-light">4.</span><br />
+                        Những thành tựu của AI
+                    </h1>
+                </section>
+
+                <section style="font-size: .8em;">
+                    <h2>Chatbot / AI văn bản</h2>
+                    <p>Chủ yếu xây trên kiến trúc <strong>Transformer</strong>.</p>
+                    <div class="icon-row">
+                        <figure>
+                            <img src="img/ai-lecture/openai.png" alt="ChatGPT" class="real-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" class="badge-fallback">
+                                <circle cx="40" cy="40" r="34" fill="#10a37f" stroke="#0b7a5f" stroke-width="2" />
+                                <text x="40" y="49" text-anchor="middle" font-size="22" fill="#fff"
+                                    font-weight="700">Ch</text>
+                            </svg>
+                            <figcaption>ChatGPT</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="img/ai-lecture/gemini.png" alt="Gemini" class="real-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" class="badge-fallback">
+                                <circle cx="40" cy="40" r="34" fill="#4285f4" stroke="#2a5db0" stroke-width="2" />
+                                <text x="40" y="49" text-anchor="middle" font-size="22" fill="#fff"
+                                    font-weight="700">Ge</text>
+                            </svg>
+                            <figcaption>Gemini</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="img/ai-lecture/grok.png" alt="Grok" class="real-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" class="badge-fallback">
+                                <circle cx="40" cy="40" r="34" fill="#111111" stroke="#000000" stroke-width="2" />
+                                <text x="40" y="49" text-anchor="middle" font-size="22" fill="#fff"
+                                    font-weight="700">Gr</text>
+                            </svg>
+                            <figcaption>Grok</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="img/ai-lecture/claude.jpg" alt="Claude" class="real-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" class="badge-fallback">
+                                <circle cx="40" cy="40" r="34" fill="#d97757" stroke="#a85a3f" stroke-width="2" />
+                                <text x="40" y="49" text-anchor="middle" font-size="22" fill="#fff"
+                                    font-weight="700">Cl</text>
+                            </svg>
+                            <figcaption>Claude</figcaption>
+                        </figure>
+                    </div>
+                    <aside class="notes">
+                        Bốn logo thật nằm ở img/ai-lecture/ (openai.png, gemini.png, grok.png, claude.jpg). Nếu thiếu
+                        file nào, slide tự rơi về huy hiệu chữ viết tắt thay thế.
+                    </aside>
+                </section>
+
+                <section style="font-size: .8em;">
+                    <h2>Công cụ sinh ảnh &amp; video</h2>
+                    <p>Chủ yếu xây trên mô hình <strong>Diffusion</strong>, thường kết hợp với thành phần
+                        <strong>ViT</strong> (Vision Transformer).</p>
+                    <div class="icon-row">
+                        <figure class="showcase">
+                            <img src="img/ai-lecture/midjourney.jpg" alt="Ảnh ví dụ do Midjourney tạo ra"
+                                class="real-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" class="badge-fallback">
+                                <circle cx="40" cy="40" r="34" fill="#6c5ce7" stroke="#4d38ad" stroke-width="2" />
+                                <text x="40" y="49" text-anchor="middle" font-size="20" fill="#fff"
+                                    font-weight="700">Mj</text>
+                            </svg>
+                            <figcaption>Midjourney</figcaption>
+                        </figure>
+                        <figure class="showcase">
+                            <img src="img/ai-lecture/dalle.webp" alt="Ảnh ví dụ do DALL·E tạo ra" class="real-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" class="badge-fallback">
+                                <circle cx="40" cy="40" r="34" fill="#0d8f6f" stroke="#0a6b53" stroke-width="2" />
+                                <text x="40" y="49" text-anchor="middle" font-size="20" fill="#fff"
+                                    font-weight="700">Da</text>
+                            </svg>
+                            <figcaption>DALL·E</figcaption>
+                        </figure>
+                    </div>
+                    <p style="font-size: .6em; color: #888;">Các hướng đi trước như GAN và VAE đã mở đường, nhưng
+                        diffusion gần như đã chiếm lĩnh — ở đây không đi sâu vào chúng.</p>
+                </section>
+
+                <section class="mini">
+                    <h2>AI trong y tế</h2>
+                    <div class="split">
+                        <div class="split-img">
+                            <img src="img/ai-lecture/healthcare-fundus.jpg"
+                                alt="Ảnh đáy mắt cho thấy các dấu hiệu của bệnh võng mạc đái tháo đường"
+                                onerror="this.closest('.split-img').style.display='none'" />
+                        </div>
+                        <div class="split-text">
+                            <ul>
+                                <li><strong>Võng mạc đái tháo đường:</strong> biến chứng có thể gây mù, nhưng phát
+                                    hiện sớm thì điều trị được. Nút thắt là không đủ bác sĩ nhãn khoa để sàng lọc cho
+                                    tất cả bệnh nhân tiểu đường.</li>
+                                <li><strong>IDx-DR (2018):</strong> hệ thống AI <em>tự chủ</em> đầu tiên được FDA Hoa
+                                    Kỳ cấp phép — tự đưa ra kết luận mà không cần bác sĩ đọc lại ảnh.</li>
+                                <li>Thử nghiệm trên 900 bệnh nhân: độ nhạy <strong>87,2%</strong> · độ đặc hiệu
+                                    <strong>90,7%</strong>.</li>
+                            </ul>
+                            <div class="callout">
+                                Giá trị lớn nhất nằm ở khâu <strong>sàng lọc</strong> — nơi chuyên gia thì hiếm mà
+                                bệnh nhân thì đông.
+                            </div>
+                        </div>
+                    </div>
+                    <p class="credit">Ảnh đáy mắt: Hao et al., CC BY 4.0, qua Wikimedia Commons.</p>
+                    <aside class="notes">
+                        Ý chính: AI không thay bác sĩ, nó làm cho khâu sàng lọc vươn tới được những nơi không có
+                        chuyên gia. Nói thẳng mặt trái của con số: độ nhạy 87% nghĩa là cứ khoảng 8 ca bệnh thì vẫn
+                        sót 1 — đó là lý do nó dùng để sàng lọc chứ không phải để chốt chẩn đoán.
+                    </aside>
+                </section>
+
+                <section class="mini">
+                    <h2>AlphaFold — bài toán gấp protein</h2>
+                    <ul>
+                        <li>Protein là một chuỗi axit amin tự cuộn lại thành hình dạng 3D. Hình dạng đó quyết định
+                            chức năng — và cực kỳ khó đoán. Bài toán này treo gần <strong>50 năm</strong>.</li>
+                        <li><strong>CASP14 (2020):</strong> AlphaFold 2 bỏ xa toàn bộ các nhóm còn lại, sai số trung
+                            vị khoảng 1 Å — xấp xỉ độ chính xác của phép đo thực nghiệm.</li>
+                        <li>Cơ sở dữ liệu AlphaFold nay có hơn <strong>200 triệu</strong> cấu trúc dự đoán, mở miễn
+                            phí cho nghiên cứu.</li>
+                    </ul>
+                    <div class="diagram-wrap" style="max-width: 820px;">
+                        <img src="img/ai-lecture/alphafold.png"
+                            alt="Biểu đồ sai số của AlphaFold tại CASP14 và các cấu trúc dự đoán chồng lên cấu trúc thực nghiệm"
+                            style="max-height: 230px;" onerror="this.style.display='none'" />
+                    </div>
+                    <p style="color:#666;">Trái: sai số của AlphaFold (cột đậm) so với 15 nhóm dẫn đầu. Phải: cấu
+                        trúc AlphaFold dự đoán (xanh dương) chồng gần như khít lên cấu trúc đo bằng thực nghiệm (xanh
+                        lá).</p>
+                    <p class="credit">Hình: Jumper et al., <em>Nature</em> 2021, CC BY-SA 4.0, qua Wikimedia Commons.
+                    </p>
+                    <aside class="notes">
+                        Nối ngược lại slide “Những thành tựu khác” ngay sau đây: đây chính là công trình được trao
+                        giải Nobel Hóa học 2024.
+                    </aside>
+                </section>
+
+                <section class="mini">
+                    <h2>Học tăng cường — khi AI phải <em>hành động</em></h2>
+                    <ul>
+                        <li>Khác với mô hình ngôn ngữ (chỉ đoán từ kế tiếp), ở đây AI phải ra quyết định nối tiếp nhau
+                            trong một môi trường, rồi nhận <strong>thưởng</strong> hoặc <strong>phạt</strong>.</li>
+                        <li><strong>OpenAI Five (13/4/2019):</strong> lần đầu tiên một AI hạ nhà vô địch thế giới của
+                            một tựa esports — đội OG ở Dota 2. Nó học bằng cách tự đánh với chính mình (self-play)
+                            suốt 10 tháng.</li>
+                        <li><strong>Vì sao Dota khó:</strong> thông tin không đầy đủ, diễn ra thời gian thực, phải
+                            phối hợp 5 người, và một trận kéo dài hàng chục phút.</li>
+                        <li>Cùng ý tưởng “thử — sai — điều chỉnh” đó được mang sang điều khiển robot và xe tự lái.
+                            Waymo chạy taxi không người lái thương mại từ 2018; nền tảng Nvidia DRIVE là phần cứng
+                            nhiều hãng xe dùng.</li>
+                    </ul>
+                    <div class="icon-row" style="gap: 0.8em 1.6em; margin: 0.3em 0 0;">
+                        <figure class="showcase" style="width: 330px;">
+                            <img src="img/ai-lecture/dota-esports.jpg"
+                                alt="Sân khấu giải Dota 2 với bản đồ trận đấu trên màn hình lớn" class="real-logo"
+                                style="height: 180px;" onerror="this.closest('figure').style.display='none'" />
+                            <figcaption style="font-size: 12px;">Dota 2 — OpenAI Five</figcaption>
+                        </figure>
+                        <figure class="showcase" style="width: 330px;">
+                            <img src="img/ai-lecture/waymo.jpg" alt="Xe tự lái Waymo trên đường" class="real-logo"
+                                style="height: 180px;" onerror="this.closest('figure').style.display='none'" />
+                            <figcaption style="font-size: 12px;">Xe tự lái — Waymo</figcaption>
+                        </figure>
+                    </div>
+                    <p class="credit">Ảnh: Edvard Hansson (Dota 2, CC BY-SA 4.0) · Grendelkhan (Waymo, CC BY-SA 4.0),
+                        qua Wikimedia Commons.</p>
+                    <aside class="notes">
+                        Nói rõ kẻo hiểu nhầm: xe tự lái KHÔNG thuần tuý là học tăng cường. Phần “nhìn” chủ yếu là học
+                        có giám sát; RL và tối ưu hoá được dùng nhiều hơn ở phần ra quyết định và trong mô phỏng. Điểm
+                        chung với Dota là ở chỗ AI phải hành động liên tục trong một môi trường, chứ không phải cùng
+                        một công nghệ y hệt.
+                    </aside>
+                </section>
+
+                <section style="font-size: .78em;">
+                    <h2>Những thành tựu khác của AI</h2>
+                    <ul>
+                        <li><strong>Y học:</strong> hỗ trợ tìm kiếm thuốc mới, và đọc ảnh chẩn đoán nhanh hơn, chính
+                            xác hơn.</li>
+                        <li><strong>Khả năng tiếp cận:</strong> phụ đề thời gian thực, trình đọc màn hình, và các công
+                            cụ giúp người khuyết tật giao tiếp và di chuyển trong cuộc sống.</li>
+                        <li><strong>Giải Nobel Hóa học 2024:</strong> David Baker (“cho thiết kế protein bằng máy
+                            tính”), cùng Demis Hassabis &amp; John Jumper (“cho dự đoán cấu trúc protein” —
+                            AlphaFold2).</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- ─── 5. AI có giỏi lên mãi không ─── -->
+            <section>
+                <section>
+                    <h1>
+                        <span class="text-light">5.</span><br />
+                        AI có tiếp tục giỏi lên được không?
+                    </h1>
+                </section>
+
+                <section class="discuss">
+                    <h2>Thảo luận</h2>
+                    <p class="big-question">Bạn có nghĩ AI cứ thế thông minh dần lên mãi không?</p>
+                    <aside class="notes">
+                        Mở sàn, ~2 phút. Nhớ khống chế thời gian — phần thảo luận rất hay bị kéo dài.
+                    </aside>
+                </section>
+
+                <section style="font-size: .85em;">
+                    <h2>Có lẽ là có — nhưng ngay lúc này thì chưa chắc</h2>
+                    <ul>
+                        <li><strong>Giới hạn kiến trúc:</strong> các thiết kế hiện nay có thể có một cái trần mà ta
+                            chưa chạm tới.</li>
+                        <li><strong>Khả năng chững lại:</strong> lợi ích thu được từ việc chỉ “làm cho to hơn” có thể
+                            đang chậm dần.</li>
+                        <li><strong>Sắp cạn dữ liệu:</strong> văn bản mới, chất lượng cao để huấn luyện không phải là
+                            vô hạn.</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- ─── 6. Rủi ro ─── -->
+            <section>
+                <section>
+                    <h1>
+                        <span class="text-light">6.</span><br />
+                        Những rủi ro thật sự của AI
+                    </h1>
+                </section>
+
+                <section class="discuss">
+                    <h2>Thảo luận</h2>
+                    <p class="big-question">Điều gì ở AI khiến bạn lo ngại, nếu có?</p>
+                    <aside class="notes">
+                        Mở sàn, ~2 phút.
+                    </aside>
+                </section>
+
+                <section style="font-size: .8em;">
+                    <h2>Những gì đang thực sự diễn ra ngay lúc này</h2>
+                    <ul>
+                        <li><strong>Deepfake</strong> — video/âm thanh giả mạo người thật, trông như thật.</li>
+                        <li><strong>“AI-washing”</strong> — doanh nghiệp thổi phồng mức độ dùng AI để đánh bóng hoặc
+                            nâng định giá.</li>
+                        <li><strong>Thông tin sai lệch ở quy mô lớn</strong> — nội dung do AI tạo tràn ngập các bảng
+                            tin.</li>
+                        <li><strong>Báo đạo văn oan</strong> — các công cụ phát hiện AI gắn cờ “do AI viết” một cách
+                            thiên lệch lên bài của người không phải bản ngữ tiếng Anh.</li>
+                    </ul>
+                    <aside class="notes">
+                        Ý cuối là điểm chạm mạnh nhất với đúng khán phòng này — đây là tranh cãi có thật, đang diễn
+                        ra, và liên quan trực tiếp đến người học tiếng Anh.
+                    </aside>
+                </section>
+
+                <section class="mini">
+                    <h2>Lời hứa về AGI: thổi phồng là chính</h2>
+                    <ul>
+                        <li><strong>AGI</strong> (trí tuệ nhân tạo tổng quát) = máy làm được mọi việc trí óc mà con
+                            người làm được. Vướng mắc đầu tiên: chưa ai thống nhất được định nghĩa, nên cũng chẳng có
+                            cách kiểm chứng rõ ràng là đã đạt hay chưa.</li>
+                        <li><strong>“Chân trời di động”:</strong> suốt mấy chục năm qua, các dự báo đều đặt AGI cách
+                            thời điểm được hỏi chừng <strong>15–25 năm</strong> — hỏi vào năm nào thì câu trả lời cũng
+                            na ná như vậy.</li>
+                        <li><strong>Chuyên gia phân tán cực mạnh:</strong> khoảng 10% nói trước 2027, khoảng 10% nói
+                            sau 2100. Chênh nhau hơn 70 năm thì con số trung vị gần như vô nghĩa.</li>
+                    </ul>
+                    <div class="diagram-wrap" style="max-width: 640px;">
+                        <svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg"
+                            style="max-height: 250px !important;">
+                            <!-- Trục -->
+                            <line x1="42" y1="18" x2="42" y2="266" stroke="#555" stroke-width="1.6" />
+                            <line x1="42" y1="266" x2="624" y2="266" stroke="#555" stroke-width="1.6" />
+                            <text x="20" y="145" text-anchor="middle" font-size="12" fill="#555"
+                                transform="rotate(-90 20 145)">Mức độ chú ý</text>
+                            <text x="620" y="286" text-anchor="end" font-size="12" fill="#555">Thời gian</text>
+
+                            <!-- Đường cong hype -->
+                            <path d="M46,258 C 76,258 114,62 160,56 C 202,51 244,180 300,205 C 358,230 420,162 482,132 C 532,112 578,108 618,106"
+                                fill="none" stroke="#c0392b" stroke-width="4" stroke-linecap="round" />
+
+                            <!-- Nhãn các giai đoạn -->
+                            <text x="46" y="283" font-size="11.5" fill="#333">Cú hích công nghệ</text>
+                            <text x="178" y="40" font-size="11.5" fill="#333">Đỉnh kỳ vọng thổi phồng</text>
+                            <text x="300" y="229" text-anchor="middle" font-size="11.5" fill="#333">Vực vỡ mộng</text>
+                            <text x="432" y="186" text-anchor="middle" font-size="11.5" fill="#333">Dốc khai
+                                sáng</text>
+                            <text x="618" y="94" text-anchor="end" font-size="11.5" fill="#333">Vùng năng suất ổn
+                                định</text>
+
+                            <!-- Đánh dấu vị trí của AGI -->
+                            <circle cx="160" cy="56" r="7" fill="#b15a2b" stroke="#fff" stroke-width="2" />
+                            <line x1="126" y1="52" x2="151" y2="54" stroke="#b15a2b" stroke-width="1.6"
+                                stroke-dasharray="3,2" />
+                            <text x="48" y="44" font-size="12" fill="#b15a2b" font-weight="700">Lời hứa AGI</text>
+                            <text x="48" y="59" font-size="12" fill="#b15a2b" font-weight="700">ở quanh đây</text>
+                        </svg>
+                    </div>
+                    <div class="callout">
+                        Hãy hoài nghi mọi lời hứa có kèm mốc thời gian cụ thể — nhất là khi người hứa đang đi gọi vốn.
+                    </div>
+                    <aside class="notes">
+                        Cẩn thận đừng nói quá tay theo chiều ngược lại: luận điểm ở đây KHÔNG phải “AGI là bất khả
+                        thi”, mà là “những lời hứa cụ thể về AGI có thành tích dự báo rất tệ, nên đừng lấy chúng làm
+                        căn cứ để ra quyết định”. Nếu có người hỏi dẫn chứng: mẫu hình chân trời di động và độ phân
+                        tán của các khảo sát chuyên gia (10% trước 2027 / 10% sau 2100) là hai cứ liệu chắc nhất.
+                        Đường cong là biểu đồ Hype Cycle của Gartner, vẽ lại bằng tiếng Việt.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- ─── Chốt ─── -->
+            <section>
+                <h2>Cảm ơn mọi người</h2>
+                <p>Có câu hỏi nào tới đây không? Chúng ta sẽ bàn thêm vài điều nữa — kể cả “AI có thể hủy diệt chúng
+                    ta không?” và cách ra lệnh cho AI sao cho hiệu quả — ở phần Hỏi &amp; Đáp.</p>
+            </section>
+
+            <!-- ─── 7. Hỏi & Đáp ─── -->
+            <section>
+                <section>
+                    <h1>
+                        <span class="text-light">7.</span><br />
+                        Câu hỏi của các bạn
+                    </h1>
+                </section>
+
+                <section style="font-size: .78em;">
+                    <h2>Dùng AI có làm cạn kiệt tài nguyên nước không?</h2>
+                    <p style="font-size: .8em; font-style: italic; color: #888;">Câu hỏi từ khán giả: “có đúng là dùng
+                        AI nhiều sẽ làm cạn kiệt tài nguyên nước hay không?”</p>
+                    <p><strong>Có</strong> — vì vài lý do rất cụ thể:</p>
+                    <ul>
+                        <li><strong>Làm mát trực tiếp:</strong> trung tâm dữ liệu dùng nước để làm mát phần cứng và
+                            GPU, tương tự như điều hòa.</li>
+                        <li><strong>Nhu cầu điện:</strong> kể cả khi không làm mát bằng nước, lượng điện AI tiêu thụ
+                            vẫn rất lớn — ở những nơi phải dựa vào nguồn điện không tái tạo để có lượng điện đó (như
+                            Việt Nam), cái giá về tài nguyên lại càng cộng dồn.</li>
+                        <li><strong>Ô nhiễm nguồn nước:</strong> chất thải và nước thải phát sinh từ chính hoạt động
+                            của trung tâm dữ liệu.</li>
+                    </ul>
+                </section>
+
+                <section style="font-size: .78em;">
+                    <h2>AI có thay thế được nhà trị liệu tâm lý không?</h2>
+                    <p>Nó có thể đưa ra vài lời khuyên — nhưng không nên là nguồn hỗ trợ tinh thần
+                        <strong>duy nhất</strong> của bạn.</p>
+                    <ul>
+                        <li>AI có xu hướng thiên về đồng tình với bạn — nó có thể bỏ sót hoặc làm nhẹ đi các dấu hiệu
+                            cảnh báo, vì được tối ưu để an ủi thay vì phản biện. (RLHF — học tăng cường từ phản hồi của
+                            con người — là một lý do lớn.)</li>
+                        <li>Dựa vào nó ở đây là rủi ro: thông tin nó đưa ra đơn giản là có thể sai, và sai ở một chuyện
+                            riêng tư đến thế thì có thể gây tổn hại thật.</li>
+                    </ul>
+                </section>
+
+                <section style="font-size: .78em;">
+                    <h2>Dùng AI sao cho đúng</h2>
+                    <ul>
+                        <li>Đừng dùng nó để tung tin sai, lừa đảo, hay cho các mục đích thiếu thiện chí khác.</li>
+                        <li>Ra lệnh càng chi tiết càng tốt — AI có năng lực, nhưng nó cần thông tin cụ thể mới cho ra
+                            kết quả tốt nhất.</li>
+                        <li>Tránh chia sẻ thông tin cá nhân, dữ liệu nhạy cảm, hay nhờ tư vấn những chuyện nhạy cảm
+                            (liên quan trở lại câu hỏi về trị liệu tâm lý ở trên).</li>
+                        <li>AI không phải bạn bè của bạn — đừng đối xử với nó như vậy.</li>
+                        <li>Như mọi công cụ khác, nó là con dao hai lưỡi: hãy dùng một cách thận trọng.</li>
+                    </ul>
+                </section>
+
+                <section style="font-size: .78em;">
+                    <h2>Những nghề bị tưởng nhầm là AI không đụng tới được</h2>
+                    <ul>
+                        <li>Các công việc nặng về sàng lọc và rà soát — ví dụ rà soát tài liệu nghiên cứu vòng đầu, rà
+                            soát hợp đồng/văn bản.</li>
+                        <li><em>Một vài nghề nữa đáng cân nhắc:</em> dịch và viết quảng cáo ở bản nháp đầu, lập trình
+                            và review code mức junior, sàng lọc ảnh chẩn đoán trong y khoa, hỗ trợ khách hàng tuyến
+                            đầu.</li>
+                    </ul>
+                    <aside class="notes">
+                        Ý thứ hai là gợi ý, không phải câu trả lời đã chốt — thay bằng ví dụ nào thấy cụ thể nhất với
+                        khán phòng, hoặc bỏ hẳn nếu ý đầu đã đủ khơi chuyện.
+                    </aside>
+                </section>
+            </section>
+
+            <div class="footer">
+                AI nói cho dễ hiểu · The Melon Benchmark
+            </div>
+        </div>
+    </div>
+
+    <script src="revealjs/dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script>
+        Reveal.initialize({
+            controlsLayout: "edges",
+            slideNumber: true,
+            hashOneBasedIndex: true,
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+    </script>
+</body>
+
+</html>
