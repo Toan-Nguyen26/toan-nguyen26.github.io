@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <title>Kiểm chứng bộ dữ liệu</title>
+    <link rel="stylesheet" href="revealjs/dist/reset.css" />
+    <link rel="stylesheet" href="revealjs/dist/reveal.css" />
+    <link rel="stylesheet" href="revealjs/dist/theme/white.css" />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <link rel="stylesheet" href="slide-style.css" />
+    <link rel="stylesheet" href="intro-style.css" />
+    <style>
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.46em; margin-top: 12px; }
+        .data-table th, .data-table td {
+            padding: 8px 11px; text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, .1); vertical-align: top;
+        }
+        .data-table th { font-weight: 600; color: var(--sl-muted, #667); font-size: .9em; letter-spacing: .02em; }
+        .data-table td.yes, .data-table td.no, .data-table td.plan { font-weight: 700; }
+        .data-table td.yes { color: #2e8b57; }
+        .data-table td.no { color: #c0392b; }
+        .data-table td.plan { color: var(--sl-orange, #c85a12); }
+        .data-table tr.highlight td { background: rgba(200, 90, 18, .08); }
+        .data-table .ex { display: block; font-weight: 400; color: var(--sl-muted); font-size: .85em; }
+
+        .mini-note { font-size: 0.4em; color: var(--sl-muted, #778); text-align: center; margin-top: 8px; line-height: 1.5; }
+        .big-claim {
+            font-size: 0.8em; line-height: 1.45; font-weight: 600;
+            text-align: center; max-width: 92%; margin: 22px auto 14px;
+        }
+        .big-claim em { font-style: normal; color: var(--sl-orange, #c85a12); }
+
+        .tag {
+            display: inline-block; font-size: .5em; font-weight: 700;
+            border-radius: 5px; padding: 2px 9px; margin-left: 8px; vertical-align: 6px;
+        }
+        .tag.wait { background: rgba(192, 57, 43, .13); color: #c0392b; }
+        .tag.wip { background: rgba(200, 90, 18, .13); color: var(--sl-orange); }
+        .tag.done { background: rgba(46, 139, 87, .13); color: #2e8b57; }
+
+        .two-col { display: flex; gap: 18px; margin-top: 16px; font-size: 0.48em; text-align: left; }
+        .two-col > div { flex: 1; background: rgba(0, 0, 0, .035); border-radius: 10px; padding: 13px 16px; }
+        .two-col h4 { margin: 0 0 8px; font-size: 1.05em; }
+        .two-col ul { margin: 0; padding-left: 18px; }
+        .two-col li { margin-bottom: 6px; }
+        .have { border-left: 4px solid #2e8b57; }
+        .havenot { border-left: 4px solid #c0392b; }
+        .neutral { border-left: 4px solid #8a8a8a; }
+
+        .qlist { font-size: 0.5em; text-align: left; margin-top: 12px; }
+        .qlist li { margin-bottom: 12px; line-height: 1.45; }
+        .qlist li strong { color: var(--sl-orange, #c85a12); }
+
+        .side-list { font-size: 0.5em; text-align: left; margin-top: 14px; }
+        .side-list li { margin-bottom: 8px; }
+        .reveal .mini-note a { color: var(--sl-orange, #c85a12); }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ═══════════ BÌA ═══════════ -->
+            <section class="title-slide">
+                <h1>Kiểm chứng bộ dữ liệu</h1>
+                <p class="title-sub">Ai kiểm chứng · có thật sự cần bác sĩ X-quang không</p>
+                <p class="title-host">
+                    <strong>Nguyễn Hải Toàn</strong><br>
+                    <span class="text-light">Kính gửi: TS. Mai Thanh Thái &amp; PGS.TS. Hoàng Văn Xiêm</span>
+                </p>
+                <aside class="notes">Tuần này em trả lời câu hỏi của thầy: kiểm chứng bộ dữ liệu bằng form, website hay việc gì, và có cần bác sĩ X-quang biết về polyp không. Phần kiểm tra tự động giữ nguyên như tuần trước.</aside>
+            </section>
+
+            <!-- ═══════════ 1 · HAI CÂU HỎI ═══════════ -->
+            <section>
+                <h2>Kiểm chứng = trả lời hai câu hỏi khác nhau</h2>
+                <div class="two-col" style="margin-top: 26px;">
+                    <div class="have">
+                        <h4>GT có đúng không?</h4>
+                        <ul>
+                            <li>Depth, pose, K, vị trí polyp khớp với ảnh</li>
+                            <li>→ kiểm tra <strong>tự động</strong>, bằng code</li>
+                        </ul>
+                    </div>
+                    <div class="neutral">
+                        <h4>Ảnh có hợp lý về lâm sàng không?</h4>
+                        <ul>
+                            <li>Polyp, vết cắt, túi thừa trông có thật không</li>
+                            <li>→ cần <strong>con người</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="mini-note">Scientific Data chỉ yêu cầu <em>Technical Validation</em> "mô tả các kiểm tra hỗ trợ chất lượng kỹ thuật" · <strong>không bắt buộc bác sĩ</strong></p>
+                <aside class="notes">Tách hai việc này vì mỗi việc cần người và công cụ khác nhau. Câu thứ nhất máy làm được hoàn toàn. Câu thứ hai mới cần người, và ngay trong câu này cũng có nhiều việc nhỏ cần những người khác nhau (slide 4).</aside>
+            </section>
+
+            <!-- ═══════════ 2 · CÁC BỘ KHÁC ═══════════ -->
+            <section>
+                <h2>Các bộ khác: 1–2 bác sĩ, vài chục ca, thang 1–5</h2>
+                <table class="data-table" style="font-size: 0.4em;">
+                    <tr><th style="width: 17%;">Bộ dữ liệu</th><th style="width: 22%;">Ai chấm</th><th>Làm gì</th><th style="width: 27%;">Kết quả</th></tr>
+                    <tr class="highlight">
+                        <td><strong>HQColon</strong><span class="ex">Sci Data 2026 · cùng CT ACRIN</span></td>
+                        <td>1 BS X-quang bụng, 6 năm CTC</td>
+                        <td>50 / 435 ca dựng hình 3D · 5 câu, Rất không đồng ý → Rất đồng ý</td>
+                        <td>Câu 1–3: 50/50 "Rất đồng ý" · câu 4–5: 46 / 4</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FaBiAN v2</strong><span class="ex">Sci Data 2025 · MRI thai tổng hợp</span></td>
+                        <td>2 BS X-quang thần kinh, chấm mù</td>
+                        <td>87 chuỗi, bản cũ vs mới · chọn bản giống thật hơn + chấm 1–5</td>
+                        <td>Bản mới thắng 87/87, 84/87 · không κ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C3VDv2</strong><span class="ex">Sci Data 2026 · phantom</span></td>
+                        <td>1 BS tiêu hoá (đồng tác giả) · tác giả chính kiểm GT</td>
+                        <td>BS: duyệt giải phẫu, tự soi 8 video · tác giả: chấm khớp 1–3, 388 điểm mốc</td>
+                        <td>BS: định tính · điểm mốc lệch 5,4–8,2 px</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RealSynCol</strong><span class="ex">Sci Data 2026</span></td>
+                        <td>1 "BS có kinh nghiệm"</td>
+                        <td>Soi phantom để lấy quỹ đạo camera · góp ý độ rung</td>
+                        <td class="no">không chấm điểm</td>
+                    </tr>
+                </table>
+                <p class="big-claim" style="font-size: 0.56em;">Chưa bộ nào cho bác sĩ chấm <em>ảnh nội soi tổng hợp</em> theo thang điểm</p>
+                <aside class="notes">Mẫu gần nhất là HQColon và FaBiAN v2: 1–2 bác sĩ, Likert 1–5, 50–87 mục, không báo cáo độ đồng thuận.
+
+HQColon: 5 câu nguyên văn là (1) giải phẫu dựng lại đúng giải phẫu thật trên CT; (2) đủ để đánh giá độ căng của mọi đoạn; (3) đủ để đánh giá độ dài của mọi đoạn; (4) nếp gấp haustra đạt chất lượng như phần mềm bác sĩ dùng hằng ngày (IntelliSense); (5) tổng thể đạt chất lượng như IntelliSense. Bước lọc trước đó: 1 kỹ sư y sinh, 3 năm kinh nghiệm phân đoạn đại tràng, loại mask bị xẹp đoạn hoặc dính sang tạng khác. Không chấm mù, không có người chấm thứ hai.
+
+FaBiAN v2: 29 thai nhi (16 bình thường, 13 bệnh lý) × 3 hướng cắt = 87 chuỗi mỗi phiên bản. Chỉ so v1.2 với v2.0, không so với ảnh thật. Thang 1 = kém giống thật, 5 = rất giống thật, tập trung vào chất trắng. 3 chuỗi bị chọn bản cũ đều là thai dưới 26 tuần. Bài không nói có xáo thứ tự hay đổi bên trái/phải.
+
+C3VDv2: bác sĩ duyệt từng mô hình 3D, duyệt công thức phân, chất nhầy, máu giả một cách định tính, và tự soi 8 video sàng lọc (~6,5 phút rút ống, cảm biến điện từ). Phần kiểm GT do tác giả thứ nhất: chấm mỗi video 1–3 bằng cách phủ depth map lên ảnh; đặt điểm mốc 3D trong 3D Slicer rồi đánh dấu tay vị trí 2D trên 9 video (3 video mỗi mức); lệch trung vị 5,4 / 6,9 / 8,2 px theo mức 1 / 2 / 3. Tự đánh dấu lại 85 điểm thì lệch 4,0 px — sai số của chính người đánh dấu.
+
+RealSynCol: chỉ đọc được bản arXiv; bản Nature (22/7/2026) là bản đăng sớm, chưa có toàn văn. Phantom: 3 chuỗi, 3.213 khung, độ dời trung vị 0,81 mm/khung (IQR 1,30).</aside>
+            </section>
+
+            <!-- ═══════════ 3 · TỰ ĐỘNG (giữ nguyên tuần trước) ═══════════ -->
+            <section>
+                <h2>Đánh giá tự động</h2>
+                <table class="data-table" style="font-size: 0.5em;">
+                    <tr><th style="width: 22%;">Hỏi gì</th><th>Làm thế nào</th><th style="width: 20%;">Tốn bao lâu</th></tr>
+                    <tr><td><strong>Giống ảnh thật?</strong></td><td>Máy so "kiểu ảnh" của cả đống ảnh mình với ảnh nội soi thật (FID) — phải gần hơn RealSynCol</td><td>vài giờ, không huấn luyện</td></tr>
+                    <tr><td><strong>Đáp án đúng?</strong></td><td>Dựng lại khung B từ khung A bằng độ sâu + vị trí camera — phải trùng · so với renderer thứ hai</td><td>vài giờ</td></tr>
+                </table>
+                <p class="mini-note">Khác bài toán thử: tự động hỏi <em>"dữ liệu đúng và trông giống không"</em> · bài toán thử hỏi <em>"mô hình học từ nó có dùng được không"</em> (cần huấn luyện)</p>
+                <aside class="notes">Giống ảnh thật: mỗi ảnh qua mạng có sẵn Inception-v3 (không huấn luyện) thành 2048 con số; FID đo khoảng cách giữa "đám mây" ảnh mình và ảnh thật. Không cần cùng bệnh nhân hay cùng đoạn ruột (so cả đống, không so từng cặp), nhưng phải công bằng: lọc ảnh thật (bỏ dụng cụ, phân, bọt, máu, mờ nặng), lấy rải đều cả ca soi từ nhiều video / bệnh nhân, cắt viền bát giác lấy phần giữa cùng góc nhìn, cùng kích thước, cùng số ảnh cho 3 nguồn. Chỉ đọc theo thứ hạng (mình vs RealSynCol, cùng bộ ảnh thật); mốc sàn = ảnh thật nửa A vs nửa B. Bớt phụ thuộc REAL-Colon: tính thêm với HyperKvasir (CC BY 4.0) — hai nguồn cùng thứ hạng thì chắc hơn. Đáp án đúng: điểm ảnh khung A + độ sâu → điểm 3D → chụp lại từ vị trí camera B → so với ảnh B thật (% điểm lệch &lt; 1 pixel); độ sâu Blender so với renderer Python độc lập (sai số mm); kích thước polyp trên mesh vs ACRIN; cố tình làm sai thì phải sai lớn. C3VDv2 kiểm theo kiểu này. Đây là điều kiện trước: đáp án sai thì bài toán thử vô nghĩa. Bỏ việc đo chuyển động trên REAL-Colon bằng optical flow: chỉ là ước lượng theo pixel, phụ thuộc khoảng cách tới thành và từng ruột khác nhau. RealSynCol đo bằng cảm biến điện từ trên phantom (vị trí thật, mm) — mình biết vị trí camera chính xác nên so thẳng bằng mm.</aside>
+            </section>
+
+            <!-- ═══════════ 4 · CÓ CẦN BS X-QUANG ═══════════ -->
+            <section>
+                <h2>Chỉ một trong năm việc cần bác sĩ X-quang</h2>
+                <table class="data-table" style="font-size: 0.42em;">
+                    <tr><th style="width: 34%;">Việc</th><th>Người làm</th><th style="width: 22%;">Công cụ</th></tr>
+                    <tr class="highlight"><td><strong>(a)</strong> Khớp polyp trên CT với hồ sơ ACRIN</td><td>SV/kỹ sư đề xuất · <strong>BS X-quang CTC</strong> duyệt ca không khớp + 10–20 % ngẫu nhiên</td><td>3D Slicer + bảng tính</td></tr>
+                    <tr><td><strong>(b)</strong> Nhận ra polyp / vết cắt / túi thừa?</td><td>5–10 <strong>SV y khoa</strong> mỗi mục · &lt; 80 % đồng ý → chuyên gia</td><td>Google Form (ảnh) · web (clip)</td></tr>
+                    <tr><td><strong>(c)</strong> Hợp lý lâm sàng: hình dạng, bề mặt, mạch máu</td><td>2–3 <strong>BS nội soi / tiêu hoá</strong></td><td>Form web, Likert 1–5</td></tr>
+                    <tr><td><strong>(d)</strong> Giống thật: thật vs mình vs RealSynCol</td><td>5–10 BS (SV tuỳ chọn)</td><td>Web app, xáo thứ tự</td></tr>
+                    <tr><td><strong>(e)</strong> Ước lượng kích thước trên clip</td><td>BS nội soi · clip thật biết kích thước làm đối chứng</td><td>Web app</td></tr>
+                </table>
+                <ul class="side-list">
+                    <li>Ảnh render giống <strong>nội soi quang học</strong> → chuyên gia đúng là <strong>BS nội soi</strong>, không phải BS X-quang</li>
+                    <li>BS X-quang chỉ cần cho (a) — ví dụ ca <strong>0233</strong>: ACRIN ghi đoạn khác chỗ thấy trên CT</li>
+                </ul>
+                <aside class="notes">Trả lời câu hỏi của thầy: form hay website tuỳ việc, không làm một form cho tất cả. Khớp CT làm trong phần mềm đọc DICOM (3D Slicer), ghi vào bảng tính. Chấm ảnh tĩnh dùng Google Form được (nghiên cứu gần nhất về polyp tổng hợp: 32 bác sĩ tiêu hoá, 24 ảnh, Google Forms). Video và ước lượng kích thước cần web riêng, vì Google Forms chỉ nhúng YouTube, chỉ xáo cả form, và không ghi thời gian mỗi mục.
+
+Sinh viên làm được (b): nghiên cứu NIH trên CT colonography — người chấm MTurk chỉ học 11 ảnh ví dụ đã phân loại polyp tốt ngang hệ thống CAD (AUC 0,85 vs 0,86); 10 phiếu mỗi mục tốt bằng 20. Nhưng ca khó thì cả đám đông lẫn bác sĩ đều kém → mục nào đồng thuận dưới 80 % thì chuyển chuyên gia. Sinh viên y VinUni tốt hơn đám đông ẩn danh.
+
+(a) cần bác sĩ X-quang vì rủi ro là nhận nhầm thứ giống polyp (phân, nếp gấp, van hồi manh tràng). Quy tắc: tự chấp nhận nếu cùng đoạn hoặc đoạn liền kề, kích thước trong ±50 %, cùng chỗ ở tư thế nằm ngửa và nằm sấp (phân di chuyển, polyp thì không). Còn lại và một mẫu ngẫu nhiên → bác sĩ X-quang. Báo cáo tỉ lệ tự chấp nhận và tỉ lệ bác sĩ sửa. Ca 0233 không nên tự loại: bác sĩ nội soi ghi sai đoạn khoảng 15 % polyp, tới 44 % ở đại tràng xuống.
+
+(d): "thật hay tổng hợp" thì sinh viên và bác sĩ chấm gần như nhau, nên không cần chuyên gia cao cấp cho phần này — và điểm gần 50 % cũng không chứng minh ảnh đúng lâm sàng. Thứ chỉ bác sĩ mới cho được là (c).</aside>
+            </section>
+
+            <!-- ═══════════ 5 · ĐẠO ĐỨC ═══════════ -->
+            <section>
+                <h2>Cần nộp hội đồng đạo đức, theo thủ tục rút gọn</h2>
+                <div class="two-col" style="margin-top: 22px;">
+                    <div class="neutral">
+                        <h4>Thông tư 43/2024/TT-BYT</h4>
+                        <ul>
+                            <li>Hiệu lực 1/2/2025</li>
+                            <li><strong>Không có diện miễn</strong></li>
+                            <li>Có <strong>thủ tục rút gọn</strong> cho nghiên cứu rủi ro tối thiểu</li>
+                            <li>Cho phép miễn chấp thuận bằng văn bản</li>
+                        </ul>
+                    </div>
+                    <div class="have">
+                        <h4>Hồ sơ ngắn</h4>
+                        <ul>
+                            <li>Người chấm: chuyên gia trưởng thành</li>
+                            <li>Ẩn danh · không có bệnh nhân</li>
+                            <li>Ảnh tổng hợp + ảnh thật công khai</li>
+                            <li>→ đồng ý bằng <strong>một cú bấm online</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="big-claim" style="font-size: 0.56em;">Người làm bộ dữ liệu <em>không</em> chấm phần mù</p>
+                <aside class="notes">Thủ tục rút gọn: Điều 16.6; rủi ro tối thiểu định nghĩa ở Điều 2.3; Điều 7.1(b) cho phép hội đồng miễn chấp thuận bằng văn bản. Tiền lệ: Đại học Y Dược Huế duyệt một khảo sát nhân viên y tế theo đường này năm 2024. Nộp hồ sơ ngắn cho hội đồng VinUni (hoặc VNU, hoặc bệnh viện đối tác), xin xét rút gọn + đồng ý online, rồi trích nguyên văn quyết định của hội đồng trong bài. Một số bài nước ngoài bỏ qua xét duyệt vì người chấm là đồng tác giả — Thông tư không có ngoại lệ này nên không áp dụng được. Kết quả người chấm chỉ báo cáo gộp.</aside>
+            </section>
+
+            <!-- ═══════════ CÒN PHẢI KIỂM ═══════════ -->
+            <section>
+                <h2>Còn phải kiểm lại <span class="tag wip">TRƯỚC KHI VIẾT BÀI</span></h2>
+                <ol class="qlist">
+                    <li><strong>Mã đoạn số 2</strong> trong ACRIN là đoạn nào — quyết định ca 0233 có "liền kề" không</li>
+                    <li><strong>Bản Nature của RealSynCol</strong> (hiện là bản đăng sớm) có thêm đánh giá của bác sĩ không</li>
+                    <li><strong>Sodmann/Hann 2026</strong> (53 BS nội soi) — chưa trích cho đến khi đọc được bài gốc</li>
+                </ol>
+                <aside class="notes">Nghiên cứu Sodmann/Hann hiện chỉ biết qua tin heise và đăng ký thử nghiệm NCT07108569, nên chưa dùng số liệu của họ.</aside>
+            </section>
+
+            <!-- ═══════════ KẾT ═══════════ -->
+            <section class="title-slide">
+                <h1>Cảm ơn thầy</h1>
+                <p class="title-sub">Nguyễn Hải Toàn</p>
+            </section>
+
+            <div class="footer">
+                Nguyễn Hải Toàn · Kiểm chứng bộ dữ liệu
+            </div>
+        </div>
+    </div>
+
+    <script src="revealjs/dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script>
+        Reveal.initialize({
+            controlsLayout: "edges",
+            slideNumber: true,
+            hashOneBasedIndex: true,
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+    </script>
+</body>
+
+</html>
