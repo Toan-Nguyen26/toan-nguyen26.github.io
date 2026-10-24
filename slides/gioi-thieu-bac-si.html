@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <title>Nguyễn Hải Toàn — Giới thiệu với nhóm bác sĩ</title>
+    <link rel="stylesheet" href="revealjs/dist/reset.css" />
+    <link rel="stylesheet" href="revealjs/dist/reveal.css" />
+    <link rel="stylesheet" href="revealjs/dist/theme/white.css" />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <link rel="stylesheet" href="slide-style.css" />
+    <link rel="stylesheet" href="intro-style.css" />
+    <style>
+        /* Thành phần riêng của bản này (cùng kiểu với progress-journal.html) */
+        .tag {
+            display: inline-block; font-size: .5em; font-weight: 700;
+            border-radius: 5px; padding: 2px 9px; margin-left: 8px; vertical-align: 6px;
+        }
+        .tag.wip { background: rgba(200, 90, 18, .13); color: var(--sl-orange, #c85a12); }
+        .tag.done { background: rgba(46, 139, 87, .13); color: #2e8b57; }
+
+        .mini-note { font-size: 0.4em; color: var(--sl-muted, #778); text-align: center; margin-top: 8px; line-height: 1.5; }
+        .ask-box {
+            margin-top: 16px; padding: 13px 18px; border-radius: 12px;
+            border-left: 5px solid var(--sl-orange, #c85a12);
+            background: rgba(200, 90, 18, .09); font-size: 0.48em; line-height: 1.5; text-align: left;
+        }
+        .media-row { display: flex; gap: 22px; align-items: center; justify-content: center; margin-top: 10px; }
+        .media-row img {
+            margin: 0; border-radius: 10px; border: 1px solid var(--sl-line, #e3dfe8);
+            box-shadow: 0 8px 24px rgba(19, 15, 26, .1); background: #fff;
+        }
+        .side-list { font-size: 0.5em; text-align: left; }
+        .side-list li { margin-bottom: 10px; line-height: 1.45; }
+
+        /* Chuỗi 5 bước của đề tài */
+        .flow5 {
+            display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr auto 1fr;
+            gap: 6px; align-items: stretch; font-size: 0.44em; text-align: left; margin-top: 20px;
+        }
+        .flow5 .box { background: rgba(0, 0, 0, .035); border-radius: 10px; padding: 10px 11px; border-top: 4px solid #9a96a0; }
+        .flow5 .box.mine-a { border-top-color: var(--sl-teal, #1f8a8a); background: rgba(31, 138, 138, .08); }
+        .flow5 .box.mine-b { border-top-color: var(--sl-orange, #c85a12); background: rgba(200, 90, 18, .08); }
+        .flow5 h4 { margin: 0 0 5px; font-size: 1.08em; }
+        .flow5 p { margin: 0; line-height: 1.4; }
+        .flow5 .arrow { align-self: center; color: var(--sl-muted, #889); font-size: 1.3em; }
+        .flow5 .who { display: block; margin-top: 6px; color: var(--sl-muted, #778); font-size: .9em; }
+        .pill {
+            display: inline-block; font-size: .85em; font-weight: 700; color: #fff;
+            border-radius: 999px; padding: 1px 9px; margin-top: 7px;
+        }
+        .pill.a { background: var(--sl-teal, #1f8a8a); }
+        .pill.b { background: var(--sl-orange, #c85a12); }
+        .legend { font-size: 0.5em; text-align: left; margin-top: 22px; line-height: 1.9; }
+        .legend .pill { margin: 0 8px 0 0; font-size: .8em; }
+
+        /* CT → đại tràng 3D → video */
+        .pipe { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 10px; }
+        .pipe figure { margin: 0; }
+        .pipe img, .pipe video {
+            display: block; height: 220px; width: auto; margin: 0 auto; border-radius: 10px;
+            border: 1px solid var(--sl-line, #e3dfe8); box-shadow: 0 8px 24px rgba(19, 15, 26, .1); background: #fff;
+        }
+        .pipe video { background: #000; }
+        .pipe figcaption {
+            font-size: 0.36em; color: var(--sl-muted, #778); margin-top: 7px; line-height: 1.35;
+            max-width: 250px; margin-left: auto; margin-right: auto; text-align: center;
+        }
+        .pipe .arrow { font-size: 1.1em; color: var(--sl-muted, #889); }
+        .facts {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+            font-size: 0.42em; text-align: left; margin-top: 16px;
+        }
+        .facts > div {
+            background: rgba(0, 0, 0, .035); border-radius: 10px; padding: 10px 13px;
+            border-left: 4px solid var(--sl-teal, #1f8a8a); line-height: 1.4;
+        }
+
+        /* Lưới khung hình */
+        .frames { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; }
+        .frames figure { margin: 0; }
+        .frames img {
+            display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; margin: 0;
+            border-radius: 10px; background: #000; box-shadow: 0 8px 24px rgba(19, 15, 26, .12);
+        }
+        .frames figcaption { font-size: 0.36em; color: var(--sl-muted, #778); margin-top: 7px; line-height: 1.35; text-align: center; }
+
+        /* Học tăng cường */
+        .flow3 { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: stretch; font-size: 0.5em; text-align: left; margin-top: 18px; }
+        .flow3 .box { background: rgba(0, 0, 0, .035); border-radius: 10px; padding: 12px 14px; border-top: 4px solid var(--fc, #8a8a8a); }
+        .flow3 .box h4 { margin: 0 0 6px; font-size: 1.04em; color: var(--fc, #555); }
+        .flow3 .box p { margin: 0; line-height: 1.45; }
+        .flow3 .arrow { align-self: center; font-size: 1.5em; color: var(--sl-muted, #889); }
+        .flow3 .in { --fc: var(--sl-purple, #6b4fa0); }
+        .flow3 .how { --fc: var(--sl-orange, #c85a12); }
+        .flow3 .out { --fc: var(--sl-teal, #1f8a8a); }
+        .loop-note { font-size: 0.48em; color: var(--sl-muted, #778); text-align: center; margin-top: 10px; }
+        .stages { display: flex; gap: 12px; align-items: stretch; font-size: 0.48em; text-align: left; margin-top: 12px; }
+        .stages > div { flex: 1; border: 1px dashed var(--sl-line, #cfc9d6); border-radius: 10px; padding: 9px 12px; line-height: 1.4; }
+        .stages b { color: var(--sl-orange, #c85a12); }
+        .stages-title { font-size: 0.5em; text-align: left; margin: 26px 0 0; font-weight: 600; }
+        .h-pill { font-size: .45em; vertical-align: 8px; margin: 0 10px 0 0; padding: 2px 11px; }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  TRANG BÌA                                   -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section class="title-slide">
+                <h1>Nguyễn Hải Toàn</h1>
+                <p class="title-sub">Giới thiệu với nhóm bác sĩ · Dữ liệu nội soi &amp; AI cho robot mềm</p>
+                <p class="title-host">
+                    <strong>AI-Enhanced Soft Robotics for Precision Colonoscopy and In-Situ Bioprinting</strong><br>
+                    In sinh học 3D tại chỗ cho tái tạo mô thích ứng · VinUniversity<br>
+                    <span class="text-light">Chủ nhiệm đề tài: Asst. Prof. Thai Mai Thanh &amp; Assoc. Prof. Hoang Van Xiem</span>
+                </p>
+                <p class="title-contact">
+                    <a href="mailto:nguyenhaitoan@vnu.edu.vn">nguyenhaitoan@vnu.edu.vn</a> ·
+                    <a href="https://scholar.google.com/citations?user=Xa3LmNUAAAAJ&hl=en">Google Scholar</a> ·
+                    <a href="https://github.com/Toan-Nguyen26">GitHub</a>
+                </p>
+                <aside class="notes">Chào các bác sĩ. Em là Toàn, làm AI cho ảnh y tế, từ nay em làm cùng nhóm trong đề tài robot mềm nội soi và in sinh học tại chỗ. Buổi này em giới thiệu ngắn về bản thân, những gì em đã làm, rồi tập trung vào hai việc em đang làm trong đề tài và những chỗ em cần các bác sĩ giúp.</aside>
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  1 · GIỚI THIỆU                              -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 1</p>
+                    <h2>Giới thiệu</h2>
+                </section>
+
+                <section>
+                    <h2>Về bản thân</h2>
+                    <div class="cols">
+                        <div style="flex: 0 0 260px;">
+                            <img class="portrait" src="../avatar.jpg" alt="Nguyễn Hải Toàn">
+                        </div>
+                        <div style="font-size: 0.6em;">
+                            <p><strong>Thành viên nhóm nghiên cứu</strong>, đề tài robot mềm nội soi &amp; in sinh học
+                                tại chỗ (VinUniversity)</p>
+                            <p><strong>Giảng viên tạo nguồn &amp; Nghiên cứu viên</strong>, Trường Đại học Công nghệ,
+                                ĐHQGHN (VNU-UET)</p>
+                            <p><strong>Nghiên cứu viên</strong>, Nhóm nghiên cứu liên ngành về Y sinh và Sức khoẻ
+                                (IS-VNU)</p>
+                            <p><strong>Nghiên cứu viên</strong>, Digital Biology Lab (Amsterdam, làm việc từ xa)</p>
+                            <p class="text-light" style="font-size: 0.85em;">Nền tảng: Khoa học máy tính &amp; AI cho
+                                ảnh y tế — em không xuất thân từ y khoa.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Học vấn &amp; công tác</h2>
+                    <ul class="timeline">
+                        <li style="--dot: var(--sl-orange);">
+                            <span class="tl-when">Hiện tại</span><br>
+                            <span class="tl-what">Thành viên nhóm nghiên cứu</span> —
+                            <span class="tl-where" style="color: var(--sl-orange);">Đề tài robot mềm nội soi, VinUniversity</span>
+                        </li>
+                        <li style="--dot: var(--sl-purple);">
+                            <span class="tl-when">06/2024 – nay</span><br>
+                            <span class="tl-what">Giảng viên &amp; Nghiên cứu viên</span> —
+                            <span class="tl-where">VNU-UET</span><br>
+                            <span class="tl-note">Cùng lúc: IS-VNU (từ 08/2025) · Digital Biology Lab, Amsterdam</span>
+                        </li>
+                        <li style="--dot: var(--sl-purple);">
+                            <span class="tl-when">03/2024 – 12/2025 · Hà Nội</span><br>
+                            <span class="tl-what">Thạc sĩ Khoa học Máy tính</span> —
+                            <span class="tl-where">Trường Đại học Công nghệ, ĐHQGHN</span><br>
+                            <span class="tl-note">Điểm trung bình 3.59 / 4.00 · Luận văn 9.4 / 10</span>
+                        </li>
+                        <li style="--dot: var(--sl-teal);">
+                            <span class="tl-when">09/2019 – 05/2023 · Lincoln, Nebraska, Hoa Kỳ</span><br>
+                            <span class="tl-what">Cử nhân Khoa học Máy tính</span> —
+                            <span class="tl-where" style="color: var(--sl-teal);">University of Nebraska–Lincoln</span><br>
+                            <span class="tl-note">Điểm trung bình 3.73 / 4.00 · Học bổng Global Laureate · Dean's List ×4</span>
+                        </li>
+                        <li style="--dot: var(--sl-muted);">
+                            <span class="tl-when">2022 – 2024</span><br>
+                            <span class="tl-what">Kỹ sư</span> —
+                            <span class="tl-where" style="color: var(--sl-muted);">Nelnet (Hoa Kỳ) · Tinhvan Software</span>
+                        </li>
+                    </ul>
+                    <aside class="notes">Nelnet (09/2022 – 03/2023): kỹ sư phần mềm, luồng dữ liệu cho tổng đài chăm sóc sức khoẻ. Tinhvan (09/2023 – 05/2024): kỹ sư AI, hệ thống RAG cho khách hàng doanh nghiệp. Ở VNU-UET em dạy Nhập môn Lập trình, Ứng dụng của Trí tuệ nhân tạo, Phương pháp lập trình, Học máy.</aside>
+                </section>
+
+                <section>
+                    <h2>Em làm gì — nói ngắn gọn</h2>
+                    <div class="card-grid">
+                        <div class="card c-purple">
+                            <h4>Khoanh vùng tổn thương trên ảnh</h4>
+                            <p>Polyp đại tràng, u não trên MRI, nốt phổi, tổn thương da.</p>
+                        </div>
+                        <div class="card c-teal">
+                            <h4>Biết mình chưa chắc ở đâu</h4>
+                            <p>Mô hình chỉ ra vùng nó không chắc → bác sĩ biết chỗ nào cần nhìn lại.</p>
+                        </div>
+                        <div class="card c-orange">
+                            <h4>Viết báo cáo từ ảnh</h4>
+                            <p>Báo cáo X-quang ngực bám vào vùng ảnh cụ thể, kiểm tra lại được.</p>
+                        </div>
+                        <div class="card c-purple">
+                            <h4>Dữ liệu &amp; điều khiển robot <span class="text-light">(mới)</span></h4>
+                            <p>Video nội soi tổng hợp và AI điều khiển robot mềm — trong đề tài này.</p>
+                        </div>
+                    </div>
+                    <div class="callout">
+                        <p>Điểm chung: <strong>AI làm việc trên dữ liệu y sinh thật và nói ra được mức độ chắc chắn
+                                của mình.</strong></p>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  2 · NGHIÊN CỨU ĐÃ LÀM                       -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 2</p>
+                    <h2>Những nghiên cứu đã làm</h2>
+                </section>
+
+                <section>
+                    <h2>1 · Khoanh vùng bằng mô hình sinh</h2>
+                    <h3>FJCAI 2026 <span class="pub-badge">🏆 Báo cáo xuất sắc nhất (LatentFM)</span></h3>
+                    <div class="cols" style="margin-top: 14px;">
+                        <div style="font-size: 0.52em; flex: 0 0 34%;">
+                            <p><strong>Ý tưởng.</strong> Không vẽ một đường viền duy nhất, mà vẽ <em>nhiều</em>
+                                đường viền hợp lý — giống nhiều bác sĩ cùng khoanh một tổn thương.</p>
+                            <p><strong>Lợi ích.</strong> Chỗ các đường viền không khớp nhau chính là chỗ mơ hồ → bản đồ
+                                độ tin cậy.</p>
+                            <p><strong>Kết quả.</strong> Tốt nhất hoặc cạnh tranh trên polyp đại tràng (CVC-Clinic),
+                                da (ISIC-2018), nốt phổi (LIDC-IDRI).</p>
+                        </div>
+                        <figure class="img-slot" data-src="img/research/diffusion-examples.jpg">
+                            <img src="img/research/diffusion-examples.jpg" alt="Ví dụ kết quả phân đoạn">
+                            <figcaption>Ví dụ dự đoán so với nhãn thật</figcaption>
+                        </figure>
+                    </div>
+                    <aside class="notes">Hai bài ở FJCAI 2026. MedSegLatDiff: VAE nén ảnh về không gian tiềm ẩn, diffusion sinh mặt nạ trong đó — nhẹ và nhanh hơn diffusion trên ảnh gốc. LatentFM thay diffusion bằng flow matching, đường lấy mẫu thẳng hơn, nhanh hơn; bài này được giải báo cáo xuất sắc nhất. Đo bằng Dice/IoU. LIDC-IDRI có nhãn của 4 bác sĩ X-quang cho mỗi nốt — đúng tinh thần "nhiều người khoanh".</aside>
+                </section>
+
+                <section>
+                    <h2>2 · Độ bất định trên MRI 3D</h2>
+                    <h3>Phân đoạn u não khi thiếu chuỗi xung <span class="tag wip">đang làm</span></h3>
+                    <div style="font-size: 0.52em;">
+                        <p><strong>Bối cảnh.</strong> Mỗi bệnh nhân có nhiều chuỗi xung (T1, T2, FLAIR, T1CE), nhưng
+                            thực tế hay thiếu một hoặc vài chuỗi.</p>
+                        <p><strong>Mục tiêu.</strong> Vẫn khoanh vùng tốt khi thiếu, <em>và</em> chỉ rõ vùng nào mô
+                            hình không chắc.</p>
+                    </div>
+                    <figure class="img-slot img-slot--half" data-src="img/research/uncertainty-3d-result.png"
+                        style="margin-top: 12px;">
+                        <img src="img/research/uncertainty-3d-result.png" alt="Kết quả phân đoạn 3D và bản đồ độ bất định">
+                        <figcaption>Kết quả dự đoán và bản đồ độ bất định theo từng voxel</figcaption>
+                    </figure>
+                </section>
+
+                <section>
+                    <h2>2 · Đọc bản đồ độ bất định</h2>
+                    <figure class="img-slot img-slot--half" data-src="img/research/uncertainty-3d-result-2.png">
+                        <img src="img/research/uncertainty-3d-result-2.png" alt="Bản đồ độ bất định với nhiều nhãn">
+                        <figcaption>Nhiều nhãn (các vùng của khối u) và độ bất định đi kèm</figcaption>
+                    </figure>
+                    <div class="callout">
+                        <p style="font-size: 0.9em;"><strong>Cách làm:</strong> chạy mô hình nhiều lần — chỗ các kết
+                            quả khác nhau nhiều là chỗ mô hình không chắc. <strong>Kiểm chứng:</strong> bỏ dần những
+                            vùng không chắc nhất thì phần còn lại phải chính xác hơn.</p>
+                    </div>
+                    <aside class="notes">Độ mơ hồ ở đây được tạo chủ động bằng cách bỏ bớt chuỗi xung. Chạy N lần từ nhiễu khác nhau, lấy phương sai theo từng voxel. Diffusion học tập hợp các mặt nạ hợp lý nên đo được độ bất định mà không cần huấn luyện nhiều mô hình. Đánh giá trên BraTS.</aside>
+                </section>
+
+                <section>
+                    <h2>Các hướng khác</h2>
+                    <div class="card-grid card-grid--3" style="font-size: 0.46em; margin-top: 12px;">
+                        <div class="card c-orange">
+                            <h4>Sinh báo cáo X-quang ngực</h4>
+                            <p>Mỗi "chuyên gia" nhỏ phụ trách một nhóm bệnh lý; báo cáo bám vào vùng ảnh nên kiểm tra
+                                lại được. <span class="text-light">Đang phản biện.</span></p>
+                        </div>
+                        <div class="card c-teal">
+                            <h4>Tìm tài liệu cho mô hình ngôn ngữ</h4>
+                            <p>Chia văn bản theo ý thay vì theo độ dài → trả lời kèm dẫn chứng chính xác hơn.
+                                <span class="text-light">SOICT 2024, luận văn thạc sĩ.</span></p>
+                        </div>
+                        <div class="card c-purple">
+                            <h4>Xoá tri thức đa ngôn ngữ</h4>
+                            <p>Đánh giá việc "xoá" một kiến thức khỏi mô hình ngôn ngữ lớn trên nhiều thứ tiếng.
+                                <span class="text-light">MULAN, TMLR — đang phản biện.</span></p>
+                        </div>
+                    </div>
+                    <aside class="notes">Báo cáo X-quang: mô hình hỗn hợp chuyên gia LoRA (Pathology-Routed LoRA Experts). RAG: chia đoạn phân cấp bằng mô hình phân đoạn văn bản, Springer CCIS vol. 2352.</aside>
+                </section>
+
+                <section>
+                    <h2>Các công bố khoa học</h2>
+                    <ul class="pub-list">
+                        <li>
+                            <span class="pub-year">2026</span>
+                            <span>
+                                <span class="pub-title">MULAN: Benchmarking and Evaluating Multilingual Knowledge
+                                    Unlearning</span>
+                                <span class="pub-meta">Duc Do Minh, <strong>Toan Nguyen Hai</strong>, và cộng sự · TMLR —
+                                    đang phản biện</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="pub-year">2025</span>
+                            <span>
+                                <span class="pub-title">LatentFM: A Latent Flow Matching Approach for Generative Medical
+                                    Image Segmentation</span>
+                                <span class="pub-meta">Trinh Ngoc Huynh, Nguyen Kim Hoang Anh, <strong>Nguyen Hai
+                                        Toan</strong>, Tran Quoc Long · FJCAI 2026
+                                    <span class="pub-badge">🏆 Báo cáo xuất sắc nhất</span></span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="pub-year">2025</span>
+                            <span>
+                                <span class="pub-title">Diffusion Model in Latent Space for Medical Image Segmentation
+                                    Task</span>
+                                <span class="pub-meta">Trinh Ngoc Huynh, <strong>Nguyen Hai Toan</strong>, Luong Son Ba,
+                                    Tran Quoc Long · FJCAI 2026</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="pub-year">2025</span>
+                            <span>
+                                <span class="pub-title">A Vietnamese Dataset for Text Segmentation and Multiple Choices
+                                    Reading Comprehension</span>
+                                <span class="pub-meta"><strong>Toan Nguyen Hai</strong>, Truong Quan Xuan, Duc Do Minh,
+                                    Ha Nguyen Viet · BDSIC 2025</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="pub-year">2024</span>
+                            <span>
+                                <span class="pub-title">Enhancing Retrieval Augmented Generation with Hierarchical Text
+                                    Segmentation Chunking</span>
+                                <span class="pub-meta"><strong>Nguyen Hai Toan</strong>, Nguyen Tien Dat, Nguyen Viet Ha
+                                    · SOICT 2024, Springer CCIS vol. 2352</span>
+                            </span>
+                        </li>
+                    </ul>
+                </section>
+
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  3 · CÔNG VIỆC HIỆN TẠI                      -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 3</p>
+                    <h2>Công việc hiện tại</h2>
+                    <p class="text-light" style="font-size: 0.6em;">Robot mềm nội soi đại tràng &amp; in sinh học tại chỗ</p>
+                </section>
+
+                <!-- 3.1 — Đề tài và phần việc -->
+                <section>
+                    <h2>Đề tài &amp; phần việc của em</h2>
+                    <p style="font-size: 0.52em; margin-bottom: 0;">Robot mềm đi qua đường tự nhiên tới tổn thương
+                        trong đại tràng, rồi <strong>in vật liệu sinh học trực tiếp lên đó</strong> — thay vì in ở
+                        ngoài rồi mổ để cấy vào [1].</p>
+                    <div class="flow5">
+                        <div class="box mine-b">
+                            <h4>1 · Tiếp cận</h4>
+                            <p>Đưa ống mềm tới tổn thương, không tạo vòng, không tì mạnh vào thành ruột</p>
+                            <span class="pill b">B</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="box mine-a">
+                            <h4>2 · Định vị</h4>
+                            <p>Camera đầu ống dựng bản đồ đoạn ruột đã đi qua</p>
+                            <span class="pill a">A</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="box mine-a">
+                            <h4>3 · Hiểu tổn thương</h4>
+                            <p>Hình dạng 3D, kích thước thật của polyp / hố sau cắt</p>
+                            <span class="pill a">A</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="box">
+                            <h4>4 · In sinh học</h4>
+                            <p>Đặt vật liệu sinh học lên tổn thương</p>
+                            <span class="who">thiết bị F3DB</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="box mine-a">
+                            <h4>5 · Kiểm tra</h4>
+                            <p>Lớp in có đúng chỗ, đúng hình dạng không</p>
+                            <span class="pill a">A</span>
+                        </div>
+                    </div>
+                    <div class="legend">
+                        <div><span class="pill a">A</span><strong>Bộ dữ liệu video nội soi có tổn thương</strong> —
+                            "đáp án 3D" để huấn luyện và chấm AI</div>
+                        <div><span class="pill b">B</span><strong>Học tăng cường</strong> — di chuyển robot mềm an toàn
+                            trong đại tràng</div>
+                    </div>
+                    <aside class="notes">Phân công trong nhóm: Bảo làm phần cứng (thân robot), Mạnh làm định vị camera (SLAM), em làm dữ liệu và AI. TS. Thái phụ trách robot mềm và đầu in (F3DB), PGS. Xiêm hướng dẫn phần thị giác máy. Bộ dữ liệu A cho "đáp án" mà video thật không có: vị trí camera chính xác (để chấm SLAM của Mạnh), hình học và kích thước thật của tổn thương. Hướng B là phần thân robot — chỗ gây đau và nguy cơ nhất khi nội soi.</aside>
+                </section>
+
+                <!-- 3.2 — Bộ dữ liệu: cách dựng -->
+                <section>
+                    <h2><span class="pill a h-pill">A</span>Bộ dữ liệu video nội soi</h2>
+                    <h3>Dựng từ CT của bệnh nhân thật</h3>
+                    <div class="pipe">
+                        <figure>
+                            <img src="img/doctors/ct-colon.jpg" alt="Lát cắt CT, lòng đại tràng chứa khí được tô màu">
+                            <figcaption>CT chụp đại tràng (ACRIN 6664) → tách lòng ruột chứa khí [3]</figcaption>
+                        </figure>
+                        <div class="arrow">→</div>
+                        <figure>
+                            <img src="img/doctors/colon-3d.png" alt="Mô hình 3D đại tràng và đường đi của camera">
+                            <figcaption>Đại tràng 3D + đường đi của camera, từ trực tràng tới manh tràng</figcaption>
+                        </figure>
+                        <div class="arrow">→</div>
+                        <figure>
+                            <video src="img/doctors/flythrough.mp4" poster="img/doctors/flythrough-poster.jpg"
+                                autoplay loop muted playsinline data-autoplay></video>
+                            <figcaption>Video nội soi tổng hợp (bản thử)</figcaption>
+                        </figure>
+                    </div>
+                    <div class="facts">
+                        <div><strong>Polyp đúng vị trí &amp; kích thước</strong> ghi trong hồ sơ thử nghiệm — sẽ nhờ
+                            bác sĩ X-quang xác nhận trên CT</div>
+                        <div><strong>Cặp video trước / sau cắt polyp</strong>: cùng ruột, cùng đường đi camera, chỉ
+                            khác vết cắt</div>
+                        <div><strong>Mỗi khung hình có đáp án</strong>: độ sâu, vị trí camera, vùng tổn thương, kích
+                            thước thật (mm)</div>
+                    </div>
+                    <p class="mini-note">Hiện đã dựng xong 1 ca · mục tiêu 20–30 ca · dự kiến nộp <em>Scientific Data</em> năm 2027</p>
+                    <aside class="notes">Vì sao cần: video nội soi thật không bao giờ có đáp án chính xác (camera đang ở đâu, thành ruột cách bao xa, polyp thật sự bao nhiêu mm). Các bộ tổng hợp hiện có (RealSynCol, SimCol3D, C3VD) chủ yếu là ruột bình thường và polyp, chưa có hố sau cắt. Nguồn CT: thử nghiệm ACRIN 6664 (National CT Colonography Trial) trên TCIA, 103 bệnh nhân có polyp ≥ 6 mm được ghi lại. Ống kính mô phỏng theo ống soi lâm sàng đã hiệu chuẩn (C3VD, Olympus CF-HQ190L), đèn đo từ C3VD, tốc độ rút ống ~0,8 mm mỗi khung — gần với số đo khi bác sĩ lái ống soi.</aside>
+                </section>
+
+                <!-- 3.3 — Bộ dữ liệu: hình ảnh -->
+                <section>
+                    <h2>Hình ảnh từ video <span class="tag wip">đang tinh chỉnh</span></h2>
+                    <div class="frames">
+                        <figure>
+                            <img src="img/doctors/frame-fold.jpg" alt="Nếp gấp đại tràng">
+                            <figcaption>Nếp gấp đại tràng</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="img/doctors/frame-flexure.jpg" alt="Chỗ ruột gập góc">
+                            <figcaption>Chỗ ruột gập góc</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="img/doctors/frame-c3vd-camera.jpg" alt="Góc nhìn ống kính hiệu chuẩn theo ống soi thật">
+                            <figcaption>Ống kính hiệu chuẩn theo ống soi lâm sàng [2]</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="img/doctors/frame-vessels.jpg" alt="Niêm mạc có mạch máu">
+                            <figcaption>Bản mới nhất: thêm mạch máu niêm mạc</figcaption>
+                        </figure>
+                    </div>
+                    <div class="ask-box">
+                        <strong>Điều em cần nhất từ các bác sĩ:</strong> chỉ ra chỗ nào <strong>chưa giống nội soi
+                            thật</strong> — màu niêm mạc, mạch máu, độ bóng, ánh sáng, cách ống soi di chuyển.
+                    </div>
+                    <aside class="notes">Đây là các bản render thử trên cùng một bệnh nhân (ca 0233). Hai ảnh đầu là bản cũ hơn với ống kính mắt cá; ảnh thứ ba dùng mô hình ống kính đo từ ống soi Olympus của bộ C3VD; ảnh cuối là bản mới với mạng mạch máu được "mọc" theo quy luật phân nhánh. Màu niêm mạc và mạch máu vẫn đang chỉnh — đây đúng là chỗ cần mắt bác sĩ.</aside>
+                </section>
+
+                <!-- 3.4 — Bộ dữ liệu: polyp & hố sau cắt -->
+                <section>
+                    <h2>Polyp &amp; hố sau cắt</h2>
+                    <div class="media-row">
+                        <img src="img/doctors/wound-types.png" alt="Hai kiểu hố sau cắt polyp" style="height: 390px;">
+                        <ul class="side-list" style="width: 42%;">
+                            <li><strong>&lt; 10 mm:</strong> thòng lọng lạnh → hố nhỏ, nhạt, mép nham nhở</li>
+                            <li><strong>≥ 10 mm:</strong> tiêm nâng + thòng lọng nóng → hố bầu dục, đáy xanh, viền cháy</li>
+                            <li>Lưu hình học của hố làm <strong>đáp án</strong></li>
+                            <li style="color: var(--sl-orange, #c85a12);"><strong>Hỏi bác sĩ:</strong> thực tế ở Việt
+                                Nam cắt thế nào? Hố trông như vậy đã đúng chưa?</li>
+                        </ul>
+                    </div>
+                    <p class="mini-note">Theo hướng dẫn ESGE 2024 [4] · sơ đồ đơn giản hoá, đang thiết kế</p>
+                    <aside class="notes">ESGE 2024: thòng lọng lạnh với rìa 1–2 mm mô lành cho polyp dưới 10 mm; thòng lọng nóng cho 10–19 mm, tiêm nâng trước; từ 20 mm là EMR, thường cắt nhiều mảnh, kẹp clip ở đại tràng phải. Polyp có cuống thì để lại mỏm cuống — chưa xét riêng. Hố là một đĩa nông vì thành ruột khi bơm căng chỉ dày khoảng 2 mm. Nếu thực tế ở đây thòng lọng nóng là mặc định thì mình đổi một tham số trong script.</aside>
+                </section>
+
+                <!-- 3.5 — Học tăng cường: bài toán -->
+                <section>
+                    <h2><span class="pill b h-pill">B</span>Lái robot mềm an toàn</h2>
+                    <h3>Cho cả phần thân ống <span class="tag wip">đang nghiên cứu</span></h3>
+                    <div class="cols" style="margin-top: 14px;">
+                        <div style="font-size: 0.5em; flex: 0 0 40%;">
+                            <p><strong>Vấn đề.</strong> Ống mềm được đẩy từ ngoài vào; phần thân không nhìn thấy dễ
+                                <strong>tạo vòng</strong> và tì vào thành ruột. Tạo vòng gây khoảng <strong>79%</strong>
+                                các cơn đau khi nội soi [5].</p>
+                            <p><strong>Ý tưởng.</strong> Học tăng cường: AI tự thử – sai rất nhiều lần trong mô phỏng,
+                                được thưởng khi tiến an toàn, bị phạt khi tì mạnh hoặc tạo vòng.</p>
+                            <p><strong>Điểm khác.</strong> Không chỉ lái đầu ống, mà luôn "hình dung" được cả thân ống —
+                                kèm mức độ chắc chắn — để quyết định có nên đẩy tiếp không.</p>
+                        </div>
+                        <figure class="img-slot" data-src="img/doctors/rl-shape-model.png">
+                            <img src="img/doctors/rl-shape-model.png" alt="Mạng nơ-ron dự đoán hình dạng thân robot mềm từ áp suất và hướng uốn">
+                            <figcaption>Minh hoạ từ một nghiên cứu khác, không phải của nhóm: mạng nơ-ron nhận áp suất
+                                &amp; hướng uốn → đoán vị trí từng điểm dọc thân robot</figcaption>
+                        </figure>
+                    </div>
+                    <!-- TODO: thêm trích dẫn nguồn của hình minh hoạ này vào slide Tài liệu tham khảo -->
+                    <aside class="notes">Giống lái xe kéo rơ-moóc: nhìn rõ đường phía trước, nhưng rơ-moóc phía sau mới là thứ va vào lề. Với ống soi, đầu ống thấy được qua camera, còn thân ống thì không — mà thân ống mới là thứ tạo vòng, kéo căng mạc treo và gây đau. Số liệu 79%: Shah và cs. 2002, theo dõi bằng hình ảnh từ trường trên 102 bệnh nhân. Hình bên chỉ để minh hoạ ý "từ áp suất trong các buồng → biết thân robot đang cong thế nào".</aside>
+                </section>
+
+                <!-- 3.6 — Học tăng cường: cách làm -->
+                <section>
+                    <h2><span class="pill b h-pill">B</span>Cách tiếp cận</h2>
+                    <div class="flow3">
+                        <div class="box in">
+                            <h4>AI điều khiển</h4>
+                            <p>Chọn áp suất, hướng uốn; quyết định đẩy – giữ – rút</p>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="box how">
+                            <h4>Đại tràng mô phỏng</h4>
+                            <p>Thân robot uốn theo áp suất, chạm vào thành ruột</p>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="box out">
+                            <h4>Chấm điểm</h4>
+                            <p><strong>Thưởng:</strong> đầu ống tiến lên<br><strong>Phạt:</strong> lực tì lớn, tạo
+                                vòng, kéo căng mạc treo</p>
+                        </div>
+                    </div>
+                    <p class="loop-note">↺ Lặp lại rất nhiều lần → AI học cách tiến mà không gây hại</p>
+                    <p class="stages-title">Lộ trình, từ dễ đến khó</p>
+                    <div class="stages">
+                        <div><b>1.</b> Chuỗi mắt xích 2D đơn giản — kiểm tra ý tưởng</div>
+                        <div><b>2.</b> Ống mềm có độ trễ thuỷ lực, giống robot của nhóm</div>
+                        <div><b>3.</b> Đại tràng 3D từ CT — dùng chung hình học với bộ dữ liệu <span class="pill a" style="margin: 0; font-size: .8em;">A</span></div>
+                    </div>
+                    <aside class="notes">Robot của nhóm uốn bằng xi-lanh đẩy chất lỏng qua ống dài, nên lệnh và chuyển động lệch nhau một khoảng trễ — AI phải có "trí nhớ" mới điều khiển được. Các mô phỏng nội soi bằng học tăng cường đã công bố đều bỏ qua thân ống hoặc giả định thân ống đi theo đầu — đây là khoảng trống. Kéo căng mạc treo dùng như đại lượng thay cho cơn đau, cần bác sĩ góp ý. Giai đoạn 1–2 chạy trên máy tính, không cần robot thật; dữ liệu từ robot của Bảo dùng ở bước sau.</aside>
+                </section>
+
+                <!-- 3.7 — Phối hợp -->
+                <section>
+                    <h2>Phối hợp với nhóm bác sĩ</h2>
+                    <div class="card-grid">
+                        <div class="card c-purple">
+                            <h4>Chấm video tổng hợp</h4>
+                            <p>Thang 1–5 cho lòng ruột, nếp gấp, niêm mạc, ánh sáng, chuyển động camera. Form online.</p>
+                        </div>
+                        <div class="card c-teal">
+                            <h4>Polyp &amp; hố sau cắt</h4>
+                            <p>Hình dạng, kích thước có hợp lý không; ước lượng kích thước (mm) trên clip.</p>
+                        </div>
+                        <div class="card c-orange">
+                            <h4>Thế nào là "an toàn"</h4>
+                            <p>Đoạn nào hay tạo vòng, đoạn nào dễ tổn thương; bác sĩ gỡ vòng bằng thao tác nào.</p>
+                        </div>
+                        <div class="card c-purple">
+                            <h4>Xác nhận trên CT</h4>
+                            <p>Bác sĩ X-quang: polyp trên CT có khớp với hồ sơ thử nghiệm không.</p>
+                        </div>
+                    </div>
+                    <div class="callout">
+                        <p>Gói gọn trong <strong>một buổi khoảng 60–90 phút</strong>. Chỉ dùng ảnh tổng hợp và dữ liệu
+                            công khai đã ẩn danh; sẽ nộp hội đồng đạo đức theo thủ tục rút gọn.</p>
+                    </div>
+                    <aside class="notes">Không làm "Turing test" (đoán ảnh thật hay giả): ảnh tổng hợp gần như chắc sẽ bị nhận ra, và bộ dữ liệu không cần đánh lừa ai — nó cần đúng giải phẫu và đúng tổn thương. Cách chấm theo kiểu face/content validity của văn liệu mô phỏng nội soi. Người tham gia làm bộ dữ liệu sẽ không chấm phần mù. Theo Thông tư 43/2024/TT-BYT có thủ tục rút gọn cho nghiên cứu rủi ro tối thiểu.</aside>
+                </section>
+
+                <!-- 3.8 — Khó khăn -->
+                <section>
+                    <h2>Những khó khăn em lường trước</h2>
+                    <div style="font-size: 0.55em;">
+                        <ul>
+                            <li><strong>Dữ liệu tổng hợp không phải ruột thật.</strong> Hình dạng ruột lấy từ CT thật,
+                                nhưng màu, mạch máu và cách bác sĩ lái ống soi vẫn do mình mô phỏng.</li>
+                            <li><strong>Mô luôn chuyển động.</strong> Nhu động, nhịp thở, robot chạm vào làm mô biến
+                                dạng — video hiện tại vẫn là ruột tĩnh.</li>
+                            <li><strong>Từ mô phỏng sang thật.</strong> Chưa có mô phỏng mở nào tạo vòng giống thật;
+                                AI giỏi trong mô phỏng chưa chắc giỏi trên robot thật.</li>
+                            <li><strong>Kiến thức lâm sàng.</strong> Em xuất phát từ AI nên phần nội soi và vật liệu sinh
+                                học em phải học nghiêm túc — rất mong được các bác sĩ chỉ thêm.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 3.9 — Tài liệu tham khảo -->
+                <section>
+                    <h2>Tài liệu tham khảo</h2>
+                    <div style="font-size: 0.45em; text-align: left;">
+                        <p>[1] D. T. Vu, N. A. Phan, S. T. Ngo, M. T. Phan, T.-A. Truong, C. C. Nguyen, P. T. Phan,
+                            H.-P. Phan, T. N. Do, <strong>M. T. Thai</strong>.
+                            <em>Soft Robotics and Advanced Technologies for Minimally Invasive Bioprinting:
+                                The Future of Internal Organ Repair.</em>
+                            Advanced Science, 13(e23532), 2026. doi:10.1002/advs.202523532</p>
+
+                        <p>[2] T. L. Bobrow, M. Golhar, R. Vijayan, V. S. Akshintala, J. R. Garcia, N. J. Durr.
+                            <em>Colonoscopy 3D Video Dataset with Paired Depth from 2D-3D Registration.</em>
+                            Medical Image Analysis, 2023. arXiv:2206.08903</p>
+
+                        <p>[3] C. D. Johnson et al. <em>Accuracy of CT Colonography for Detection of Large Adenomas and
+                                Cancers</em> (ACRIN 6664). New England Journal of Medicine, 359:1207–1217, 2008 ·
+                            dữ liệu trên The Cancer Imaging Archive (TCIA)</p>
+
+                        <p>[4] M. Ferlitsch et al. <em>Colorectal polypectomy and endoscopic mucosal resection:
+                                ESGE Guideline – Update 2024.</em> Endoscopy, 56:516–545, 2024</p>
+
+                        <p>[5] S. G. Shah et al. <em>Patient pain during colonoscopy: an analysis using real-time
+                                magnetic endoscope imaging.</em> Endoscopy, 34(6):435–440, 2002.
+                            doi:10.1055/s-2002-31995</p>
+                        <!-- [6] TODO: nguồn của hình minh hoạ robot mềm (mạng nơ-ron → hình dạng thân robot) -->
+                    </div>
+                </section>
+            </section>
+
+            <!-- ─── KẾT ─── -->
+            <section class="title-slide">
+                <h1>Xin cảm ơn</h1>
+                <p class="title-sub">Rất mong được làm việc cùng các bác sĩ</p>
+                <p class="title-contact">
+                    Nguyễn Hải Toàn ·
+                    <a href="mailto:nguyenhaitoan@vnu.edu.vn">nguyenhaitoan@vnu.edu.vn</a> ·
+                    <a href="https://toan-nguyen26.github.io">toan-nguyen26.github.io</a>
+                </p>
+            </section>
+
+            <div class="footer">
+                Nguyễn Hải Toàn · Giới thiệu với nhóm bác sĩ
+            </div>
+        </div>
+    </div>
+    <script src="revealjs/dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script>
+        // Khung ảnh: khi chưa có hình thật thì hiện ô gợi ý kèm tên tệp cần thêm.
+        document.querySelectorAll(".img-slot img").forEach(function (img) {
+            var mark = function () { img.closest(".img-slot").classList.add("is-empty"); };
+            if (img.complete && img.naturalWidth === 0) mark();
+            img.addEventListener("error", mark);
+        });
+
+        Reveal.initialize({
+            controlsLayout: "edges",
+            slideNumber: true,
+            hashOneBasedIndex: true,
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+    </script>
+</body>
+
+</html>
