@@ -28,34 +28,28 @@
             border-left: 5px solid var(--sl-orange, #c85a12);
             background: rgba(200, 90, 18, .09); font-size: 0.48em; line-height: 1.5; text-align: left;
         }
-        .media-row { display: flex; gap: 22px; align-items: center; justify-content: center; margin-top: 10px; }
-        .media-row img {
-            margin: 0; border-radius: 10px; border: 1px solid var(--sl-line, #e3dfe8);
-            box-shadow: 0 8px 24px rgba(19, 15, 26, .1); background: #fff;
-        }
-        .side-list { font-size: 0.5em; text-align: left; }
-        .side-list li { margin-bottom: 10px; line-height: 1.45; }
-
-        /* Chuỗi 5 bước của đề tài */
-        .flow5 {
-            display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr auto 1fr;
-            gap: 6px; align-items: stretch; font-size: 0.44em; text-align: left; margin-top: 20px;
-        }
-        .flow5 .box { background: rgba(0, 0, 0, .035); border-radius: 10px; padding: 10px 11px; border-top: 4px solid #9a96a0; }
-        .flow5 .box.mine-a { border-top-color: var(--sl-teal, #1f8a8a); background: rgba(31, 138, 138, .08); }
-        .flow5 .box.mine-b { border-top-color: var(--sl-orange, #c85a12); background: rgba(200, 90, 18, .08); }
-        .flow5 h4 { margin: 0 0 5px; font-size: 1.08em; }
-        .flow5 p { margin: 0; line-height: 1.4; }
-        .flow5 .arrow { align-self: center; color: var(--sl-muted, #889); font-size: 1.3em; }
-        .flow5 .who { display: block; margin-top: 6px; color: var(--sl-muted, #778); font-size: .9em; }
+        /* Hai phần việc */
+        .two-jobs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; font-size: 0.6em; text-align: left; margin-top: 34px; }
+        .two-jobs .job { border-radius: 12px; padding: 18px 20px; background: rgba(0, 0, 0, .035); border-top: 5px solid #9a96a0; }
+        .two-jobs .job.a { border-top-color: var(--sl-teal, #1f8a8a); background: rgba(31, 138, 138, .08); }
+        .two-jobs .job.b { border-top-color: var(--sl-orange, #c85a12); background: rgba(200, 90, 18, .08); }
+        .two-jobs .job.p { border-top-color: var(--sl-purple, #6b4fa0); background: rgba(107, 79, 160, .07); }
+        .two-jobs h4 { margin: 10px 0 8px; font-size: 1.15em; }
+        .two-jobs p { margin: 0; line-height: 1.5; }
+        .two-jobs .num { font-weight: 700; color: var(--sl-muted, #778); }
         .pill {
             display: inline-block; font-size: .85em; font-weight: 700; color: #fff;
-            border-radius: 999px; padding: 1px 9px; margin-top: 7px;
+            border-radius: 999px; padding: 1px 9px;
         }
         .pill.a { background: var(--sl-teal, #1f8a8a); }
         .pill.b { background: var(--sl-orange, #c85a12); }
-        .legend { font-size: 0.5em; text-align: left; margin-top: 22px; line-height: 1.9; }
-        .legend .pill { margin: 0 8px 0 0; font-size: .8em; }
+
+        /* Sẹo theo kích thước polyp */
+        .scar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; font-size: 0.46em; text-align: left; margin-top: 10px; }
+        .scar-grid > div { background: rgba(0, 0, 0, .035); border-radius: 10px; padding: 12px 14px; border-left: 4px solid var(--sl-teal, #1f8a8a); }
+        .scar-grid b { display: block; font-size: 1.3em; }
+        .scar-grid span { display: block; color: var(--sl-muted, #778); margin-bottom: 6px; }
+        .scar-grid p { margin: 0; line-height: 1.45; }
 
         /* CT → đại tràng 3D → video */
         .pipe { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 10px; }
@@ -234,7 +228,6 @@
 
                 <section>
                     <h2>1 · Khoanh vùng bằng mô hình sinh</h2>
-                    <h3>FJCAI 2026 <span class="pub-badge">🏆 Báo cáo xuất sắc nhất (LatentFM)</span></h3>
                     <div class="cols" style="margin-top: 14px;">
                         <div style="font-size: 0.52em; flex: 0 0 34%;">
                             <p><strong>Ý tưởng.</strong> Không vẽ một đường viền duy nhất, mà vẽ <em>nhiều</em>
@@ -249,7 +242,7 @@
                             <figcaption>Ví dụ dự đoán so với nhãn thật</figcaption>
                         </figure>
                     </div>
-                    <aside class="notes">Hai bài ở FJCAI 2026. MedSegLatDiff: VAE nén ảnh về không gian tiềm ẩn, diffusion sinh mặt nạ trong đó — nhẹ và nhanh hơn diffusion trên ảnh gốc. LatentFM thay diffusion bằng flow matching, đường lấy mẫu thẳng hơn, nhanh hơn; bài này được giải báo cáo xuất sắc nhất. Đo bằng Dice/IoU. LIDC-IDRI có nhãn của 4 bác sĩ X-quang cho mỗi nốt — đúng tinh thần "nhiều người khoanh".</aside>
+                    <aside class="notes">MedSegLatDiff: VAE nén ảnh về không gian tiềm ẩn, diffusion sinh mặt nạ trong đó — nhẹ và nhanh hơn diffusion trên ảnh gốc. LatentFM thay diffusion bằng flow matching, đường lấy mẫu thẳng hơn, nhanh hơn. Đo bằng Dice/IoU. LIDC-IDRI có nhãn của 4 bác sĩ X-quang cho mỗi nốt — đúng tinh thần "nhiều người khoanh".</aside>
                 </section>
 
                 <section>
@@ -288,32 +281,30 @@
                         <div class="card c-orange">
                             <h4>Sinh báo cáo X-quang ngực</h4>
                             <p>Mỗi "chuyên gia" nhỏ phụ trách một nhóm bệnh lý; báo cáo bám vào vùng ảnh nên kiểm tra
-                                lại được. <span class="text-light">Đang phản biện.</span></p>
+                                lại được.</p>
                         </div>
                         <div class="card c-teal">
                             <h4>Tìm tài liệu cho mô hình ngôn ngữ</h4>
                             <p>Chia văn bản theo ý thay vì theo độ dài → trả lời kèm dẫn chứng chính xác hơn.
-                                <span class="text-light">SOICT 2024, luận văn thạc sĩ.</span></p>
+                                <span class="text-light">Luận văn thạc sĩ.</span></p>
                         </div>
                         <div class="card c-purple">
                             <h4>Xoá tri thức đa ngôn ngữ</h4>
-                            <p>Đánh giá việc "xoá" một kiến thức khỏi mô hình ngôn ngữ lớn trên nhiều thứ tiếng.
-                                <span class="text-light">MULAN, TMLR — đang phản biện.</span></p>
+                            <p>Đánh giá việc "xoá" một kiến thức khỏi mô hình ngôn ngữ lớn trên nhiều thứ tiếng.</p>
                         </div>
                     </div>
-                    <aside class="notes">Báo cáo X-quang: mô hình hỗn hợp chuyên gia LoRA (Pathology-Routed LoRA Experts). RAG: chia đoạn phân cấp bằng mô hình phân đoạn văn bản, Springer CCIS vol. 2352.</aside>
+                    <aside class="notes">Báo cáo X-quang: mô hình hỗn hợp chuyên gia LoRA (Pathology-Routed LoRA Experts). RAG: chia đoạn phân cấp bằng mô hình phân đoạn văn bản.</aside>
                 </section>
 
                 <section>
-                    <h2>Các công bố khoa học</h2>
+                    <h2>Các bài báo khoa học</h2>
                     <ul class="pub-list">
                         <li>
                             <span class="pub-year">2026</span>
                             <span>
                                 <span class="pub-title">MULAN: Benchmarking and Evaluating Multilingual Knowledge
                                     Unlearning</span>
-                                <span class="pub-meta">Duc Do Minh, <strong>Toan Nguyen Hai</strong>, và cộng sự · TMLR —
-                                    đang phản biện</span>
+                                <span class="pub-meta">Duc Do Minh, <strong>Toan Nguyen Hai</strong>, và cộng sự</span>
                             </span>
                         </li>
                         <li>
@@ -322,8 +313,7 @@
                                 <span class="pub-title">LatentFM: A Latent Flow Matching Approach for Generative Medical
                                     Image Segmentation</span>
                                 <span class="pub-meta">Trinh Ngoc Huynh, Nguyen Kim Hoang Anh, <strong>Nguyen Hai
-                                        Toan</strong>, Tran Quoc Long · FJCAI 2026
-                                    <span class="pub-badge">🏆 Báo cáo xuất sắc nhất</span></span>
+                                        Toan</strong>, Tran Quoc Long</span>
                             </span>
                         </li>
                         <li>
@@ -332,7 +322,7 @@
                                 <span class="pub-title">Diffusion Model in Latent Space for Medical Image Segmentation
                                     Task</span>
                                 <span class="pub-meta">Trinh Ngoc Huynh, <strong>Nguyen Hai Toan</strong>, Luong Son Ba,
-                                    Tran Quoc Long · FJCAI 2026</span>
+                                    Tran Quoc Long</span>
                             </span>
                         </li>
                         <li>
@@ -341,7 +331,7 @@
                                 <span class="pub-title">A Vietnamese Dataset for Text Segmentation and Multiple Choices
                                     Reading Comprehension</span>
                                 <span class="pub-meta"><strong>Toan Nguyen Hai</strong>, Truong Quan Xuan, Duc Do Minh,
-                                    Ha Nguyen Viet · BDSIC 2025</span>
+                                    Ha Nguyen Viet</span>
                             </span>
                         </li>
                         <li>
@@ -349,8 +339,7 @@
                             <span>
                                 <span class="pub-title">Enhancing Retrieval Augmented Generation with Hierarchical Text
                                     Segmentation Chunking</span>
-                                <span class="pub-meta"><strong>Nguyen Hai Toan</strong>, Nguyen Tien Dat, Nguyen Viet Ha
-                                    · SOICT 2024, Springer CCIS vol. 2352</span>
+                                <span class="pub-meta"><strong>Nguyen Hai Toan</strong>, Nguyen Tien Dat, Nguyen Viet Ha</span>
                             </span>
                         </li>
                     </ul>
@@ -372,47 +361,23 @@
                 <!-- 3.1 — Đề tài và phần việc -->
                 <section>
                     <h2>Đề tài &amp; phần việc của em</h2>
-                    <p style="font-size: 0.52em; margin-bottom: 0;">Robot mềm đi qua đường tự nhiên tới tổn thương
-                        trong đại tràng, rồi <strong>in vật liệu sinh học trực tiếp lên đó</strong> — thay vì in ở
-                        ngoài rồi mổ để cấy vào [1].</p>
-                    <div class="flow5">
-                        <div class="box mine-b">
-                            <h4>1 · Tiếp cận</h4>
-                            <p>Đưa ống mềm tới tổn thương, không tạo vòng, không tì mạnh vào thành ruột</p>
+                    <p style="font-size: 0.55em;">Robot mềm đi qua đường tự nhiên tới tổn thương trong đại tràng,
+                        rồi <strong>in vật liệu sinh học trực tiếp lên đó</strong> [1]. Em phụ trách hai việc:</p>
+                    <div class="two-jobs">
+                        <div class="job a">
+                            <span class="pill a">A</span>
+                            <h4>Bộ dữ liệu video nội soi</h4>
+                            <p>Video tổng hợp dựng từ CT bệnh nhân thật, có polyp và sẹo sau cắt, kèm "đáp án 3D" để
+                                huấn luyện và chấm AI.</p>
+                        </div>
+                        <div class="job b">
                             <span class="pill b">B</span>
-                        </div>
-                        <div class="arrow">→</div>
-                        <div class="box mine-a">
-                            <h4>2 · Định vị</h4>
-                            <p>Camera đầu ống dựng bản đồ đoạn ruột đã đi qua</p>
-                            <span class="pill a">A</span>
-                        </div>
-                        <div class="arrow">→</div>
-                        <div class="box mine-a">
-                            <h4>3 · Hiểu tổn thương</h4>
-                            <p>Hình dạng 3D, kích thước thật của polyp / hố sau cắt</p>
-                            <span class="pill a">A</span>
-                        </div>
-                        <div class="arrow">→</div>
-                        <div class="box">
-                            <h4>4 · In sinh học</h4>
-                            <p>Đặt vật liệu sinh học lên tổn thương</p>
-                            <span class="who">thiết bị F3DB</span>
-                        </div>
-                        <div class="arrow">→</div>
-                        <div class="box mine-a">
-                            <h4>5 · Kiểm tra</h4>
-                            <p>Lớp in có đúng chỗ, đúng hình dạng không</p>
-                            <span class="pill a">A</span>
+                            <h4>Lái robot mềm an toàn</h4>
+                            <p>Học tăng cường để robot tiến trong đại tràng mà không tạo vòng, không tì mạnh vào thành
+                                ruột.</p>
                         </div>
                     </div>
-                    <div class="legend">
-                        <div><span class="pill a">A</span><strong>Bộ dữ liệu video nội soi có tổn thương</strong> —
-                            "đáp án 3D" để huấn luyện và chấm AI</div>
-                        <div><span class="pill b">B</span><strong>Học tăng cường</strong> — di chuyển robot mềm an toàn
-                            trong đại tràng</div>
-                    </div>
-                    <aside class="notes">Phân công trong nhóm: Bảo làm phần cứng (thân robot), Mạnh làm định vị camera (SLAM), em làm dữ liệu và AI. TS. Thái phụ trách robot mềm và đầu in (F3DB), PGS. Xiêm hướng dẫn phần thị giác máy. Bộ dữ liệu A cho "đáp án" mà video thật không có: vị trí camera chính xác (để chấm SLAM của Mạnh), hình học và kích thước thật của tổn thương. Hướng B là phần thân robot — chỗ gây đau và nguy cơ nhất khi nội soi.</aside>
+                    <aside class="notes">Phân công trong nhóm: Bảo làm phần cứng (thân robot), Mạnh làm định vị camera (SLAM), em làm dữ liệu và AI. TS. Thái phụ trách robot mềm và đầu in (F3DB), PGS. Xiêm hướng dẫn phần thị giác máy. Bộ dữ liệu A cho "đáp án" mà video thật không có: vị trí camera chính xác (để chấm SLAM của Mạnh), hình học và kích thước thật của polyp và sẹo. Hướng B là phần thân robot — chỗ gây đau và nguy cơ nhất khi nội soi.</aside>
                 </section>
 
                 <!-- 3.2 — Bộ dữ liệu: cách dựng -->
@@ -439,13 +404,13 @@
                     <div class="facts">
                         <div><strong>Polyp đúng vị trí &amp; kích thước</strong> ghi trong hồ sơ thử nghiệm — sẽ nhờ
                             bác sĩ X-quang xác nhận trên CT</div>
-                        <div><strong>Cặp video trước / sau cắt polyp</strong>: cùng ruột, cùng đường đi camera, chỉ
-                            khác vết cắt</div>
+                        <div><strong>Polyp và sẹo sau cắt</strong>: lần soi đầu thấy polyp, lần tái khám thấy sẹo ở
+                            đúng chỗ đó — cùng một ruột</div>
                         <div><strong>Mỗi khung hình có đáp án</strong>: độ sâu, vị trí camera, vùng tổn thương, kích
                             thước thật (mm)</div>
                     </div>
-                    <p class="mini-note">Hiện đã dựng xong 1 ca · mục tiêu 20–30 ca · dự kiến nộp <em>Scientific Data</em> năm 2027</p>
-                    <aside class="notes">Vì sao cần: video nội soi thật không bao giờ có đáp án chính xác (camera đang ở đâu, thành ruột cách bao xa, polyp thật sự bao nhiêu mm). Các bộ tổng hợp hiện có (RealSynCol, SimCol3D, C3VD) chủ yếu là ruột bình thường và polyp, chưa có hố sau cắt. Nguồn CT: thử nghiệm ACRIN 6664 (National CT Colonography Trial) trên TCIA, 103 bệnh nhân có polyp ≥ 6 mm được ghi lại. Ống kính mô phỏng theo ống soi lâm sàng đã hiệu chuẩn (C3VD, Olympus CF-HQ190L), đèn đo từ C3VD, tốc độ rút ống ~0,8 mm mỗi khung — gần với số đo khi bác sĩ lái ống soi.</aside>
+                    <p class="mini-note">Hiện đã dựng xong 1 ca · mục tiêu 20–30 ca</p>
+                    <aside class="notes">Vì sao cần: video nội soi thật không bao giờ có đáp án chính xác (camera đang ở đâu, thành ruột cách bao xa, polyp thật sự bao nhiêu mm). Các bộ tổng hợp hiện có (RealSynCol, SimCol3D, C3VD) chủ yếu là ruột bình thường và polyp, chưa có sẹo sau cắt polyp hay hai lần soi trên cùng một ruột. Nguồn CT: thử nghiệm ACRIN 6664 (National CT Colonography Trial) trên TCIA, 103 bệnh nhân có polyp ≥ 6 mm được ghi lại. Ống kính mô phỏng theo ống soi lâm sàng đã hiệu chuẩn (C3VD, Olympus CF-HQ190L), đèn đo từ C3VD, tốc độ rút ống ~0,8 mm mỗi khung — gần với số đo khi bác sĩ lái ống soi.</aside>
                 </section>
 
                 <!-- 3.3 — Bộ dữ liệu: hình ảnh -->
@@ -476,21 +441,42 @@
                     <aside class="notes">Đây là các bản render thử trên cùng một bệnh nhân (ca 0233). Hai ảnh đầu là bản cũ hơn với ống kính mắt cá; ảnh thứ ba dùng mô hình ống kính đo từ ống soi Olympus của bộ C3VD; ảnh cuối là bản mới với mạng mạch máu được "mọc" theo quy luật phân nhánh. Màu niêm mạc và mạch máu vẫn đang chỉnh — đây đúng là chỗ cần mắt bác sĩ.</aside>
                 </section>
 
-                <!-- 3.4 — Bộ dữ liệu: polyp & hố sau cắt -->
+                <!-- 3.4 — Bộ dữ liệu: polyp & sẹo sau cắt -->
                 <section>
-                    <h2>Polyp &amp; hố sau cắt</h2>
-                    <div class="media-row">
-                        <img src="img/doctors/wound-types.png" alt="Hai kiểu hố sau cắt polyp" style="height: 390px;">
-                        <ul class="side-list" style="width: 42%;">
-                            <li><strong>&lt; 10 mm:</strong> thòng lọng lạnh → hố nhỏ, nhạt, mép nham nhở</li>
-                            <li><strong>≥ 10 mm:</strong> tiêm nâng + thòng lọng nóng → hố bầu dục, đáy xanh, viền cháy</li>
-                            <li>Lưu hình học của hố làm <strong>đáp án</strong></li>
-                            <li style="color: var(--sl-orange, #c85a12);"><strong>Hỏi bác sĩ:</strong> thực tế ở Việt
-                                Nam cắt thế nào? Hố trông như vậy đã đúng chưa?</li>
-                        </ul>
+                    <h2>Polyp &amp; sẹo sau cắt <span class="tag wip">đang làm</span></h2>
+                    <div class="flow3" style="margin-top: 8px;">
+                        <div class="box in">
+                            <h4>Lần soi 1</h4>
+                            <p>Polyp ở đúng vị trí, đúng kích thước ghi trong hồ sơ</p>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="box how">
+                            <h4>Cắt polyp</h4>
+                            <p>Cách cắt chọn theo kích thước polyp</p>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="box out">
+                            <h4>Lần tái khám</h4>
+                            <p>Sẹo đã lành ở đúng chỗ cũ, trên cùng một ruột</p>
+                        </div>
                     </div>
-                    <p class="mini-note">Theo hướng dẫn ESGE 2024 [4] · sơ đồ đơn giản hoá, đang thiết kế</p>
-                    <aside class="notes">ESGE 2024: thòng lọng lạnh với rìa 1–2 mm mô lành cho polyp dưới 10 mm; thòng lọng nóng cho 10–19 mm, tiêm nâng trước; từ 20 mm là EMR, thường cắt nhiều mảnh, kẹp clip ở đại tràng phải. Polyp có cuống thì để lại mỏm cuống — chưa xét riêng. Hố là một đĩa nông vì thành ruột khi bơm căng chỉ dày khoảng 2 mm. Nếu thực tế ở đây thòng lọng nóng là mặc định thì mình đổi một tham số trong script.</aside>
+                    <p class="stages-title">Sẹo trông thế nào — tuỳ kích thước polyp</p>
+                    <div class="scar-grid">
+                        <div>
+                            <b>6–9 mm</b><span>thòng lọng lạnh</span>
+                            <p>Thường không còn thấy gì, hoặc chỉ một đốm nhạt</p>
+                        </div>
+                        <div>
+                            <b>10–19 mm</b><span>thòng lọng nóng</span>
+                            <p>Sẹo nhỏ, nhạt, phẳng; nếp gấp hơi chụm vào</p>
+                        </div>
+                        <div>
+                            <b>≥ 20 mm</b><span>cắt niêm mạc (EMR)</span>
+                            <p>Sẹo trắng rõ, mất mạch máu, nếp gấp chụm vào sẹo</p>
+                        </div>
+                    </div>
+                    <p class="mini-note">Cách cắt và thời điểm tái khám theo hướng dẫn châu Âu (ESGE) [4][6]</p>
+                    <aside class="notes">Vì sao là sẹo chứ không phải vết cắt mới: tới lần tái khám (sớm nhất 3 tháng, thường 3–10 năm) chỗ cắt đã liền thành sẹo. Thời điểm tái khám dựng theo hướng dẫn: polyp từ 20 mm khoảng 6 tháng; 10–19 mm khoảng 3 năm; 6–9 mm từ 3 đến 10 năm. Sẹo lớn gần như luôn tìm thấy ở lần tái khám đầu (95–99,7%), sẹo 10–19 mm chỉ khoảng 60%, sẹo nhỏ thường không còn thấy. Sẹo càng mờ thì càng phải tìm lại chỗ cũ bằng bản đồ chứ không bằng mắt — đó là bài toán định vị lại mà bộ dữ liệu cho phép kiểm tra, vì hai lần soi dùng chung một CT nên biết chính xác polyp và sẹo ở đâu. Kích thước, màu và độ lõm của sẹo chưa có số đo trong y văn nên đang là giả định — rất cần bác sĩ góp ý. Phần này đang thiết kế, chưa có ảnh render.</aside>
                 </section>
 
                 <!-- 3.5 — Học tăng cường: bài toán -->
@@ -550,29 +536,22 @@
                 <!-- 3.7 — Phối hợp -->
                 <section>
                     <h2>Phối hợp với nhóm bác sĩ</h2>
-                    <div class="card-grid">
-                        <div class="card c-purple">
+                    <p style="font-size: 0.55em;">Hai việc em rất mong được các bác sĩ giúp:</p>
+                    <div class="two-jobs" style="margin-top: 18px;">
+                        <div class="job p">
+                            <span class="num">1</span>
                             <h4>Chấm video tổng hợp</h4>
-                            <p>Thang 1–5 cho lòng ruột, nếp gấp, niêm mạc, ánh sáng, chuyển động camera. Form online.</p>
+                            <p>Xem các clip ngắn và chỉ ra chỗ nào chưa giống nội soi thật: lòng ruột, nếp gấp, niêm
+                                mạc, ánh sáng, cách ống soi di chuyển.</p>
                         </div>
-                        <div class="card c-teal">
-                            <h4>Polyp &amp; hố sau cắt</h4>
-                            <p>Hình dạng, kích thước có hợp lý không; ước lượng kích thước (mm) trên clip.</p>
-                        </div>
-                        <div class="card c-orange">
-                            <h4>Thế nào là "an toàn"</h4>
-                            <p>Đoạn nào hay tạo vòng, đoạn nào dễ tổn thương; bác sĩ gỡ vòng bằng thao tác nào.</p>
-                        </div>
-                        <div class="card c-purple">
-                            <h4>Xác nhận trên CT</h4>
-                            <p>Bác sĩ X-quang: polyp trên CT có khớp với hồ sơ thử nghiệm không.</p>
+                        <div class="job a">
+                            <span class="num">2</span>
+                            <h4>Polyp &amp; sẹo sau cắt</h4>
+                            <p>Polyp và sẹo ở từng cỡ trông đã hợp lý chưa; ước lượng kích thước (mm) trên clip.</p>
                         </div>
                     </div>
-                    <div class="callout">
-                        <p>Gói gọn trong <strong>một buổi khoảng 60–90 phút</strong>. Chỉ dùng ảnh tổng hợp và dữ liệu
-                            công khai đã ẩn danh; sẽ nộp hội đồng đạo đức theo thủ tục rút gọn.</p>
-                    </div>
-                    <aside class="notes">Không làm "Turing test" (đoán ảnh thật hay giả): ảnh tổng hợp gần như chắc sẽ bị nhận ra, và bộ dữ liệu không cần đánh lừa ai — nó cần đúng giải phẫu và đúng tổn thương. Cách chấm theo kiểu face/content validity của văn liệu mô phỏng nội soi. Người tham gia làm bộ dữ liệu sẽ không chấm phần mù. Theo Thông tư 43/2024/TT-BYT có thủ tục rút gọn cho nghiên cứu rủi ro tối thiểu.</aside>
+                    <p class="mini-note" style="margin-top: 18px;">Làm qua form online, gọn trong một buổi.</p>
+                    <aside class="notes">Không làm "Turing test" (đoán ảnh thật hay giả): ảnh tổng hợp gần như chắc sẽ bị nhận ra, và bộ dữ liệu không cần đánh lừa ai — nó cần đúng giải phẫu và đúng tổn thương. Cách chấm theo kiểu face/content validity của văn liệu mô phỏng nội soi. Người tham gia làm bộ dữ liệu sẽ không chấm phần mù. Chỉ dùng ảnh tổng hợp và dữ liệu công khai đã ẩn danh; sẽ nộp hội đồng đạo đức theo thủ tục rút gọn cho nghiên cứu rủi ro tối thiểu (Thông tư 43/2024/TT-BYT). Dự kiến một buổi khoảng 60–90 phút.</aside>
                 </section>
 
                 <!-- 3.8 — Khó khăn -->
@@ -616,7 +595,9 @@
                         <p>[5] S. G. Shah et al. <em>Patient pain during colonoscopy: an analysis using real-time
                                 magnetic endoscope imaging.</em> Endoscopy, 34(6):435–440, 2002.
                             doi:10.1055/s-2002-31995</p>
-                        <!-- [6] TODO: nguồn của hình minh hoạ robot mềm (mạng nơ-ron → hình dạng thân robot) -->
+                        <p>[6] C. Hassan et al. <em>Post-polypectomy colonoscopy surveillance: ESGE Guideline –
+                                Update 2020.</em> Endoscopy, 52:687–700, 2020</p>
+                        <!-- [7] TODO: nguồn của hình minh hoạ robot mềm (mạng nơ-ron → hình dạng thân robot) -->
                     </div>
                 </section>
             </section>
