@@ -529,6 +529,100 @@
                         <strong>ký ức</strong> được lưu lại.</p>
                 </section>
 
+                <section class="mini">
+                    <h2>Hopfield dùng để làm gì: nhớ lại một ký ức đã hỏng</h2>
+                    <p>Mạng Hopfield lưu sẵn vài hình mẫu — ở đây là các chữ số. Mỗi hình mẫu chính là một
+                        <strong>chỗ trũng năng lượng</strong>, đúng như các trạng thái ổn định của spin glass ở slide
+                        trước.</p>
+                    <div class="diagram-wrap" style="max-width: 700px;">
+                        <svg viewBox="0 0 530 258" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <marker id="hopArrow" markerWidth="9" markerHeight="9" refX="7" refY="3"
+                                    orient="auto">
+                                    <path d="M0,0 L7,3 L0,6 Z" fill="#b15a2b" />
+                                </marker>
+                            </defs>
+
+                                <rect x="18" y="24" width="192" height="192" fill="#fff" stroke="#999" stroke-width="1.5" />
+                                <rect x="34" y="24" width="16" height="16" fill="#1f2430" />
+                                <rect x="66" y="24" width="16" height="16" fill="#1f2430" />
+                                <rect x="114" y="24" width="16" height="16" fill="#1f2430" />
+                                <rect x="146" y="24" width="16" height="16" fill="#1f2430" />
+                                <rect x="178" y="24" width="32" height="16" fill="#1f2430" />
+                                <rect x="50" y="40" width="32" height="16" fill="#1f2430" />
+                                <rect x="98" y="40" width="32" height="16" fill="#1f2430" />
+                                <rect x="162" y="40" width="16" height="16" fill="#1f2430" />
+                                <rect x="194" y="40" width="16" height="16" fill="#1f2430" />
+                                <rect x="18" y="56" width="48" height="16" fill="#1f2430" />
+                                <rect x="98" y="56" width="32" height="16" fill="#1f2430" />
+                                <rect x="162" y="56" width="48" height="16" fill="#1f2430" />
+                                <rect x="50" y="72" width="48" height="16" fill="#1f2430" />
+                                <rect x="114" y="72" width="16" height="16" fill="#1f2430" />
+                                <rect x="146" y="72" width="16" height="16" fill="#1f2430" />
+                                <rect x="34" y="88" width="16" height="16" fill="#1f2430" />
+                                <rect x="66" y="88" width="16" height="16" fill="#1f2430" />
+                                <rect x="98" y="88" width="16" height="16" fill="#1f2430" />
+                                <rect x="146" y="88" width="16" height="16" fill="#1f2430" />
+                                <rect x="34" y="104" width="16" height="16" fill="#1f2430" />
+                                <rect x="98" y="104" width="32" height="16" fill="#1f2430" />
+                                <rect x="178" y="104" width="16" height="16" fill="#1f2430" />
+                                <rect x="66" y="120" width="16" height="16" fill="#1f2430" />
+                                <rect x="98" y="120" width="16" height="16" fill="#1f2430" />
+                                <rect x="146" y="120" width="48" height="16" fill="#1f2430" />
+                                <rect x="18" y="136" width="32" height="16" fill="#1f2430" />
+                                <rect x="82" y="136" width="48" height="16" fill="#1f2430" />
+                                <rect x="178" y="136" width="16" height="16" fill="#1f2430" />
+                                <rect x="66" y="152" width="32" height="16" fill="#1f2430" />
+                                <rect x="162" y="152" width="32" height="16" fill="#1f2430" />
+                                <rect x="66" y="168" width="64" height="16" fill="#1f2430" />
+                                <rect x="146" y="168" width="16" height="16" fill="#1f2430" />
+                                <rect x="50" y="184" width="32" height="16" fill="#1f2430" />
+                                <rect x="146" y="184" width="64" height="16" fill="#1f2430" />
+                                <rect x="18" y="200" width="16" height="16" fill="#1f2430" />
+                                <rect x="50" y="200" width="16" height="16" fill="#1f2430" />
+                                <rect x="98" y="200" width="32" height="16" fill="#1f2430" />
+                                <rect x="162" y="200" width="16" height="16" fill="#1f2430" />
+                                <path d="M34,24v192M18,40h192M50,24v192M18,56h192M66,24v192M18,72h192M82,24v192M18,88h192M98,24v192M18,104h192M114,24v192M18,120h192M130,24v192M18,136h192M146,24v192M18,152h192M162,24v192M18,168h192M178,24v192M18,184h192M194,24v192M18,200h192" stroke="#ddd" stroke-width="0.6" fill="none" />
+
+                                <rect x="316" y="24" width="192" height="192" fill="#fff" stroke="#999" stroke-width="1.5" />
+                                <rect x="396" y="40" width="32" height="16" fill="#1f2430" />
+                                <rect x="380" y="56" width="48" height="16" fill="#1f2430" />
+                                <rect x="364" y="72" width="64" height="16" fill="#1f2430" />
+                                <rect x="396" y="88" width="32" height="16" fill="#1f2430" />
+                                <rect x="396" y="104" width="32" height="16" fill="#1f2430" />
+                                <rect x="396" y="120" width="32" height="16" fill="#1f2430" />
+                                <rect x="396" y="136" width="32" height="16" fill="#1f2430" />
+                                <rect x="396" y="152" width="32" height="16" fill="#1f2430" />
+                                <rect x="364" y="168" width="96" height="16" fill="#1f2430" />
+                                <rect x="364" y="184" width="96" height="16" fill="#1f2430" />
+                                <path d="M332,24v192M316,40h192M348,24v192M316,56h192M364,24v192M316,72h192M380,24v192M316,88h192M396,24v192M316,104h192M412,24v192M316,120h192M428,24v192M316,136h192M444,24v192M316,152h192M460,24v192M316,168h192M476,24v192M316,184h192M492,24v192M316,200h192" stroke="#ddd" stroke-width="0.6" fill="none" />
+
+                                <line x1="228" y1="120" x2="294" y2="120" stroke="#b15a2b"
+                                    stroke-width="3.5" marker-end="url(#hopArrow)" />
+                                <text x="263" y="106" text-anchor="middle" font-size="12.5" fill="#b15a2b"
+                                    font-weight="700">mạng Hopfield</text>
+                                <text x="263" y="147" text-anchor="middle" font-size="12.5" fill="#b15a2b"
+                                    font-weight="700">hội tụ</text>
+
+                                <text x="114" y="248" text-anchor="middle" font-size="13" fill="#333">Đầu
+                                    vào bị nhiễu</text>
+                                <text x="412" y="248" text-anchor="middle" font-size="13" fill="#333">Ký ức
+                                    đã lưu, khôi phục xong</text>
+                        </svg>
+                    </div>
+                    <p style="color:#666;">Đưa vào một phiên bản đã hỏng, mạng cứ thế “lăn xuống” chỗ trũng gần nhất
+                        và dừng lại ở đúng hình mẫu đã lưu. Vì thế nó được gọi là <strong>bộ nhớ liên kết</strong>
+                        (associative memory): ta truy xuất bằng <em>nội dung gần đúng</em>, chứ không phải bằng địa
+                        chỉ như ổ cứng.</p>
+                    <aside class="notes">
+                        Đây là slide chốt lại ý spin glass — nếu cả buổi chỉ nhớ một hình thì nên là hình này.
+                        Nếu có ai hỏi kỹ: ví dụ đang vẽ mức nhiễu khá nặng cho dễ nhìn. Trên thực tế, một mạng
+                        Hopfield chỉ khôi phục đáng tin khi đầu vào còn đủ gần hình mẫu đã lưu, và nó lưu được chừng
+                        0,14·N hình mẫu với N nơ-ron; quá ngưỡng đó thì mạng rơi vào các trạng thái “rác”. Nói là ý
+                        tưởng nền tảng, không phải công nghệ đang chạy hôm nay.
+                    </aside>
+                </section>
+
                 <section style="font-size: .82em;">
                     <h2>RBM, nói cho dễ hiểu</h2>
                     <ul>
