@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <title>Khảo sát tài liệu — Học tăng cường cho robot nội soi</title>
+    <link rel="stylesheet" href="revealjs/dist/reset.css" />
+    <link rel="stylesheet" href="revealjs/dist/reveal.css" />
+    <link rel="stylesheet" href="revealjs/dist/theme/white.css" />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <link rel="stylesheet" href="slide-style.css" />
+    <link rel="stylesheet" href="intro-style.css" />
+
+    <style>
+        /* Bổ sung cho bài này — giữ cùng kiểu với bài trước */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.42em;
+            margin-top: 10px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 7px 10px;
+            text-align: left;
+            vertical-align: top;
+            border-bottom: 1px solid rgba(0, 0, 0, .1);
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--sl-muted, #667);
+            font-size: .92em;
+            letter-spacing: .02em;
+            text-transform: uppercase;
+        }
+
+        .data-table td.no {
+            color: #c0392b;
+            font-weight: 700;
+        }
+
+        .data-table td.yes {
+            color: #2e8b57;
+            font-weight: 700;
+        }
+
+        .data-table td.partial {
+            color: var(--sl-orange, #d98324);
+            font-weight: 600;
+        }
+
+        .data-table tr.highlight td {
+            background: rgba(217, 131, 36, .08);
+        }
+
+        .mini-note {
+            font-size: 0.42em;
+            color: var(--sl-muted, #778);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .big-claim {
+            font-size: 0.8em;
+            line-height: 1.45;
+            font-weight: 600;
+            text-align: center;
+            max-width: 90%;
+            margin: 24px auto 18px;
+        }
+
+        .big-claim em {
+            font-style: normal;
+            color: var(--sl-orange, #d98324);
+        }
+
+        /* Hai cột */
+        .two-col {
+            display: flex;
+            gap: 18px;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .two-col>div {
+            flex: 1;
+        }
+
+        .two-col h4 {
+            margin: 0 0 6px;
+            font-size: 1.05em;
+        }
+
+        .two-col ul {
+            margin: 0;
+            padding-left: 1.1em;
+        }
+
+        .two-col li {
+            margin-bottom: 5px;
+        }
+
+        /* Sơ đồ luồng */
+        .flow {
+            font-size: 0.36em;
+            line-height: 1.35;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .flow-panel {
+            border-radius: 10px;
+            padding: 9px 12px 11px;
+            margin-bottom: 9px;
+        }
+
+        .flow-panel.neutral {
+            background: rgba(0, 0, 0, .045);
+        }
+
+        .flow-panel.purple {
+            background: rgba(124, 92, 191, .08);
+        }
+
+        .flow-panel.orange {
+            background: rgba(217, 131, 36, .09);
+        }
+
+        .flow-label {
+            font-weight: 700;
+            letter-spacing: .03em;
+            font-size: .82em;
+            margin-bottom: 8px;
+        }
+
+        .flow-panel.neutral .flow-label {
+            color: #6b7078;
+        }
+
+        .flow-panel.purple .flow-label {
+            color: #7c5cbf;
+        }
+
+        .flow-panel.orange .flow-label {
+            color: #c2731d;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: stretch;
+            gap: 6px;
+        }
+
+        .flow-box {
+            flex: 1;
+            background: #fff;
+            border: 1.6px solid #cfd3da;
+            border-radius: 8px;
+            padding: 7px 9px;
+        }
+
+        .flow-box b {
+            display: block;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .flow-box span {
+            display: block;
+            font-size: .86em;
+            color: #7a7f88;
+            margin-top: 1px;
+        }
+
+        .flow-box.p {
+            border-color: #7c5cbf;
+        }
+
+        .flow-box.o {
+            border-color: #d98324;
+        }
+
+        .flow-box.warn {
+            border-color: #c0392b;
+            border-style: dashed;
+        }
+
+        .flow-box.warn b {
+            color: #c0392b;
+        }
+
+        .flow-arrow {
+            align-self: center;
+            color: #9aa0a8;
+            font-size: 1.1em;
+            flex: 0 0 auto;
+        }
+
+        .flow-note {
+            background: #fff;
+            border: 1px solid #dfe3e8;
+            border-radius: 8px;
+            padding: 7px 10px;
+            margin-top: 7px;
+            text-align: center;
+            color: #5c626b;
+        }
+
+        .flow-note b {
+            color: #333;
+        }
+
+        /* Thanh tỉ lệ thành công */
+        .bars {
+            font-size: 0.4em;
+            text-align: left;
+            margin-top: 6px;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+
+        .bar-row .lbl {
+            flex: 0 0 34%;
+            color: #444;
+        }
+
+        .bar-row .track {
+            flex: 1;
+            height: 16px;
+            background: rgba(0, 0, 0, .05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-row .track,
+        .bar-row .fill {
+            display: block;
+        }
+
+        .bar-row .fill {
+            height: 100%;
+            background: #9aa0a8;
+        }
+
+        .bar-row .fill.o {
+            background: #d98324;
+        }
+
+        .bar-row .val {
+            flex: 0 0 9%;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .ask-box {
+            padding: 14px 18px;
+            border-radius: 12px;
+            border-left: 5px solid var(--sl-orange, #d98324);
+            background: rgba(217, 131, 36, .09);
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: .78em;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, .06);
+            color: #555;
+            margin-right: 4px;
+        }
+
+        .tag.sim {
+            background: rgba(124, 92, 191, .12);
+            color: #5b3fa0;
+        }
+
+        .tag.real {
+            background: rgba(46, 139, 87, .12);
+            color: #2e6b47;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  TRANG BÌA                                   -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section class="title-slide">
+                <h1>Khảo sát tài liệu</h1>
+                <p class="title-sub">Học tăng cường (Reinforcement Learning)<br>
+                    cho điều khiển robot nội soi</p>
+                <p class="title-host">
+                    <strong>Nguyễn Hải Toàn</strong><br>
+                    <span class="text-light">Kính gửi: TS. Mai Thanh Thái &amp; PGS.TS. Hoàng Văn Xiêm</span>
+                </p>
+                <p class="title-contact">
+                    <a href="mailto:nguyenhaitoan@vnu.edu.vn">nguyenhaitoan@vnu.edu.vn</a>
+                </p>
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  PHẦN 1 · RL LÀ GÌ                           -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 1</p>
+                    <h2>RL là gì?</h2>
+                    <p class="text-light" style="font-size: 0.6em;">Giải thích trong một slide</p>
+                </section>
+
+                <section>
+                    <h2>Robot học bằng thử và chấm điểm</h2>
+
+                    <div class="flow">
+                        <div class="flow-panel purple">
+                            <div class="flow-label">VÒNG LẶP HUẤN LUYỆN · lặp lại hàng trăm nghìn đến hàng triệu lần</div>
+                            <div class="flow-row">
+                                <div class="flow-box p"><b>1 · Quan sát</b><span>robot "thấy" gì: ảnh camera, vị trí,
+                                        áp suất, lực…</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>2 · Hành động</b><span>chính sách (một mạng nơ-ron) chọn
+                                        bước tiếp: bẻ đầu, đẩy, rút…</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>3 · Môi trường phản hồi</b><span>mô phỏng tính robot và mô
+                                        di chuyển thế nào</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>4 · Điểm thưởng</b><span>tốt thì cộng, xấu thì trừ;
+                                        mạng tự điều chỉnh để được nhiều điểm hơn</span></div>
+                            </div>
+                        </div>
+
+                        <div class="flow-panel orange">
+                            <div class="flow-label">SAU KHI HỌC XONG</div>
+                            <div class="flow-row">
+                                <div class="flow-box o"><b>Đưa chính sách lên robot thật</b><span>mỗi bước: quan sát →
+                                        mạng chọn hành động → động cơ thực hiện</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box warn"><b>Khoảng cách mô phỏng – thực tế</b><span>mô phỏng sai ở đâu
+                                        thì robot thật sai ở đó</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout">
+                        <p style="font-size: 0.5em;">Vì không thể thử-sai trên bệnh nhân, <strong>gần như mọi nghiên
+                                cứu đều huấn luyện trong mô phỏng</strong>. Câu hỏi quan trọng nhất của mỗi bài vì vậy
+                            là: <em>mô phỏng có đủ giống thật không, và robot được "thấy" những gì?</em></p>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  PHẦN 2 · CÁC NGHIÊN CỨU                     -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 2</p>
+                    <h2>Các nghiên cứu hiện nay</h2>
+                    <p class="text-light" style="font-size: 0.6em;">Tập trung 2024 – 2026</p>
+                </section>
+
+                <!-- 2.1 — Bảng tổng quan -->
+                <section>
+                    <h2>Tổng quan</h2>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Bài</th>
+                                <th>Robot · cơ quan</th>
+                                <th>Robot thấy gì</th>
+                                <th>Thuật toán</th>
+                                <th>Kết quả chính</th>
+                                <th>Thử thật?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="highlight">
+                                <td><strong>ARCGym</strong> [1]<br>RA-L 2026</td>
+                                <td>ống mềm (từ tính / đẩy từ ngoài) · <strong>đại tràng</strong> mềm từ CT</td>
+                                <td>ảnh camera</td>
+                                <td>PPO, A2C, SAC</td>
+                                <td>đầu từ tính: 30–100%<br>ống đẩy: <strong>0%</strong></td>
+                                <td class="no">Không</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Follow-the-leader</strong> [2]<br>UNSW 2026</td>
+                                <td>robot "thân đi theo đầu" · đại tràng</td>
+                                <td>điểm đích lấy từ ảnh độ sâu</td>
+                                <td>PPO</td>
+                                <td>an toàn 0.94 so với 0.73 (HI-PPO)</td>
+                                <td class="no">Không</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dạ dày + lực</strong> [3]<br>CUHK 2025</td>
+                                <td>ống mềm dẫn cáp · <strong>dạ dày</strong> mềm, chuyển động</td>
+                                <td>vị trí đầu, chiều dài cáp, <strong>lực tiếp xúc</strong></td>
+                                <td>PPO</td>
+                                <td>100%; môi trường lạ: 85% so với 55–69% khi không có lực</td>
+                                <td class="no">Không</td>
+                            </tr>
+                            <tr>
+                                <td><strong>BronchoCopilot</strong> [4]<br>CASIA 2024</td>
+                                <td>ống soi phế quản 2 đoạn · đường thở từ CT</td>
+                                <td>ảnh + <strong>hình dạng toàn thân</strong></td>
+                                <td>PPO</td>
+                                <td>91–97%; chỉ có ảnh: 44–93%</td>
+                                <td class="no">Không</td>
+                            </tr>
+                            <tr>
+                                <td><strong>BiliVLA</strong> [5]<br>CUHK 2026</td>
+                                <td>ống soi đường mật (ERCP) · mô hình vật lý</td>
+                                <td>ảnh + câu lệnh</td>
+                                <td>VLA + GRPO</td>
+                                <td>thành công 84.85%</td>
+                                <td class="partial">Phantom</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hysteresis-aware</strong> [6]<br>Tsinghua 2025</td>
+                                <td>tay mềm 3 buồng khí, bơm xi-lanh · không có cơ quan</td>
+                                <td>hình dạng thân (từ mô hình)</td>
+                                <td>PPO trên mô hình học được</td>
+                                <td>sai số bám quỹ đạo 0.13–0.25 mm</td>
+                                <td class="yes">Có</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p class="mini-note">Kết quả của các bài đo theo những cách khác nhau — chỉ so sánh trong cùng một bài.</p>
+                </section>
+
+                <!-- 2.2 — Ba hướng -->
+                <section>
+                    <h2>Ba hướng chính</h2>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.44em; margin-top: 12px;">
+                        <div class="card c-purple">
+                            <h4>1 · Lái đầu ống bằng camera</h4>
+                            <p>Giữ "lỗ tối" (lòng ống) ở giữa ảnh rồi tiến lên. Thân ống bị bỏ qua hoặc được
+                                giả định là tự đi theo.</p>
+                            <p class="text-light">ARCGym · Follow-the-leader · BiliVLA</p>
+                        </div>
+
+                        <div class="card c-teal">
+                            <h4>2 · Cho robot cảm nhận thân</h4>
+                            <p>Thêm thông tin ngoài camera: <strong>lực tiếp xúc</strong> hoặc
+                                <strong>hình dạng thân</strong>. Kết quả tốt hơn rõ rệt.</p>
+                            <p class="text-light">Dạ dày + lực · BronchoCopilot</p>
+                        </div>
+
+                        <div class="card c-orange">
+                            <h4>3 · Học mô hình robot từ dữ liệu</h4>
+                            <p>Đo robot thật, dạy mạng nơ-ron bắt chước, rồi dùng mạng đó làm mô phỏng để luyện RL.
+                                Gần nhất với robot dùng bơm xi-lanh như F3DB.</p>
+                            <p class="text-light">Hysteresis-aware</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.3 — ARCGym (1) -->
+                <section>
+                    <h2>ARCGym — nội soi đại tràng</h2>
+                    <p class="text-light" style="font-size: 0.45em; margin-top: -10px;">Ji, Finocchiaro, Erleben, Yin
+                        · ĐH Copenhagen · IEEE RA-L 2026 · có mã nguồn</p>
+
+                    <div class="two-col" style="font-size: 0.48em;">
+                        <div>
+                            <h4>Môi trường</h4>
+                            <ul>
+                                <li><strong>5 đại tràng thật</strong> dựng từ ảnh CT, mô mềm biến dạng được (FEM, Isaac
+                                    Sim)</li>
+                                <li>Trực tràng, đại tràng lên, đại tràng xuống và hai góc đại tràng được ghim cố
+                                    định; đoạn sigma và đoạn ngang để tự do nên có thể tạo vòng xoắn</li>
+                                <li>4 nhiệm vụ: trực tràng → sigma → đoạn thẳng → góc lách</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Hai loại ống mềm</h4>
+                            <ul>
+                                <li><strong>Đầu từ tính:</strong> nam châm bên ngoài kéo thẳng đầu ống đi theo hướng
+                                    muốn</li>
+                                <li><strong>Ống đẩy từ ngoài:</strong> như ống nội soi thật — chỉ đẩy, xoay thân và bẻ
+                                    đầu</li>
+                                <li>Robot chỉ thấy <strong>ảnh camera</strong>; điểm thưởng = lòng ống nằm giữa ảnh và
+                                    còn nhìn thấy được</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.4 — ARCGym (2) -->
+                <section>
+                    <h2>ARCGym — kết quả</h2>
+
+                    <table class="data-table" style="font-size: 0.46em;">
+                        <thead>
+                            <tr>
+                                <th>Thuật toán (đầu từ tính)</th>
+                                <th>Trực tràng</th>
+                                <th>Sigma</th>
+                                <th>Đoạn thẳng</th>
+                                <th>Góc lách</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PPO</td>
+                                <td>20%</td>
+                                <td>0%</td>
+                                <td>40%</td>
+                                <td>0%</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td><strong>PPO có ràng buộc</strong></td>
+                                <td><strong>100%</strong></td>
+                                <td><strong>30%</strong></td>
+                                <td><strong>90%</strong></td>
+                                <td><strong>80%</strong></td>
+                            </tr>
+                            <tr>
+                                <td>A2C · SAC</td>
+                                <td>20% · 0%</td>
+                                <td>0% · 0%</td>
+                                <td>20% · 0%</td>
+                                <td>0% · 0%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ống đẩy từ ngoài</strong> (mọi thuật toán)</td>
+                                <td class="no">0%</td>
+                                <td class="no">0%</td>
+                                <td class="no">0%</td>
+                                <td class="no">0%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="two-col" style="font-size: 0.44em; margin-top: 14px;">
+                        <div class="callout" style="margin: 0;">
+                            <p><strong>Vì sao ống đẩy thất bại?</strong> Đẩy từ ngoài không chắc làm đầu ống tiến —
+                                thân có thể cong, cọ vào thành ruột, tạo vòng. Robot chỉ thấy camera nên không biết thân
+                                đang làm gì. Người điều khiển bằng tay vẫn đi qua được.</p>
+                        </div>
+                        <div class="callout" style="margin: 0;">
+                            <p><strong>Điều em thấy khi đọc mã nguồn</strong> (cần chạy để xác nhận): chế độ "có ràng
+                                buộc" dùng <em>ảnh độ sâu của mô phỏng</em> để giới hạn hướng lái và tự lùi khi gặp
+                                thành ruột; không có cảm biến va chạm.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.5 — Dạ dày + lực -->
+                <section>
+                    <h2>Dùng lực tiếp xúc làm thông tin</h2>
+                    <p class="text-light" style="font-size: 0.45em; margin-top: -10px;">Ng, Gao, Ren, Lai, Ren · CUHK ·
+                        arXiv 2025</p>
+
+                    <div class="two-col" style="font-size: 0.46em;">
+                        <div>
+                            <h4>Cách làm</h4>
+                            <ul>
+                                <li>Ống mềm dài 1 m, đoạn bẻ cong 79 mm, điều khiển bằng 4 dây cáp</li>
+                                <li>Dạ dày mềm trong SOFA, có chuyển động giống thở và nhu động</li>
+                                <li>Ý tưởng: dạ dày quá rộng — đầu ống phải <strong>tì vào thành</strong> mới với
+                                    tới được đích</li>
+                                <li>Robot thấy: vị trí đầu so với đích, chiều dài cáp, <strong>lực tiếp xúc</strong>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Thành công trong môi trường lạ (dạ dày rung mạnh gấp 3, đích mới)</h4>
+                            <div class="bars" style="font-size: 0.9em;">
+                                <div class="bar-row"><span class="lbl">Không có lực (luyện tĩnh)</span><span
+                                        class="track"><span class="fill" style="width: 68.8%;"></span></span><span
+                                        class="val">68.8%</span></div>
+                                <div class="bar-row"><span class="lbl">Không có lực (luyện động)</span><span
+                                        class="track"><span class="fill" style="width: 55%;"></span></span><span
+                                        class="val">55%</span></div>
+                                <div class="bar-row"><span class="lbl"><strong>Có lực</strong> (luyện động)</span><span
+                                        class="track"><span class="fill o" style="width: 85%;"></span></span><span
+                                        class="val">85%</span></div>
+                            </div>
+                            <p style="margin-top: 10px;" class="text-light">Trong môi trường đã luyện, gần như mọi
+                                chính sách đều đạt 98–100%; lực chỉ thể hiện rõ giá trị khi gặp tình huống mới.</p>
+                        </div>
+                    </div>
+
+                    <p class="mini-note">Hạn chế: chỉ mô phỏng (4 bước/giây trên CPU) · không dùng camera · giả định
+                        biết chính xác vị trí đích.</p>
+                </section>
+
+                <!-- 2.6 — BronchoCopilot -->
+                <section>
+                    <h2>Cho robot biết hình dạng thân</h2>
+                    <p class="text-light" style="font-size: 0.45em; margin-top: -10px;">BronchoCopilot · Zhao et al. ·
+                        Viện Tự động hóa, Viện Hàn lâm KH Trung Quốc · 2024</p>
+
+                    <div class="two-col" style="font-size: 0.46em;">
+                        <div>
+                            <h4>Cách làm</h4>
+                            <ul>
+                                <li>Ống soi phế quản 2 đoạn (vỏ ngoài + ống trong), dài 0.7 m</li>
+                                <li>Đường thở dựng từ CT, coi là cứng; thân robot mô phỏng bằng phần tử hữu hạn</li>
+                                <li>Robot thấy: <strong>3 khung hình liên tiếp</strong> +
+                                    <strong>tọa độ toàn bộ thân</strong> (giả định có cảm biến hình dạng / điện từ)</li>
+                                <li>Dừng và phạt nếu lực tiếp xúc vượt ngưỡng</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Thành công, thùy trên trái</h4>
+                            <div class="bars" style="font-size: 0.9em;">
+                                <div class="bar-row"><span class="lbl">Chỉ ảnh</span><span class="track"><span
+                                            class="fill" style="width: 43.6%;"></span></span><span
+                                        class="val">43.6%</span></div>
+                                <div class="bar-row"><span class="lbl">Chỉ hình dạng thân</span><span
+                                        class="track"><span class="fill" style="width: 91.2%;"></span></span><span
+                                        class="val">91.2%</span></div>
+                                <div class="bar-row"><span class="lbl"><strong>Ảnh + thân</strong></span><span
+                                        class="track"><span class="fill o" style="width: 97.1%;"></span></span><span
+                                        class="val">97.1%</span></div>
+                            </div>
+                            <p style="margin-top: 10px;" class="text-light">Ở thùy dưới (đường đi thẳng), chỉ ảnh đã
+                                đạt 92.6% — thân quan trọng nhất ở chỗ cong gắt.</p>
+                        </div>
+                    </div>
+
+                    <p class="mini-note">Hạn chế: chỉ mô phỏng · đường thở cứng · huấn luyện khoảng 2.2 giờ trên một GPU
+                        RTX 4070.</p>
+                </section>
+
+                <!-- 2.7 — BiliVLA -->
+                <section>
+                    <h2>Xu hướng mới: VLA + RL</h2>
+                    <p class="text-light" style="font-size: 0.45em; margin-top: -10px;">BiliVLA · Lin, Ng, … , Ren ·
+                        CUHK · arXiv 06/2026</p>
+
+                    <div class="flow">
+                        <div class="flow-panel neutral">
+                            <div class="flow-label">ĐẦU VÀO → ĐẦU RA</div>
+                            <div class="flow-row">
+                                <div class="flow-box"><b>Ảnh nội soi + câu lệnh</b><span>theo từng giai đoạn: vào
+                                        nhú tá tràng → đi trong ống mật → tìm sỏi</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>Qwen3-VL-8B + LoRA</b><span>mô hình ngôn ngữ – thị
+                                        giác</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box"><b>Mục tiêu + khung bao + lệnh</b><span>11 lệnh: trái, phải, lên,
+                                        xuống, tiến, lùi, dừng…</span></div>
+                            </div>
+                        </div>
+                        <div class="flow-panel orange">
+                            <div class="flow-label">HUẤN LUYỆN HAI BƯỚC</div>
+                            <div class="flow-row">
+                                <div class="flow-box o"><b>1 · Học theo mẫu</b><span>10.000 cặp ảnh – lệnh từ điều
+                                        khiển tay trên mô hình vật lý</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box o"><b>2 · Tinh chỉnh bằng RL (GRPO)</b><span>thưởng khi khung bao
+                                        đúng, lệnh khớp nhãn, đúng định dạng</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="two-col" style="font-size: 0.44em;">
+                        <div>
+                            <p><strong>VLA</strong> = Vision-Language-Action: mô hình nhìn ảnh, đọc lệnh, xuất ra hành
+                                động. <strong>Kết quả:</strong> thành công 84.85% trên mô hình vật lý, so với 63.64% khi chưa
+                                có bước RL và 58.86% của EndoVLA. Robot thật chạy 2 lần/giây.</p>
+                        </div>
+                        <div>
+                            <p><strong>Lưu ý:</strong> "RL" ở đây là chấm điểm từng ảnh theo nhãn có sẵn, không phải
+                                thử-sai trong môi trường. Khoảng 11 lần thử mỗi nhiệm vụ (suy ra từ tỉ lệ).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.8 — Hysteresis-aware -->
+                <section>
+                    <h2>Học mô hình robot rồi luyện RL</h2>
+                    <p class="text-light" style="font-size: 0.45em; margin-top: -10px;">Chen et al. · Tsinghua &amp;
+                        SJTU · arXiv 2025</p>
+
+                    <div class="flow">
+                        <div class="flow-panel neutral">
+                            <div class="flow-label">BƯỚC 1 — HỌC MÔ HÌNH TỪ ROBOT THẬT</div>
+                            <div class="flow-row">
+                                <div class="flow-box"><b>Tay mềm 7 cm, 3 buồng khí</b><span>mỗi buồng một bơm xi-lanh;
+                                        có kênh 3 mm cho camera / laser</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box"><b>Quét lưới áp suất · 13.824 mẫu</b><span>mỗi mức chờ 3 giây cho
+                                        đứng yên, đo bằng camera chuyển động</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>Mạng nơ-ron nhỏ</b><span>áp suất + đang bơm hay xả →
+                                        hình dạng thân</span></div>
+                            </div>
+                        </div>
+                        <div class="flow-panel purple">
+                            <div class="flow-label">BƯỚC 2 — LUYỆN RL TRÊN MÔ HÌNH, CHẠY TRÊN ROBOT THẬT</div>
+                            <div class="flow-row">
+                                <div class="flow-box p"><b>PPO, 20 triệu bước</b><span>64 bản chạy song song trên một GPU
+                                        RTX 4090</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>Chính sách → áp suất mục tiêu</b><span>bộ PID điều khiển
+                                        xi-lanh</span></div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-box p"><b>Đầu tay vẽ hình tròn, hình vuông</b><span>sai số thật
+                                        0.13–0.25 mm</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="two-col" style="font-size: 0.44em;">
+                        <div>
+                            <p><strong>Ý tưởng chính:</strong> chỉ thêm một bit "đang bơm hay xả" cho mỗi buồng đã giảm
+                                sai số mô hình 85% — xử lý hiện tượng trễ (hysteresis) rất rẻ.</p>
+                        </div>
+                        <div>
+                            <p><strong>Hạn chế:</strong> tay mềm cong nhẹ trong không khí — không có cơ quan, không va
+                                chạm, không mô hình độ trễ của ống dẫn khí.</p>
+                        </div>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  PHẦN 3 · NHẬN XÉT                           -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <section class="divider-slide">
+                    <p class="divider-kicker">Phần 3</p>
+                    <h2>Nhận xét chung</h2>
+                </section>
+
+                <section>
+                    <h2>Em rút ra được gì</h2>
+
+                    <div class="card-grid" style="font-size: 0.44em; margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="card c-purple">
+                            <h4>1 · Hầu hết chỉ lái đầu ống</h4>
+                            <p>Camera ở đầu nên lái đầu là phần dễ. Thân ống thường bị bỏ qua hoặc giả định tự đi theo.
+                            </p>
+                        </div>
+
+                        <div class="card c-teal">
+                            <h4>2 · Cảm nhận thân giúp nhiều</h4>
+                            <p>Thêm hình dạng thân: 43.6% → 97.1% (phế quản). Thêm lực: 55–69% → 85% (dạ dày, môi
+                                trường lạ).</p>
+                        </div>
+
+                        <div class="card c-orange">
+                            <h4>3 · Ống đẩy từ ngoài chưa ai giải được</h4>
+                            <p>Đây đúng là kiểu ống nội soi đại tràng thật, và ARCGym cho 0% ở mọi đoạn.</p>
+                        </div>
+
+                        <div class="card c-muted">
+                            <h4>4 · Gần như tất cả dừng ở mô phỏng</h4>
+                            <p>Chỉ một bài thử trên robot thật. Trong các bài này, chưa bài nào mô hình hóa độ trễ của
+                                chất lỏng trong ống dẫn — điều F3DB gặp phải.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Các hướng có thể làm</h2>
+                    <p class="text-light" style="font-size: 0.45em; margin-top: -10px;">Thân không tự uốn được — vậy
+                        làm sao để thân an toàn?</p>
+
+                    <table class="data-table" style="font-size: 0.44em;">
+                        <thead>
+                            <tr>
+                                <th>Hướng</th>
+                                <th>Ý tưởng</th>
+                                <th>Phần cứng mới?</th>
+                                <th>RL làm gì</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="highlight">
+                                <td><strong>1 · Điều khiển khéo hơn</strong></td>
+                                <td>Thân vẫn bị động; chọn đúng lúc đẩy, giữ, rút, xoay — như bác sĩ giỏi gỡ vòng</td>
+                                <td class="yes">Không</td>
+                                <td>Học khi nào đẩy / rút, dùng tín hiệu ở gốc: áp suất ống dẫn, lực đẩy, chiều dài
+                                    đã đưa vào</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2 · Đổi độ cứng thân</strong></td>
+                                <td>Một cơ cấu làm cả thân cứng lên / mềm đi</td>
+                                <td class="partial">Ít</td>
+                                <td>Học bật cứng <em>trước</em> khi vòng hình thành — hiện bác sĩ thường bật sau, nên
+                                    hiệu quả lâm sàng còn nhỏ [7]</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3 · Kéo từ đầu</strong></td>
+                                <td>Nam châm ngoài kéo đầu, hoặc đầu tự bò; thân bị kéo thì tự đi theo như toa tàu</td>
+                                <td class="no">Có</td>
+                                <td>Chỉ cần lái đầu — ARCGym: đầu từ tính 30–100%, ống đẩy 0%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4 · Bộ chấp hành dọc thân</strong></td>
+                                <td>Nhiều đoạn tự bẻ / neo / làm cứng dọc thân</td>
+                                <td class="no">Có, nhiều</td>
+                                <td>Phối hợp nhiều đoạn cùng lúc — khó nhất, nhưng mới nhất</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="ask-box" style="font-size: 0.48em; margin-top: 14px;">
+                        <strong>Câu hỏi cho thầy:</strong> F3DB có đoạn thân dài bị động không? Buồng chất lỏng chỉ
+                        ở đầu, hay có thể đặt thêm dọc thân? Câu trả lời quyết định nên bắt đầu ở hướng 1 (không cần
+                        phần cứng mới) hay hướng 4 (phối hợp cùng anh Bảo).
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Tài liệu tham khảo</h2>
+                    <div style="font-size: 0.42em; text-align: left;">
+                        <p>[1] G. Ji, M. Finocchiaro, K. Erleben, H. Yin. <em>ARCGym: Benchmarking Deep Reinforcement
+                                Learning in Autonomous Robotic Colonoscopy.</em> IEEE RA-L, 2026. arXiv:2609.22803 ·
+                            github.com/bentferrari/IRE_ARCGym</p>
+
+                        <p>[2] S. Gao, C. Qian, L. Xian, L. Wu, M. Pagnucco, Y. Song. <em>Reinforcement Learning for
+                                Follow-the-Leader Robotic Endoscopic Navigation via Synthetic Data.</em>
+                            arXiv:2601.02798, 2026</p>
+
+                        <p>[3] C. K. Ng, H. Gao, T.-A. Ren, J. Lai, H. Ren. <em>Contact-Aided Navigation of Flexible
+                                Robotic Endoscope Using Deep Reinforcement Learning in Dynamic Stomach.</em>
+                            arXiv:2509.00319, 2025</p>
+
+                        <p>[4] J. Zhao, H. Chen, Q. Tian, J. Chen, B. Yang, … , H. Liu. <em>BronchoCopilot: Towards
+                                Autonomous Robotic Bronchoscopy via Multimodal Reinforcement Learning.</em>
+                            arXiv:2403.01483, 2024</p>
+
+                        <p>[5] J. Lin, C. K. Ng, … , H. Gao, H. Ren. <em>BiliVLA: Scene-Aware Vision-Language-Action
+                                Model with Reinforcement Learning for Autonomous Biliary Endoscopic Navigation.</em>
+                            arXiv:2606.23531, 2026</p>
+
+                        <p>[6] Z. Chen, Y. Xia, … , F. Xing. <em>Hysteresis-Aware Neural Network Modeling and Whole-Body
+                                Reinforcement Learning Control of Soft Robots.</em> arXiv:2504.13582, 2025</p>
+
+                        <p>[7] Q. Xie et al. <em>Does the variable-stiffness colonoscope makes colonoscopy easier? A
+                                meta-analysis of the efficacy of the variable stiffness colonoscope compared with the
+                                standard adult colonoscope.</em> BMC Gastroenterology 12:151, 2012</p>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- ─── KẾT ─── -->
+            <section class="title-slide">
+                <h1>Xin cảm ơn thầy</h1>
+                <p class="title-sub">Nguyễn Hải Toàn</p>
+                <p class="title-contact">
+                    <a href="mailto:nguyenhaitoan@vnu.edu.vn">nguyenhaitoan@vnu.edu.vn</a> ·
+                    <a href="https://toan-nguyen26.github.io">toan-nguyen26.github.io</a>
+                </p>
+            </section>
+
+            <div class="footer">
+                Nguyễn Hải Toàn · Khảo sát RL cho robot nội soi
+            </div>
+        </div>
+    </div>
+
+    <script src="revealjs/dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script>
+        Reveal.initialize({
+            controlsLayout: "edges",
+            slideNumber: true,
+            hashOneBasedIndex: true,
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+    </script>
+</body>
+
+</html>
