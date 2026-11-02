@@ -1,0 +1,24 @@
+# ── macOS ──────────────────────────────────────────────
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# ── Archives ───────────────────────────────────────────
+# Build/source bundles are kept locally, never published.
+# GitHub rejects any single file over 100 MB, and colon-coverage.zip
+# is already past that. Force-add with `git add -f` if one is ever needed.
+*.zip
+
+# ── Editors & tooling ──────────────────────────────────
+.vscode/
+.idea/
+node_modules/
+*.log
+
+# ── Python / Jupyter ───────────────────────────────────
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
