@@ -291,6 +291,41 @@
             background: rgba(46, 139, 87, .12);
             color: #2e6b47;
         }
+        /* Phần 4 — ảnh video mô phỏng */
+        .img-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .img-row figure {
+            flex: 1;
+            margin: 0;
+        }
+
+        .img-row img {
+            width: 100%;
+            margin: 0;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .img-row figcaption {
+            font-size: 0.36em;
+            line-height: 1.35;
+            margin-top: 5px;
+            color: #555;
+            text-align: center;
+        }
+
+        .img-row figcaption b {
+            color: #222;
+        }
+
+        .img-row figure.ours img {
+            outline: 3px solid var(--sl-orange, #d98324);
+            outline-offset: -3px;
+        }
     </style>
 </head>
 
@@ -859,7 +894,151 @@
                         <p>[7] Q. Xie et al. <em>Does the variable-stiffness colonoscope makes colonoscopy easier? A
                                 meta-analysis of the efficacy of the variable stiffness colonoscope compared with the
                                 standard adult colonoscope.</em> BMC Gastroenterology 12:151, 2012</p>
+
+                        <p>[8] C. Biffi et al. <em>REAL-Colon: A dataset for developing real-world AI applications in
+                                colonoscopy.</em> Scientific Data, 2024 (CC BY 4.0)</p>
+
+                        <p>[9] C. Lena et al. <em>A high-fidelity synthetic colon dataset for 3D reconstruction
+                                applications.</em> Scientific Data, 2026</p>
                     </div>
+                </section>
+
+            </section>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!--  PHẦN 4 · VIDEO MÔ PHỎNG (cập nhật 8/11)     -->
+            <!-- ═══════════════════════════════════════════ -->
+            <section>
+
+                <!-- 4.1 — Trước → nay -->
+                <section>
+                    <h2>Video mô phỏng: trước → nay</h2>
+                    <p class="text-light" style="font-size: 0.45em; margin-top: -10px;">Bệnh nhân ACRIN 0233 · Blender</p>
+
+                    <div class="img-row">
+                        <figure>
+                            <img src="img/video-progress/ours_1010.jpg" alt="Render ngày 10/10">
+                            <figcaption><b>10/10</b><br>mạch dán từ ảnh thật → như "miếng dán"</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="img/video-progress/ours_1310.jpg" alt="Render ngày 13/10">
+                            <figcaption><b>13/10</b><br>mạch tự mọc, nhưng mảnh; bề mặt bóng như nhựa</figcaption>
+                        </figure>
+                        <figure class="ours">
+                            <img src="img/video-progress/ours_0811_a.jpg" alt="Render ngày 8/11">
+                            <figcaption><b>8/11</b><br>mạch dày, nối thành lưới; mô mờ, chỉ lớp nhầy bóng</figcaption>
+                        </figure>
+                    </div>
+
+                    <aside class="notes">
+                        Ba thay đổi chính trong tuần:
+                        (1) Mạch: thuật toán mọc mạch (space colonisation, Runions 2007), độ dày theo định luật Murray.
+                        Nhánh 0.07–0.22 mm → 0.12–0.35 mm, thân 0.18–0.5 mm → 0.25–0.8 mm; 90 % đầu nhánh nối vào nhánh
+                        khác (trước 50 %) nên thành lưới, không còn là các cây rời.
+                        (2) Ánh sáng thấm dưới bề mặt: 3 mm → 1 mm. Ở 3 mm, ánh sáng đỏ lan 3 mm làm nhòe mạch.
+                        (3) Độ bóng: mô mờ hơn (roughness 0.35 → 0.6), chỉ lớp nhầy bóng (coat 0.05).
+                        Thử thêm gợn nhỏ trên lớp nhầy để có chấm lấp lánh, nhưng ra "kim tuyến" → đã tắt.
+                        Màu niêm mạc và màu mạch vẫn đo từ REAL-Colon (CC BY 4.0).
+                    </aside>
+                </section>
+
+                <!-- 4.2 — So với thật -->
+                <section>
+                    <h2>So với video thật</h2>
+
+                    <div class="img-row">
+                        <figure>
+                            <img src="img/video-progress/real_realcolon.jpg" alt="Khung hình thật REAL-Colon">
+                            <figcaption><b>Thật</b> · REAL-Colon [8]</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="img/video-progress/realsyncol.jpg" alt="Khung hình RealSynCol">
+                            <figcaption><b>RealSynCol</b> [9] · Sci Data 2026</figcaption>
+                        </figure>
+                        <figure class="ours">
+                            <img src="img/video-progress/ours_0811_b.jpg" alt="Khung hình của em">
+                            <figcaption><b>Của em</b> · 8/11</figcaption>
+                        </figure>
+                    </div>
+
+                    <table class="data-table" style="font-size: 0.4em; margin-top: 12px;">
+                        <thead>
+                            <tr>
+                                <th>Đo trên ảnh (cùng một script)</th>
+                                <th>Thật · 3 video, 329 ảnh</th>
+                                <th>Em · 7/11</th>
+                                <th>Em · 8/11</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Màu niêm mạc (lục ÷ đỏ)</td>
+                                <td>0.57</td>
+                                <td class="yes">0.57</td>
+                                <td class="yes">0.58</td>
+                            </tr>
+                            <tr>
+                                <td>Phần thành ruột có mạch rõ</td>
+                                <td>2.6 %</td>
+                                <td class="no">0.4 %</td>
+                                <td class="partial">0.6 – 1.3 %</td>
+                            </tr>
+                            <tr>
+                                <td>Vùng quá sáng khi sát thành</td>
+                                <td>≤ 9.5 %</td>
+                                <td>—</td>
+                                <td class="no">22 %</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <aside class="notes">
+                        Ảnh thật: REAL-Colon 001-008 (chọn khung có mạch rõ, không phải khung trung bình), cắt phần giữa
+                        (~70 %) cho gần với góc nhìn camera pinhole của em
+                        (83 × 70°); ống soi thật nhìn rộng ~170°.
+                        Script tự chọn ảnh sạch (bỏ ảnh có polyp, dụng cụ, dịch, mờ, quá tối), rồi đo cùng một cách
+                        cho ảnh thật và ảnh render. Giữ riêng 96 ảnh thật để kiểm tra cuối, không dùng để chỉnh.
+                        Ba video đều thuộc nhóm 001 (có thể cùng một bệnh viện) → cần thêm video nhóm khác.
+                        "Mạch rõ": điểm ảnh tối hơn vùng xung quanh ≥ 10 % ở kênh lục mà kênh đỏ giảm ít hơn
+                        (máu hấp thụ lục và lam, ít hấp thụ đỏ).
+                        "Vùng quá sáng": % ảnh có độ sáng > 0.75, ở 10 % khung hình sáng nhất.
+                        RealSynCol: khung hình từ clip của nhóm tác giả, chỉ để so sánh bằng mắt (chưa đo).
+                    </aside>
+                </section>
+
+                <!-- 4.3 — Bước tiếp -->
+                <section>
+                    <h2>Còn thiếu gì</h2>
+
+                    <div class="card-grid card-grid--3" style="font-size: 0.44em; margin-top: 12px;">
+                        <div class="card c-orange">
+                            <h4>1 · Tự chỉnh độ sáng</h4>
+                            <p>Ống soi thật tự giảm sáng khi sát thành. Video của em dùng một độ sáng cho cả video → cháy
+                                sáng khi sát thành.</p>
+                        </div>
+                        <div class="card c-purple">
+                            <h4>2 · Mạch</h4>
+                            <p>Mỗi đường mạch đậm hơn thật, nhưng ít hơn. Cần nhiều mạch hơn, nhạt hơn.</p>
+                        </div>
+                        <div class="card c-teal">
+                            <h4>3 · Lấp lánh</h4>
+                            <p>Ảnh thật có chấm sáng nhỏ dọc nếp gấp. Thử gợn ngẫu nhiên → "kim tuyến"; sẽ thử rãnh nhỏ
+                                theo đường.</p>
+                        </div>
+                    </div>
+
+                    <div class="ask-box" style="font-size: 0.46em; margin-top: 16px;">
+                        <strong>Câu hỏi cho thầy:</strong> thêm bước tự chỉnh độ sáng (mất thêm ~5–10 phút mỗi đại
+                        tràng) có đáng không, hay giữ một độ sáng cố định cho đơn giản?
+                    </div>
+
+                    <aside class="notes">
+                        Tự chỉnh sáng: render nhanh một khung mỗi 10 khung, chọn độ sáng sao cho độ sáng trung bình
+                        ~0.40 và vùng quá sáng ≤ ~8 % (như ảnh thật), làm mượt theo thời gian, lưu giá trị cho từng
+                        khung. Không đổi tư thế camera, độ sâu hay mesh — chỉ đổi độ sáng ảnh, như camera thật.
+                        Lấp lánh: niêm mạc thật có rãnh nhỏ (innominate grooves); ánh sáng phản xạ theo các rãnh đó
+                        chứ không thành chấm ngẫu nhiên.
+                    </aside>
                 </section>
 
             </section>
