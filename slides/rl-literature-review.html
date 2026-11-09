@@ -352,7 +352,7 @@
             <!-- ═══════════════════════════════════════════ -->
             <!--  PHẦN 1 · RL LÀ GÌ                           -->
             <!-- ═══════════════════════════════════════════ -->
-            <section>
+            <!-- <section>
 
                 <section class="divider-slide">
                     <p class="divider-kicker">Phần 1</p>
@@ -400,7 +400,7 @@
                     </div>
                 </section>
 
-            </section>
+            </section> -->
 
             <!-- ═══════════════════════════════════════════ -->
             <!--  PHẦN 2 · CÁC NGHIÊN CỨU                     -->
@@ -424,7 +424,6 @@
                                 <th>Robot · cơ quan</th>
                                 <th>Robot thấy gì</th>
                                 <th>Thuật toán</th>
-                                <th>Kết quả chính</th>
                                 <th>Thử thật?</th>
                             </tr>
                         </thead>
@@ -434,15 +433,15 @@
                                 <td>ống mềm (từ tính / đẩy từ ngoài) · <strong>đại tràng</strong> mềm từ CT</td>
                                 <td>ảnh camera</td>
                                 <td>PPO, A2C, SAC</td>
-                                <td>đầu từ tính: 30–100%<br>ống đẩy: <strong>0%</strong></td>
+                        
                                 <td class="no">Không</td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td><strong>Follow-the-leader</strong> [2]<br>UNSW 2026</td>
                                 <td>robot "thân đi theo đầu" · đại tràng</td>
                                 <td>điểm đích lấy từ ảnh độ sâu</td>
                                 <td>PPO</td>
-                                <td>an toàn 0.94 so với 0.73 (HI-PPO)</td>
+                                
                                 <td class="no">Không</td>
                             </tr>
                             <tr>
@@ -450,15 +449,15 @@
                                 <td>ống mềm dẫn cáp · <strong>dạ dày</strong> mềm, chuyển động</td>
                                 <td>vị trí đầu, chiều dài cáp, <strong>lực tiếp xúc</strong></td>
                                 <td>PPO</td>
-                                <td>100%; môi trường lạ: 85% so với 55–69% khi không có lực</td>
+                                
                                 <td class="no">Không</td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td><strong>BronchoCopilot</strong> [4]<br>CASIA 2024</td>
                                 <td>ống soi phế quản 2 đoạn · đường thở từ CT</td>
                                 <td>ảnh + <strong>hình dạng toàn thân</strong></td>
                                 <td>PPO</td>
-                                <td>91–97%; chỉ có ảnh: 44–93%</td>
+                             
                                 <td class="no">Không</td>
                             </tr>
                             <tr>
@@ -466,7 +465,7 @@
                                 <td>ống soi đường mật (ERCP) · mô hình vật lý</td>
                                 <td>ảnh + câu lệnh</td>
                                 <td>VLA + GRPO</td>
-                                <td>thành công 84.85%</td>
+           
                                 <td class="partial">Phantom</td>
                             </tr>
                             <tr>
@@ -474,7 +473,7 @@
                                 <td>tay mềm 3 buồng khí, bơm xi-lanh · không có cơ quan</td>
                                 <td>hình dạng thân (từ mô hình)</td>
                                 <td>PPO trên mô hình học được</td>
-                                <td>sai số bám quỹ đạo 0.13–0.25 mm</td>
+                       
                                 <td class="yes">Có</td>
                             </tr>
                         </tbody>
@@ -578,32 +577,32 @@
                                 <td>20% · 0%</td>
                                 <td>0% · 0%</td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td><strong>Ống đẩy từ ngoài</strong> (mọi thuật toán)</td>
                                 <td class="no">0%</td>
                                 <td class="no">0%</td>
                                 <td class="no">0%</td>
                                 <td class="no">0%</td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
 
                     <div class="two-col" style="font-size: 0.44em; margin-top: 14px;">
-                        <div class="callout" style="margin: 0;">
+                        <!-- <div class="callout" style="margin: 0;">
                             <p><strong>Vì sao ống đẩy thất bại?</strong> Đẩy từ ngoài không chắc làm đầu ống tiến —
                                 thân có thể cong, cọ vào thành ruột, tạo vòng. Robot chỉ thấy camera nên không biết thân
                                 đang làm gì. Người điều khiển bằng tay vẫn đi qua được.</p>
-                        </div>
-                        <div class="callout" style="margin: 0;">
+                        </div> -->
+                        <!-- <div class="callout" style="margin: 0;">
                             <p><strong>Điều em thấy khi đọc mã nguồn</strong> (cần chạy để xác nhận): chế độ "có ràng
                                 buộc" dùng <em>ảnh độ sâu của mô phỏng</em> để giới hạn hướng lái và tự lùi khi gặp
                                 thành ruột; không có cảm biến va chạm.</p>
-                        </div>
+                        </div> -->
                     </div>
                 </section>
 
                 <!-- 2.5 — Dạ dày + lực -->
-                <section>
+                <!-- <section>
                     <h2>Dùng lực tiếp xúc làm thông tin</h2>
                     <p class="text-light" style="font-size: 0.45em; margin-top: -10px;">Ng, Gao, Ren, Lai, Ren · CUHK ·
                         arXiv 2025</p>
@@ -640,7 +639,7 @@
 
                     <p class="mini-note">Hạn chế: chỉ mô phỏng (4 bước/giây trên CPU) · không dùng camera · giả định
                         biết chính xác vị trí đích.</p>
-                </section>
+                </section> -->
 
                 <!-- 2.6 — BronchoCopilot -->
                 <section>
@@ -660,7 +659,7 @@
                             </ul>
                         </div>
                         <div>
-                            <h4>Thành công, thùy trên trái</h4>
+                            <h4>Độ chính xác đi được đúng hướng</h4>
                             <div class="bars" style="font-size: 0.9em;">
                                 <div class="bar-row"><span class="lbl">Chỉ ảnh</span><span class="track"><span
                                             class="fill" style="width: 43.6%;"></span></span><span
@@ -672,8 +671,8 @@
                                         class="track"><span class="fill o" style="width: 97.1%;"></span></span><span
                                         class="val">97.1%</span></div>
                             </div>
-                            <p style="margin-top: 10px;" class="text-light">Ở thùy dưới (đường đi thẳng), chỉ ảnh đã
-                                đạt 92.6% — thân quan trọng nhất ở chỗ cong gắt.</p>
+                            <!-- <p style="margin-top: 10px;" class="text-light">Ở thùy dưới (đường đi thẳng), chỉ ảnh đã
+                                đạt 92.6% — thân quan trọng nhất ở chỗ cong gắt.</p> -->
                         </div>
                     </div>
 
@@ -719,10 +718,10 @@
                                 động. <strong>Kết quả:</strong> thành công 84.85% trên mô hình vật lý, so với 63.64% khi chưa
                                 có bước RL và 58.86% của EndoVLA. Robot thật chạy 2 lần/giây.</p>
                         </div>
-                        <div>
+                        <!-- <div>
                             <p><strong>Lưu ý:</strong> "RL" ở đây là chấm điểm từng ảnh theo nhãn có sẵn, không phải
                                 thử-sai trong môi trường. Khoảng 11 lần thử mỗi nhiệm vụ (suy ra từ tỉ lệ).</p>
-                        </div>
+                        </div> -->
                     </div>
                 </section>
 
@@ -800,14 +799,14 @@
                             <p>Thêm hình dạng thân: 43.6% → 97.1% (phế quản). Thêm lực: 55–69% → 85% (dạ dày, môi
                                 trường lạ).</p>
                         </div>
-
+<!-- 
                         <div class="card c-orange">
                             <h4>3 · Ống đẩy từ ngoài chưa ai giải được</h4>
                             <p>Đây đúng là kiểu ống nội soi đại tràng thật, và ARCGym cho 0% ở mọi đoạn.</p>
-                        </div>
+                        </div> -->
 
                         <div class="card c-muted">
-                            <h4>4 · Gần như tất cả dừng ở mô phỏng</h4>
+                            <h4>3 · Gần như tất cả dừng ở mô phỏng</h4>
                             <p>Chỉ một bài thử trên robot thật. Trong các bài này, chưa bài nào mô hình hóa độ trễ của
                                 chất lỏng trong ống dẫn — điều F3DB gặp phải.</p>
                         </div>
@@ -843,14 +842,14 @@
                                 <td>Học bật cứng <em>trước</em> khi vòng hình thành — hiện bác sĩ thường bật sau, nên
                                     hiệu quả lâm sàng còn nhỏ [7]</td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td><strong>3 · Kéo từ đầu</strong></td>
                                 <td>Nam châm ngoài kéo đầu, hoặc đầu tự bò; thân bị kéo thì tự đi theo như toa tàu</td>
                                 <td class="no">Có</td>
                                 <td>Chỉ cần lái đầu — ARCGym: đầu từ tính 30–100%, ống đẩy 0%</td>
-                            </tr>
+                            </tr> -->
                             <tr>
-                                <td><strong>4 · Bộ chấp hành dọc thân</strong></td>
+                                <td><strong>3· Bộ chấp hành dọc thân</strong></td>
                                 <td>Nhiều đoạn tự bẻ / neo / làm cứng dọc thân</td>
                                 <td class="no">Có, nhiều</td>
                                 <td>Phối hợp nhiều đoạn cùng lúc — khó nhất, nhưng mới nhất</td>
